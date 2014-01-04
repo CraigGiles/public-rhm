@@ -55,44 +55,48 @@ class ProcessLeadsCommand extends Command {
          $this->info('Processing account information...');
          $accounts = $this->makeObjectsFromRecords($records);
 
-        // //TODO: Map food styles correctly (Need information from Don)
-        // //TODO: REFACTOR: move this to utility layer
-        // // Map food styles to one of 7 possabilities (Asian, Mexican, etc)
-        // $this->info('Mapping food styles...');
-        // $tmpFoodMap = array(
-        //     'MEXICAN' => 'MEXICAN',
-        //     'N/A' => 'OTHER',
-        //     'KOREAN' => 'ASIAN',
-        //     'BBQ' => 'AMERICAN',
-        //     'CHICKEN' => 'AMERICAN',
-        //     'CAJUN' => 'AMERICAN'
-        // );
+         //TODO: Map food styles correctly (Need information from Don)
+         //TODO: REFACTOR: move this to utility layer
+         // Map food styles to one of 7 possabilities (Asian, Mexican, etc)
+         $this->info('Mapping food styles...');
+         $tmpFoodMap = array(
+             'MEXICAN' => 'MEXICAN',
+             'N/A' => 'OTHER',
+             'KOREAN' => 'ASIAN',
+             'BBQ' => 'AMERICAN',
+             'CHICKEN' => 'AMERICAN',
+             'CAJUN' => 'AMERICAN'
+         );
 
-        // $this->mapFoodStyles($accounts, $tmpFoodMap);
+         $this->mapFoodStyles($accounts, $tmpFoodMap);
 
-        // $this->info('Saving records to master database...');
-        // $masterAccountDAO = DataAccess::getDAO(DataAccessObject::MASTER_ACCOUNT);
-        // $unsavedMaster = $masterAccountDAO->saveAll($accounts);
+         $this->info('Saving records to master database...');
+         $eloq = new AccountRepository();
+         $eloq->saveAll($accounts);
+//         $masterAccountDAO = DataAccess::getDAO(DataAccessObject::MASTER_ACCOUNT);
+//         $unsavedMaster = $masterAccountDAO->saveAll($accounts);
 
-        // $this->info('Distributing leads to users...');
-        // $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
-        // $unsavedUsers = $accountDAO->saveAll($accounts);
+//         $this->info('Distributing leads to users...');
+//         $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
+//         $unsavedUsers = $accountDAO->saveAll($accounts);
 
-        // $time = $timer->stopTimer();
-        // $time = number_format((float)($time/60), 2, '.', '');
+         $time = $timer->stopTimer();
+         $time = number_format((float)($time/60), 2, '.', '');
 
-        // $unableCount = count($unsavedMaster);
-        // $numOfAccounts = count($accounts);
-        // $this->info("Lead processing completed... Runtime: {$time} minutes.");
+//         $unableCount = count($unsavedMaster);
+         $numOfAccounts = count($accounts);
+         $this->info("Lead processing completed... Runtime: {$time} minutes.");
 
-        // $outputFile = array();
-        // foreach ($unsavedMaster as $error) {
-        //     //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
-        //     $outputFile[] = $error->getAccountName();
-        //     file_put_contents("../error.txt", $outputFile);
-        // }
+         $outputFile = array();
+//         foreach ($unsavedMaster as $error) {
+//             //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
+//             $outputFile[] = $error->getAccountName();
+//             file_put_contents("../error.txt", $outputFile);
+//         }
+//
+        $this->info("${numOfAccounts} leads processed." );
+//         $this->info("${numOfAccounts} leads processed. Unable to save {$unableCount} to the database.");
 
-        // $this->info("${numOfAccounts} leads processed. Unable to save {$unableCount} to the database.");
     }
 
     private function parseExcelFile($filename) {
@@ -131,56 +135,55 @@ class ProcessLeadsCommand extends Command {
 
             $accounts[] = $acc;
 
-//            //todo : don't limit me
-//            if (count($accounts) < 25) continue;
+            break;
         }
 
         return $accounts;
     }
-//
-//    private function mapFoodStyles($accounts, $foodMap) {
-//        foreach ($accounts as $account) {
-//            $menu = $account->getCuisineType();
-//            if (!empty($menu)) {
-//                $cuisine = 'OTHER';
-//                if (array_key_exists($account->getCuisineType(), $foodMap)) {
-//                    $cuisine = strtoupper($foodMap[$account->getCuisineType()]);
-//                }
-//                $account->setCuisineType($cuisine);
-//            }
-//        }
-//    }
-//
-//    private function processAddressInformation($array) {
-//        //TODO: REFACTOR: Refactor this to use model layer / utility layer
-//        $sstreets = new SmartyStreetsAPI(new SmartyStreetsConfig());
-//        $tam = new TexasAMAPI(new TexasAMConfig());
-//
-//        $street1 = $array['ADDRESS'];
-//        $city = $array['CITY'];
-//        $county = $array['COUNTY'];
-//        $state = $array['STATE'];
-//        $zipcode = $array['ZIPCODE'];
-//        $maxcanidates = 10;
-//
-//        echo " > Processing address: {$street1}" . PHP_EOL;
-//        $sstreetsAddress = $sstreets->processAddresses($street1, null, $city, $county, $state, $zipcode, $maxcanidates);
-//
-//
-//        if (isset($sstreetsAddress)) {
-//            $address = $sstreetsAddress;
-//        } else {
-//            $address = $tam->standardizeAddress($street1, $city, $state, $zipcode);
-//        }
-//
-//        //geocode the location
-//        //TODO: BUG: GoogleMapAPI not working
-////        $google = new GoogleMapsAPI();
-////        $geocoded = $google->geocode($address);
-////        $address->setGoogleGeocoded($geocoded);
-//
-//        return $address;
-//    }
+
+    private function mapFoodStyles($accounts, $foodMap) {
+        foreach ($accounts as $account) {
+            $menu = $account->getCuisineType();
+            if (!empty($menu)) {
+                $cuisine = 'OTHER';
+                if (array_key_exists($account->getCuisineType(), $foodMap)) {
+                    $cuisine = strtoupper($foodMap[$account->getCuisineType()]);
+                }
+                $account->setCuisineType($cuisine);
+            }
+        }
+    }
+
+    private function processAddressInformation($array) {
+        //TODO: REFACTOR: Refactor this to use model layer / utility layer
+        $sstreets = new SmartyStreetsAPI();
+        $tam = new TexasAMAPI();
+
+        $street1 = $array['ADDRESS'];
+        $city = $array['CITY'];
+        $county = $array['COUNTY'];
+        $state = $array['STATE'];
+        $zipcode = $array['ZIPCODE'];
+        $maxcanidates = 10;
+
+        echo " > Processing address: {$street1}" . PHP_EOL;
+        $sstreetsAddress = $sstreets->processAddresses($street1, null, $city, $county, $state, $zipcode, $maxcanidates);
+
+
+        if (isset($sstreetsAddress)) {
+            $address = $sstreetsAddress;
+        } else {
+            $address = $tam->standardizeAddress($street1, $city, $state, $zipcode);
+        }
+
+        //geocode the location
+        //TODO: BUG: GoogleMapAPI not working
+//        $google = new GoogleMapsAPI();
+//        $geocoded = $google->geocode($address);
+//        $address->setGoogleGeocoded($geocoded);
+
+        return $address;
+    }
 
     /**
      * Get the console command arguments.

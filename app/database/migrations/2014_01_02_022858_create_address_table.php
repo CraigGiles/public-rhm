@@ -18,17 +18,17 @@ class CreateAddressTable extends Migration {
 			
 			$table->integer('primaryNumber')->unsigned();
 			$table->string('streetPredirection', 4)->nullable();
-			$table->string('street');
+			$table->string('streetName');
 			$table->string('streetSuffix', 4)->nullable();
 			$table->string('suiteType')->nullable();
 			$table->string('suiteNumber')->nullable();
-			$table->string('city');
-			$table->string('county')->nullable();
-			$table->string('state');
+			$table->string('cityName');
+			$table->string('countyName')->nullable();
+			$table->string('stateAbbreviation');
 			$table->integer('zipCode');
 			$table->integer('plus4Code')->nullable();
-			$table->integer('longitude')->unsigned()->nullable();
-			$table->integer('latitude')->unsigned()->nullable();
+			$table->double('longitude')->nullable();
+			$table->double('latitude')->nullable();
 			$table->boolean('cassVerified')->default(0);
 
 			$table->timestamps();

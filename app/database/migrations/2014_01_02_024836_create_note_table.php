@@ -15,9 +15,14 @@ class CreateNoteTable extends Migration {
 		Schema::create('notes', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('action', 32)->nullable();
-			$table->string('author', 32);
-			$table->text('text');
+            $table->unsignedInteger('accountId')->nullable();
+            $table->unsignedInteger('contactId')->nullable();
+//            $table->foreign('accountId')->references('id')->on('accounts');
+//            $table->foreign('contactId')->references('id')->on('contacts');
+
+            $table->string('action', 32)->nullable();
+            $table->string('author', 32);
+            $table->text('text');
 			$table->timestamps();
 		});
 	}
