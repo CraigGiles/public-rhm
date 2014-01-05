@@ -29,14 +29,9 @@ class AccountSQL implements AccountDAO {
         DB::beginTransaction();
 
         try {
-            // if the address hasn't been saved yet, save it.
-            $addressId = $account->getAddress()
-                                 ->getId();
-            if (!isset($addressId)) {
-                //save the address first
-                $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
-                $addressDAO->save($account->getAddress());
-            }
+            //save the address first
+            $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
+            $addressDAO->save($account->getAddress());
 
             if ($account->getUserID() == null) {
                 $master = false;
@@ -66,7 +61,7 @@ class AccountSQL implements AccountDAO {
                         'mobilePhone' => $account->getMobilePhone(),
                         'website' => $account->getWebsiteAddress(),
                         'isTargetAccount' => $account->getIsTargetAccount(),
-                        'isMaster' => $master,
+                        'distributed' => $master,
 
                         'created_at' => date("Y-m-d H:i:s"),
                         'updated_at' => date("Y-m-d H:i:s"),
