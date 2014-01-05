@@ -18,4 +18,12 @@ class AddressRepository implements Repository {
     public function create($input) {
         // TODO: Implement create() method.
     }
+
+    public function save($object) {
+        // TODO: Implement save() method.
+    }
+
+    public function saveAll($objects) {
+        // TODO: Implement saveAll() method.
+    }
 }

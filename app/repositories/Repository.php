@@ -7,4 +7,8 @@ interface Repository {
 
     public function create($input);
 
+    public function save($object);
+
+    public function saveAll($objects);
+
 }

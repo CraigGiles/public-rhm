@@ -39,63 +39,65 @@ class ProcessLeadsCommand extends Command {
         $filename = $this->argument('filename');
 
         $timer->startTimer();
-       if (!file_exists($filename)) {
-           throw new InvalidArgumentException('Invalid file name');
-       }
+        if (!file_exists($filename)) {
+            throw new InvalidArgumentException('Invalid file name');
+        }
 
         $this->info('Parsing XLSX file...');
         $records = $this->parseExcelFile($filename);
 
-         if (count($records) == 0) {
-             $this->info('No records found in XLSX file.');
-             return;
-         }
+        if (count($records) == 0) {
+            $this->info('No records found in XLSX file.');
+            return;
+        }
 
-         // Verify and fix any address records
-         $this->info('Processing account information...');
-         $accounts = $this->makeObjectsFromRecords($records);
+        // Verify and fix any address records
+        $this->info('Processing account information...');
+        $accounts = $this->makeObjectsFromRecords($records);
 
-         //TODO: Map food styles correctly (Need information from Don)
-         //TODO: REFACTOR: move this to utility layer
-         // Map food styles to one of 7 possabilities (Asian, Mexican, etc)
-         $this->info('Mapping food styles...');
-         $tmpFoodMap = array(
-             'MEXICAN' => 'MEXICAN',
-             'N/A' => 'OTHER',
-             'KOREAN' => 'ASIAN',
-             'BBQ' => 'AMERICAN',
-             'CHICKEN' => 'AMERICAN',
-             'CAJUN' => 'AMERICAN'
-         );
+        //TODO: Map food styles correctly (Need information from Don)
+        //TODO: REFACTOR: move this to utility layer
+        // Map food styles to one of 7 possabilities (Asian, Mexican, etc)
+        $this->info('Mapping food styles...');
+        $tmpFoodMap = array(
+            'MEXICAN' => 'MEXICAN',
+            'N/A' => 'OTHER',
+            'KOREAN' => 'ASIAN',
+            'BBQ' => 'AMERICAN',
+            'CHICKEN' => 'AMERICAN',
+            'CAJUN' => 'AMERICAN'
+        );
 
-         $this->mapFoodStyles($accounts, $tmpFoodMap);
+        $this->mapFoodStyles($accounts, $tmpFoodMap);
 
-         $this->info('Saving records to master database...');
-         $eloq = new AccountRepository();
-         $eloq->saveAll($accounts);
-//         $masterAccountDAO = DataAccess::getDAO(DataAccessObject::MASTER_ACCOUNT);
-//         $unsavedMaster = $masterAccountDAO->saveAll($accounts);
+        $this->info('Saving all records...');
+        $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
+        $unsaved = $accountDAO->saveAll($accounts);
 
-//         $this->info('Distributing leads to users...');
-//         $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
-//         $unsavedUsers = $accountDAO->saveAll($accounts);
+        $this->info('Distributing leads to users...');
+        $undistributed = SubscriptionsQueries::DistributeLeadsToUsers($accounts);
 
-         $time = $timer->stopTimer();
-         $time = number_format((float)($time/60), 2, '.', '');
+        // How much time did this operation take?
+        $time = $timer->stopTimer();
+        $time = number_format((float)($time / 60), 2, '.', '');
 
-//         $unableCount = count($unsavedMaster);
-         $numOfAccounts = count($accounts);
-         $this->info("Lead processing completed... Runtime: {$time} minutes.");
+        $accountsCount = count($accounts);
+        $unsavedCount = count($unsaved);
+        $undistributedCount = count($undistributed);
+        $this->info("Lead processing completed... Runtime: {$time} minutes.");
+        $this->info("{$accountsCount} processed.");
+        $this->info("{$unsavedCount} were unable to be saved into the master database.");
+        $this->info("{$undistributedCount} were unable to be distributed.");
 
-         $outputFile = array();
+        //$this->info("All unsaved accounts have been appended to error.txt");
+
+        $outputFile = array();
 //         foreach ($unsavedMaster as $error) {
 //             //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
 //             $outputFile[] = $error->getAccountName();
 //             file_put_contents("../error.txt", $outputFile);
 //         }
 //
-        $this->info("${numOfAccounts} leads processed." );
-//         $this->info("${numOfAccounts} leads processed. Unable to save {$unableCount} to the database.");
 
     }
 

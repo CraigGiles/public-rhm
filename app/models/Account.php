@@ -26,6 +26,7 @@ class Account extends DataObject {
     private $emailAddress;
     private $openDate;
     private $notes;
+    private $isMaster;
 
     /**
      * Calculates the weighted opportunity of this lead
@@ -305,6 +306,20 @@ class Account extends DataObject {
      */
     public function setUserID($userId) {
         $this->userId = $userId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsMaster() {
+        return $this->isMaster;
+    }
+
+    /**
+     * @param mixed $isMaster
+     */
+    public function setIsMaster($isMaster) {
+        $this->isMaster = $isMaster;
     }
 
 

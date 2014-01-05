@@ -2,11 +2,14 @@
 
 class AddressSQL {
     /**
+     * Save a record and return the objectId
+     *
      * @param Address $address
+     * @return int
      */
-    public function save($address) {
+    public function save(Address $address) {
         $id = DB::table('addresses')
-                 ->insertGetId(array(
+            ->insertGetId(array(
                 'primaryNumber' => $address->getPrimaryNumber(),
                 'streetPredirection' => $address->getStreetPredirection(),
                 'streetName' => $address->getStreetName(),
@@ -29,4 +32,24 @@ class AddressSQL {
         $address->setId($id);
         return $id;
     }
-} 
+
+    /**
+     *  Save an array of records returning a list of objects that could not be saved.
+     *
+     * @param array $addresses
+     * @return int
+     */
+    public function saveAll(array $addresses) {
+        $unsaved = array();
+        foreach ($addresses as $address) {
+            try {
+                $this->save($address);
+            } catch (Exception $e) {
+                $unsaved[] = $address;
+            }
+        }
+
+        return $unsaved;
+    }
+
+}
