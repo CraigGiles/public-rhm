@@ -32,6 +32,9 @@ class AccountSQL implements AccountDAO {
             $userId = $account->getUserID();
             $address = $account->getAddress();
 
+            //if the userId is set, this is a distributed lead...
+            //check to see if its a dup, and if it is, rollback the transaction
+            //otherwise, commit the transaction and go about our merry way.
             if (isset($userId)) {
                 $master = false;
                 //since this is a distributed lead, check duplicate status
@@ -51,11 +54,6 @@ class AccountSQL implements AccountDAO {
                     DB::rollback();
                     return null;
                 } else {
-
-                    //save the address first
-                    $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
-                    $addressDAO->save($address);
-
                     $id = $this->saveAccount($account, $master);
                     DB::commit();
                     return $id;
@@ -63,27 +61,11 @@ class AccountSQL implements AccountDAO {
             } else {
                 $master = true;
 
-                //save the address first
-                $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
-                $addressDAO->save($address);
-
                 // save the account
                 $id = $this->saveAccount($account, $master);
-
-                //save all the notes
-                $notes = $account->getNotes();
-                foreach ($notes as $note) {
-                    $noteSQL = new NoteSQL();
-                    $note->setAccountId($account->getId());
-                    $noteSQL->save($note);
-                }
-
-
-                $account->setId($id);
                 DB::commit();
                 return $id;
             }
-
         } catch (Exception $e) {
             //todo: log exception
             print_r($e->getMessage());
@@ -98,6 +80,12 @@ class AccountSQL implements AccountDAO {
      * @return mixed
      */
     private function saveAccount(Account $account, $master) {
+        $address = $account->getAddress();
+
+        //save the address first
+        $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
+        $addressDAO->save($address);
+
         $id = DB::table('accounts')
                 ->insertGetId(array(
                     'userId' => $account->getUserID(),
@@ -126,6 +114,16 @@ class AccountSQL implements AccountDAO {
                     'updated_at' => date("Y-m-d H:i:s"),
                 )
             );
+
+        //save all the notes
+        $notes = $account->getNotes();
+        foreach ($notes as $note) {
+            $noteSQL = new NoteSQL();
+            $note->setAccountId($account->getId());
+            $noteSQL->save($note);
+        }
+
+        $account->setId($id);
         return $id;
     }
 }
