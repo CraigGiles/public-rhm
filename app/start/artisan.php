@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new ProcessLeadsCommand);
+Artisan::add(new SubscribeCommand);

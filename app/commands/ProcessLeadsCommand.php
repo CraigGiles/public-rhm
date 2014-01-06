@@ -11,7 +11,7 @@ class ProcessLeadsCommand extends Command {
      *
      * @var string
      */
-    protected $name = 'process-leads';
+    protected $name = 'accounts:process';
 
     /**
      * The console command description.
