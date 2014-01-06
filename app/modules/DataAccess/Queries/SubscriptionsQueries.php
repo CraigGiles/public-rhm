@@ -30,12 +30,13 @@ class SubscriptionsQueries {
         $unsaved = array();
 
         foreach ($accounts as $account) {
-            $account->setIsMaster(false);
             $zipcode = $account->getAddress()->getZipCode();
             $subscribedUsers = SubscriptionsQueries::getAllUsersSubscribedToZipcode($zipcode);
 
             foreach ($subscribedUsers as $user) {
-                $account->setUserId($user);
+                // if the user is already subscribed to this lead, don't re-sub them
+                //otherwise setUserId and save the lead
+                $account->setUserID($user);
                 $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
                 $id = $accountDAO->save($account);
                 if (!isset($id)) {
@@ -46,4 +47,22 @@ class SubscriptionsQueries {
 
         return $unsaved;
     }
+
+    public static function IsUserSubscribedToAccount($user, $account) {
+
+        $address = $account->getAddress();
+        $accounts = DB::table('addresses')
+            ->join('accounts', 'addresses.addressId', '=', 'addresses.id')
+            ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
+            ->where('userId', '=', $user->getId())
+            ->where('primaryNumber', '=', $address->getPrimaryNumber())
+            ->where('streetName', '=', $address->getStreetName())
+            ->where('zipCode', '=', $address->getZipCode())
+            ->where('streetSuffix', '=', $address->getStreetSuffix())
+            ->where('accountName', '=', $account->getAccountName())->get();
+
+        if (count($accounts) > 0) return true;
+        return false;
+    }
+
 }

@@ -13,41 +13,41 @@ class SubscriptionsTableSeeder extends Seeder {
 
         $subscriptions = [
             [
-                'userId' => 41,
-                'zipCode' => 10002,
+                'userId' => 1,
+                'zipCode' => 94501,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
-//            [
-//                'userId' => 16,
-//                'zipCode' => 32210,
-//                'created_at' => date('Y-m-d H:i:s'),
-//                'updated_at' => date('Y-m-d H:i:s'),
-//            ],
-//            [
-//                'userId' => 17,
-//                'zipCode' => 29928,
-//                'created_at' => date('Y-m-d H:i:s'),
-//                'updated_at' => date('Y-m-d H:i:s'),
-//            ],
-//            [
-//                'userId' => 18,
-//                'zipCode' => 1940,
-//                'created_at' => date('Y-m-d H:i:s'),
-//                'updated_at' => date('Y-m-d H:i:s'),
-//            ],
-//            [
-//                'userId' => 18,
-//                'zipCode' => 49503,
-//                'created_at' => date('Y-m-d H:i:s'),
-//                'updated_at' => date('Y-m-d H:i:s'),
-//            ],
-//            [
-//                'userId' => 18,
-//                'zipCode' => 10002,
-//                'created_at' => date('Y-m-d H:i:s'),
-//                'updated_at' => date('Y-m-d H:i:s'),
-//            ],
+            [
+                'userId' => 2,
+                'zipCode' => 92262,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'userId' => 2,
+                'zipCode' => 29928,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'userId' => 3,
+                'zipCode' => 91423,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'userId' => 4,
+                'zipCode' => 92262,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'userId' => 4,
+                'zipCode' => 91423,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
         ];
         DB::table('subscriptions')->insert($subscriptions);
     }

@@ -24,8 +24,11 @@ class AddressSQL {
                 'longitude' => $address->getLongitude(),
                 'latitude' => $address->getLatitude(),
                 'cassVerified' => $address->getCassVerified(),
+                'googleGeocoded' => $address->getGoogleGeocoded(),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
+//                'created_at' => new DateTime,
+//                'updated_at' => new DateTime,
             )
         );
 

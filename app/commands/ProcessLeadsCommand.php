@@ -183,6 +183,7 @@ class ProcessLeadsCommand extends Command {
 //        $google = new GoogleMapsAPI();
 //        $geocoded = $google->geocode($address);
 //        $address->setGoogleGeocoded($geocoded);
+        $address->setGoogleGeocoded(false);
 
         return $address;
     }

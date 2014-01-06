@@ -17,7 +17,7 @@ class CreateAccountsTable extends Migration {
             $table->increments('id');
 
             $table->string('accountName');
-            $table->boolean('isMaster')->default(0);
+            $table->boolean('isMaster')->default(false);
             $table->string('owner')->nullable();
             $table->string('contactName')->nullable();
             $table->string('emailAddress')->nullable();
@@ -34,7 +34,7 @@ class CreateAccountsTable extends Migration {
             $table->unsignedInteger('estimatedAnnualSales')->nullable();
             $table->unsignedInteger('averageCheck')->nullable();
             $table->string('website')->nullable();
-            $table->boolean('isTargetAccount')->nullable()->default(0);
+            $table->boolean('isTargetAccount')->nullable()->default(false);
 
             $table->unsignedInteger('userId')->nullable();
             $table->boolean('deleted')->default(intval(false));
