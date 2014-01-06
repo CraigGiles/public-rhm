@@ -137,7 +137,7 @@ class ProcessLeadsCommand extends Command {
 
             $accounts[] = $acc;
 
-//            break;
+            if (count($accounts) > 25)  break;
         }
 
         return $accounts;
