@@ -1,6 +1,30 @@
 <?php
 
 class AccountSQL implements AccountDAO {
+    public static function GetColumns() {
+        return array(
+            'accounts.userId',
+            'accounts.weeklyOpportunity',
+            'accounts.accountName',
+            'accounts.operatorType',
+            'accounts.addressId',
+            'accounts.contactName',
+            'accounts.phone',
+            'accounts.serviceType',
+            'accounts.cuisineType',
+            'accounts.seatCount',
+            'accounts.averageCheck',
+            'accounts.emailAddress',
+            'accounts.openDate',
+            'accounts.estimatedAnnualSales',
+            'accounts.owner',
+            'accounts.mobilePhone',
+            'accounts.website',
+            'accounts.isTargetAccount',
+            'accounts.isMaster',
+        );
+    }
+
     /**
      * Save an array of records returning a list of objects that could not be saved.
      *

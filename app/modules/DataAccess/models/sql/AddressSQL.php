@@ -1,6 +1,28 @@
 <?php
 
 class AddressSQL {
+    public static function GetColumns() {
+        return array(
+            'addresses.primaryNumber',
+            'addresses.streetPredirection',
+            'addresses.streetName',
+            'addresses.streetSuffix',
+            'addresses.suiteType',
+            'addresses.suiteNumber',
+            'addresses.cityName',
+            'addresses.countyName',
+            'addresses.stateAbbreviation',
+            'addresses.zipCode',
+            'addresses.plus4Code',
+            'addresses.longitude',
+            'addresses.latitude',
+            'addresses.cassVerified',
+            'addresses.googleGeocoded',
+            'addresses.created_at',
+            'addresses.updated_at',
+        );
+    }
+
     /**
      * Save a record and return the objectId
      *

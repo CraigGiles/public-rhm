@@ -248,7 +248,7 @@ class Account extends DataObject {
     /**
      * @param mixed $websiteAddress
      */
-    public function setWebsiteAddress($websiteAddress) {
+    public function setWebsite($websiteAddress) {
         $this->websiteAddress = $websiteAddress;
     }
 

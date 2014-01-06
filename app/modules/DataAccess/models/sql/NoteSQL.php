@@ -1,6 +1,18 @@
 <?php
 
 class NoteSQL {
+    public static function GetColumns() {
+        return array(
+            'notes.accountId',
+            'notes.contactId',
+            'notes.action',
+            'notes.author',
+            'notes.text',
+            'notes.created_at',
+            'notes.updated_at',
+
+        );
+    }
 
     /**
      * @param Note $note

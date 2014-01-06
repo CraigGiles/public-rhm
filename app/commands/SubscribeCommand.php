@@ -51,6 +51,7 @@ class SubscribeCommand extends Command {
      * @return mixed
      */
     public function fire() {
+        $time = strtotime("-1 month");
         $timer = new Timer();
         $filename = $this->argument('filename');
 
@@ -82,7 +83,7 @@ class SubscribeCommand extends Command {
                 ->where('username', '=', $username)
                 ->get();
 
-            if (isset($userId)) {
+            if (!empty($userId)) {
                 $userId = $userId[0]->id;
                 $zipcodes = array_map('intval', $zipcodes);
                 $zips = array_merge($zipcodes, $zips);
@@ -96,8 +97,14 @@ class SubscribeCommand extends Command {
 
                 foreach ($zips as $zipcode) {
                     $sub->add($userId, $zipcode);
-                    $subDAO->save($sub);
+                    $id = $subDAO->save($sub);
+                    if (isset($id)) {
+                        $this->backdateAccounts($sub, $time);
+                    }
                 }
+            } else {
+                Log::info("{$username} not found in the users table.");
+                $this->info("{$username} not found in the users table.");
             }
         }
 
@@ -182,6 +189,17 @@ class SubscribeCommand extends Command {
         return array(
             array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
         );
+    }
+
+    private function backdateAccounts(Subscription $sub, $time) {
+        //get all leads for $zipcode after $time, and assign a copy for $id
+        $accounts = AccountQueries::GetAllAccountsForZipAfterDate($sub->getZipCode(), $time);
+
+        if (count($accounts) > 0) {
+            foreach ($accounts as $account) {
+                SubscriptionsQueries::SubscribeAccountToUser($account, $sub->getUserId());
+            }
+        }
     }
 
 }

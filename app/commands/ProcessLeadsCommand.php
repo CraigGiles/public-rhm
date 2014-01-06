@@ -137,7 +137,7 @@ class ProcessLeadsCommand extends Command {
 
             $accounts[] = $acc;
 
-            break;
+//            break;
         }
 
         return $accounts;

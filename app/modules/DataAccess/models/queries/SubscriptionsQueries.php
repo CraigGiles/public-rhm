@@ -33,14 +33,11 @@ class SubscriptionsQueries {
             $zipcode = $account->getAddress()->getZipCode();
             $subscribedUsers = SubscriptionsQueries::getAllUsersSubscribedToZipcode($zipcode);
 
+            // if the user is already subscribed to this lead, don't re-sub them
             foreach ($subscribedUsers as $user) {
-                // if the user is already subscribed to this lead, don't re-sub them
-                //otherwise setUserId and save the lead
-                $account->setUserID($user);
-                $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
-                $id = $accountDAO->save($account);
-                if (!isset($id)) {
-                    $unsaved[] = $account;
+                $subscribed = SubscriptionsQueries::SubscribeAccountToUser($account, $user);
+                if (!$subscribed) {
+                    Log::info("User is already subscribed to this lead");
                 }
             }
         }
@@ -48,11 +45,10 @@ class SubscriptionsQueries {
         return $unsaved;
     }
 
-    public static function IsUserSubscribedToAccount($user, $account) {
-
+    public static function IsUserSubscribedToAccount(User $user, Account $account) {
         $address = $account->getAddress();
         $accounts = DB::table('addresses')
-            ->join('accounts', 'addresses.addressId', '=', 'addresses.id')
+            ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
             ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
             ->where('userId', '=', $user->getId())
             ->where('primaryNumber', '=', $address->getPrimaryNumber())
@@ -63,6 +59,17 @@ class SubscriptionsQueries {
 
         if (count($accounts) > 0) return true;
         return false;
+    }
+
+    public static function SubscribeAccountToUser(Account $account, $userId) {
+        $account->setUserID($userId);
+        $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
+        $id = $accountDAO->save($account);
+        if (!isset($id)) {
+            return false;
+        }
+
+        return true;
     }
 
 }
