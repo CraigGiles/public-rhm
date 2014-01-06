@@ -138,6 +138,7 @@ class AccountSQL implements AccountDAO {
                     'updated_at' => date("Y-m-d H:i:s"),
                 )
             );
+        $account->setId($id);
 
         //save all the notes
         $notes = $account->getNotes();
@@ -147,7 +148,6 @@ class AccountSQL implements AccountDAO {
             $noteSQL->save($note);
         }
 
-        $account->setId($id);
         return $id;
     }
 }
