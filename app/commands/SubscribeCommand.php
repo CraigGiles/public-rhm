@@ -76,24 +76,28 @@ class SubscribeCommand extends Command {
             $cities = isset($subscription['CITIES']) ? $subscription['CITIES'] : array();
             $zipcodes = isset($subscription['ZIPCODES']) ? $subscription['ZIPCODES'] : array();
 
-            $query = new Query(null, 'users');
-            $query->where('username', $username);
-            $users = $query->find();
-            $user = $users->results[0];
+            //goto the users table and find the userId corrisponding to the username $username
+            $userId = DB::table('users')
+                ->select('id')
+                ->where('username', '=', $username)
+                ->get();
 
-            $zipcodes = array_map('intval', $zipcodes);
-            $zips = array_merge($zipcodes, $zips);
+            if (isset($userId)) {
+                $userId = $userId[0]->id;
+                $zipcodes = array_map('intval', $zipcodes);
+                $zips = array_merge($zipcodes, $zips);
 
-            foreach ($cities as $city) {
-                //get all zipcodes for the city and add them here
-                $zips = array_merge($this->lookupCityZipCodes($city), $zips);
-            }
+                foreach ($cities as $city) {
+                    //get all zipcodes for the city and add them here
+                    $zips = array_merge($this->lookupCityZipCodes($city), $zips);
+                }
 
-            $zips = array_unique($zips);
+                $zips = array_unique($zips);
 
-            foreach ($zips as $zipcode) {
-                $sub->add($user->objectId, $zipcode);
-                $subDAO->save($sub);
+                foreach ($zips as $zipcode) {
+                    $sub->add($userId, $zipcode);
+                    $subDAO->save($sub);
+                }
             }
         }
 
@@ -108,15 +112,15 @@ class SubscribeCommand extends Command {
     private function parseExcelFile($filename) {
         return array(
             array(
-                'USERNAME' => 'u1',
+                'USERNAME' => 'testuser01',
                 'CITIES' => array('Irvine', 'Anaheim', 'Hermosa Beach', 'Long Beach', 'Manhattan Beach', 'Los Angeles'),
             ),
             array(
-                'USERNAME' => 'u2',
+                'USERNAME' => 'testuser02',
                 'ZIPCODES' => array('91423', '93063', '91324', '91502'),
             ),
             array(
-                'USERNAME' => 'u3',
+                'USERNAME' => 'testuser03',
                 'CITIES' => array('San Francisco','San Jose','Alameda','Brisbane', 'Oakland'),
             ),
         );

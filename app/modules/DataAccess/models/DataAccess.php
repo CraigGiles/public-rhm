@@ -28,7 +28,7 @@ class DataAccess {
                 return new NoteSQL();
 
             case DataAccessObject::SUBSCRIPTION:
-                throw new \Symfony\Component\Process\Exception\InvalidArgumentException("Not Implemented");
+                return new SubscriptionSQL();
 
             case DataAccessObject::USER:
                 return new AccountParse();
