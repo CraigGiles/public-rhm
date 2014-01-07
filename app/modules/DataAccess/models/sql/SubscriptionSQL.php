@@ -16,7 +16,7 @@ class SubscriptionSQL {
     }
 
     /**
-     * @param Note $subscription
+     * @param Subscription $subscription
      */
     public function save($subscription) {
         DB::beginTransaction();
