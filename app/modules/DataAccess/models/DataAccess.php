@@ -7,6 +7,11 @@
  * @date 12/2013
  */
 class DataAccess {
+    public static function getRepository($object, $database) {
+        //if testing, use this other database
+        //if in production, use $dat
+    }
+
     public static function getDAO($object) {
         $storage = Config::get('database.default');
 
