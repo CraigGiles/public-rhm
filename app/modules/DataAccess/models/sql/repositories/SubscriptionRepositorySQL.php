@@ -26,16 +26,16 @@ class SubscriptionRepositorySQL extends SQLRepository {
      * @param $accounts
      * @return array
      */
-    public static function distributeLeadsToUsers($accounts) {
+    public function distributeLeadsToUsers($accounts) {
         $unsaved = array();
 
         foreach ($accounts as $account) {
             $zipcode = $account->getAddress()->getZipCode();
-            $subscribedUsers = SubscriptionsQueries::getAllUsersSubscribedToZipcode($zipcode);
+            $subscribedUsers = $this->getAllUsersSubscribedToZipcode($zipcode);
 
             // if the user is already subscribed to this lead, don't re-sub them
             foreach ($subscribedUsers as $user) {
-                $subscribed = SubscriptionsQueries::SubscribeAccountToUser($account, $user);
+                $subscribed = $this->subscribeAccountToUser($account, $user);
                 if (!$subscribed) {
                     Log::info("User is already subscribed to this lead");
                 }
@@ -45,7 +45,7 @@ class SubscriptionRepositorySQL extends SQLRepository {
         return $unsaved;
     }
 
-    public static function isUserSubscribedToAccount(User $user, Account $account) {
+    public function isUserSubscribedToAccount(User $user, Account $account) {
         $address = $account->getAddress();
         $accounts = DB::table('addresses')
                       ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
@@ -61,7 +61,7 @@ class SubscriptionRepositorySQL extends SQLRepository {
         return false;
     }
 
-    public static function subscribeAccountToUser(Account $account, $userId) {
+    public function subscribeAccountToUser(Account $account, $userId) {
         $account->setUserID($userId);
         $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
         $id = $accountDAO->save($account);
