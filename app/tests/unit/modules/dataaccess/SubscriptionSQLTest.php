@@ -39,6 +39,13 @@ class SubscriptionSQLTest extends TestCase {
         $this->db->shouldReceive('table')->withAnyArgs()->once()->andReturn($this->queryBuilder);
     }
 
+    private function set_up_subscribed_to_zipcode_tests() {
+        $this->queryBuilder->shouldReceive('join')->withAnyArgs()->once()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('select')->withAnyArgs()->once()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('where')->withAnyArgs()->times(6)->andReturn($this->queryBuilder);
+        $this->testAccount->shouldReceive('getAddress')->once()->andReturn($this->mockAddress);
+    }
+
     public function test_users_should_be_able_to_subscribe_to_zipcode() {
         $this->dao->shouldReceive('save')->withAnyArgs()->andReturn(self::ID);
         $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
@@ -109,13 +116,6 @@ class SubscriptionSQLTest extends TestCase {
         $returnCount = count($results);
 
         $this->assertEquals($expectedCount, $returnCount);
-    }
-
-    private function set_up_subscribed_to_zipcode_tests() {
-        $this->queryBuilder->shouldReceive('join')->withAnyArgs()->once()->andReturn($this->queryBuilder);
-        $this->queryBuilder->shouldReceive('select')->withAnyArgs()->once()->andReturn($this->queryBuilder);
-        $this->queryBuilder->shouldReceive('where')->withAnyArgs()->times(6)->andReturn($this->queryBuilder);
-        $this->testAccount->shouldReceive('getAddress')->once()->andReturn($this->mockAddress);
     }
 }
 
