@@ -9,15 +9,12 @@
 class DataAccess {
     const R_ACCOUNT = 'Account';
 
-    public static function getRepository($dao) {
+    public static function getRepository($repository) {
 
         //todo Later on this needs to be way more robust and load depending which storage we're using
-        switch ($dao) {
-            case DataAccessObject::ACCOUNT:
-                return new AccountRepositorySQL($dao);
-
-            case DataAccessObject::ADDRESS:
-                return new AddressSQL();
+        switch ($repository) {
+            case $repository instanceof AddressSQL:
+                return new LeadDistributionRepositorySQL($repository);
 
             case DataAccessObject::CONTACT:
                 throw new \Symfony\Component\Process\Exception\InvalidArgumentException("Not Implemented");
@@ -28,8 +25,8 @@ class DataAccess {
             case DataAccessObject::NOTE:
                 return new NoteSQL();
 
-            case $dao instanceof SubscriptionSQL:
-                return new SubscriptionRepositorySQL($dao);
+            case $repository instanceof SubscriptionSQL:
+                return new LeadDistributionRepositorySQL($repository);
 
             case DataAccessObject::USER:
                 return new AccountParse();

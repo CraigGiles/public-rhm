@@ -1,17 +1,16 @@
 <?php
+use  Mockery as m;
 
-use Mockery as m;
-
-class AccountRepositorySQLTest extends TestCase {
-    /** @var  \Mockery\MockInterface */
-    protected $queryBuilder;
-
-    /** @var  \Mockery\MockInterface */
-    protected $db;
-
+class LeadDistributionRepositorySQLTest extends TestCase {
     const ID = 1234;
     const ZIPCODE = 4321;
     const DATE = 0;
+
+    /** @var  \Mockery\MockInterface */
+    private $queryBuilder;
+
+    /** @var  \Mockery\MockInterface */
+    private $db;
 
     /** @var  \Mockery\MockInterface */
     private $testUser;
@@ -23,9 +22,6 @@ class AccountRepositorySQLTest extends TestCase {
     private $testAccount;
 
     public function setUp() {
-        $this->queryBuilder = m::mock('Illuminate\Database\Query\QueryBuilder');
-        $this->db = m::mock('Illuminate\Database\Connection');
-
         $this->testUser = m::mock('User');
         $this->testAccount = m::mock('Account');
         $this->mockAddress = m::mock('Address');
@@ -37,8 +33,102 @@ class AccountRepositorySQLTest extends TestCase {
         $this->dao->shouldIgnoreMissing();
 
         $this->queryBuilder = m::mock('Illuminate\Database\Query\QueryBuilder');
+        $this->db = m::mock('Illuminate\Database\Connection');
         $this->db->shouldReceive('beginTransaction')->once();
         $this->db->shouldReceive('table')->withAnyArgs()->once()->andReturn($this->queryBuilder);
+    }
+
+    private function set_up_subscribed_to_zipcode_tests() {
+        $this->queryBuilder->shouldReceive('join')->withAnyArgs()->once()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('select')->withAnyArgs()->once()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('where')->withAnyArgs()->times(6)->andReturn($this->queryBuilder);
+        $this->testAccount->shouldReceive('getAddress')->once()->andReturn($this->mockAddress);
+    }
+
+    public function test_users_should_be_able_to_subscribe_to_zipcode() {
+        $this->dao->shouldReceive('save')->withAnyArgs()->andReturn(self::ID);
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $result = $subRepo->subscribeUserToZipcode($this->testUser, self::ZIPCODE);
+        $this->assertTrue($result);
+    }
+
+    public function test_when_user_could_not_be_subscribed_to_zipcode() {
+        $this->dao->shouldReceive('save')->withAnyArgs()->andReturn(null);
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $result = $subRepo->subscribeUserToZipcode($this->testUser, self::ZIPCODE);
+        $this->assertFalse($result);
+
+    }
+
+    public function test_exceptions_should_cause_a_rollback() {
+        $subscription = new Subscription();
+        $subscription->add($this->testUser, self::ZIPCODE);
+
+        $this->queryBuilder->shouldReceive('insertGetId')->withAnyArgs()->once()->andThrow(new Exception("Something"));
+        $this->db->shouldReceive('rollBack')->once();
+
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $id = $subRepo->save($subscription);
+
+        $this->assertEquals(null, $id);
+    }
+
+    public function test_user_is_subscribed_to_a_zipcode() {
+        $return = array(
+            $this->testAccount,
+            $this->testAccount,
+        );
+
+        $this->set_up_subscribed_to_zipcode_tests();
+        $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
+
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $results = $subRepo->isUserSubscribedToAccount($this->testUser, $this->testAccount);
+        $this->assertTrue($results);
+    }
+
+    public function test_user_is_not_subscribed_to_zipcode() {
+        $return = array();
+
+        $this->set_up_subscribed_to_zipcode_tests();
+        $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
+
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $results = $subRepo->isUserSubscribedToAccount($this->testUser, $this->testAccount);
+        $this->assertFalse($results);
+    }
+
+    public function test_get_all_user_ids_subscribed_to_a_zipcode() {
+        $return = array(
+            $this->testAccount,
+            $this->testAccount,
+        );
+        $expectedCount = count($return);
+
+        $this->queryBuilder->shouldReceive('select')->withAnyArgs()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('where')->withAnyArgs()->andReturn($this->queryBuilder);
+        $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
+
+        $subRepo = new LeadDistributionRepositorySQL($this->dao, $this->db);
+        $results = $subRepo->getAllUserIdsSubscribedToZipcode(self::ZIPCODE);
+
+        $returnCount = count($results);
+
+        $this->assertEquals($expectedCount, $returnCount);
+    }
+
+    public function test_accounts_should_be_distributed_to_users() {
+        //list of accounts should be given to the repository
+        //users subscribed to the emails listed in those accounts should have new leads
+        //eventually, new push notification should be sent out
+//        $account = m::mock('Account');
+//        $accounts[] = $account;
+//
+//        $dao = m::mock('AccountSQL');
+//        $repo = new LeadDistributionRepositorySQL($dao, $this->db);
+//        $results = $repo->distributeAccountsToUsers($accounts);
+
+
     }
 
     public function test_find_all_accounts_for_zipcode() {
@@ -82,10 +172,6 @@ class AccountRepositorySQLTest extends TestCase {
 
         $return[] = $account;
 
-        $expected = array(
-            $this->testAccount,
-        );
-
         $this->db->shouldReceive('table')->with('accounts')->andReturn($this->queryBuilder);
         $this->queryBuilder->shouldReceive('join')->times(2)->withAnyArgs()->andReturn($this->queryBuilder);
         $this->queryBuilder->shouldReceive('select')->once()->withAnyArgs()->andReturn($this->queryBuilder);
@@ -95,7 +181,7 @@ class AccountRepositorySQLTest extends TestCase {
 
         $dao = m::mock('AccountSQL');
 
-        $repo = new AccountRepositorySQL($dao, $this->db);
+        $repo = new LeadDistributionRepositorySQL($dao, $this->db);
         $results = $repo->findAllAccountsForZipcode(self::ZIPCODE, self::DATE);
         $this->assertEquals(count($results), 1);
         $acct = $results[0];
@@ -146,3 +232,4 @@ class AccountRepositorySQLTest extends TestCase {
         $this->assertEquals($account->action, $note->getAuthor());
     }
 }
+
