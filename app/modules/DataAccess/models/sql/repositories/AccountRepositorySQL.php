@@ -20,13 +20,13 @@ class AccountRepositorySQL extends SQLRepository {
 
         $objects = array();
 
-        $accounts = DB::table('accounts')
-                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
-                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
-                      ->select($cols)
-                      ->where('zipCode', '=', $zipcode)
-                      ->where('accounts.updated_at', '>', $afterDate)
-                      ->get();
+        $accounts = $this->db->table('accounts')
+                             ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
+                             ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                             ->select($cols)
+                             ->where('zipCode', '=', $zipcode)
+                             ->where('accounts.updated_at', '>', $afterDate)
+                             ->get();
 
         foreach ($accounts as $account) {
             $acct = new Account();

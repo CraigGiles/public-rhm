@@ -255,7 +255,7 @@ class Account extends DataObject {
     /**
      * @return mixed
      */
-    public function getWebsiteAddress() {
+    public function getWebsite() {
         return $this->websiteAddress;
     }
 

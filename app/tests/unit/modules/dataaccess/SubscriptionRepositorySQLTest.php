@@ -2,8 +2,6 @@
 use  Mockery as m;
 
 class SubscriptionSQLTest extends TestCase {
-    protected $useDatabase = true;
-
     const ID = 1234;
     const ZIPCODE = 4321;
 

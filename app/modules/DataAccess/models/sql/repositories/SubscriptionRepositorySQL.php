@@ -1,11 +1,6 @@
 <?php
 
 class SubscriptionRepositorySQL extends SQLRepository {
-    /**
-     * NEW FUNCTIONS BASED ON TDD
-     */
-
-
     public function subscribeUserToZipcode(User $user, $zipcode) {
         $subscription = new Subscription();
         $subscription->add($user, $zipcode);

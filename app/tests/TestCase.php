@@ -3,6 +3,7 @@
 class TestCase extends Illuminate\Foundation\Testing\TestCase {
     protected $useDatabase = true;
 
+
     /**
      * Creates the application.
      *
@@ -10,7 +11,6 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
      */
     public function createApplication() {
         $unitTesting = true;
-
         $testEnvironment = 'testing';
 
         return require __DIR__ . '/../../bootstrap/start.php';
@@ -21,6 +21,8 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
         if ($this->useDatabase) {
             $this->setUpDb();
         }
+
+
     }
 
     public function setUpDb() {
