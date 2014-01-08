@@ -2,18 +2,23 @@
 use  Mockery as m;
 
 class SubscriptionSQLTest extends TestCase {
-    const ID = 1234;
     protected $useDatabase = true;
+
+    const ID = 1234;
+    const ZIPCODE = 4321;
 
     /** @var  \Mockery\MockInterface */
     private $queryBuilder;
+
     /** @var  \Mockery\MockInterface */
     private $db;
-    private $testZip;
+
     /** @var  \Mockery\MockInterface */
     private $testUser;
+
     /** @var  \Mockery\MockInterface */
     private $mockAddress;
+
     /** @var  \Mockery\MockInterface */
     private $testAccount;
 
@@ -21,12 +26,13 @@ class SubscriptionSQLTest extends TestCase {
         $this->testUser = m::mock('User');
         $this->testAccount = m::mock('Account');
         $this->mockAddress = m::mock('Address');
+        $this->dao = m::mock('SubscriptionSQL');
 
         $this->testUser->shouldIgnoreMissing();
         $this->testAccount->shouldIgnoreMissing();
         $this->mockAddress->shouldIgnoreMissing();
+        $this->dao->shouldIgnoreMissing();
 
-        $this->testZip = 93063;
         $this->queryBuilder = m::mock('Illuminate\Database\Query\QueryBuilder');
         $this->db = m::mock('Illuminate\Database\Connection');
         $this->db->shouldReceive('beginTransaction')->once();
@@ -34,29 +40,28 @@ class SubscriptionSQLTest extends TestCase {
     }
 
     public function test_users_should_be_able_to_subscribe_to_zipcode() {
+        $this->dao->shouldReceive('save')->withAnyArgs()->andReturn(self::ID);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
+        $result = $subRepo->subscribeUserToZipcode($this->testUser, self::ZIPCODE);
+        $this->assertTrue($result);
+    }
 
-        $subscription = new Subscription();
-        $subscription->add($this->testUser, $this->testZip);
+    public function test_when_user_could_not_be_subscribed_to_zipcode() {
+        $this->dao->shouldReceive('save')->withAnyArgs()->andReturn(null);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
+        $result = $subRepo->subscribeUserToZipcode($this->testUser, self::ZIPCODE);
+        $this->assertFalse($result);
 
-        $this->queryBuilder->shouldReceive('insertGetId')->withAnyArgs()->once()->andReturn(self::ID);
-        $this->db->shouldReceive('commit')->once();
-
-        $dao = new SubscriptionSQL($this->db);
-        $subRepo = new SubscriptionRepositorySQL($dao, $this->db);
-        $id = $subRepo->save($subscription);
-
-        $this->assertEquals(self::ID, $id);
     }
 
     public function test_exceptions_should_cause_a_rollback() {
         $subscription = new Subscription();
-        $subscription->add($this->testUser, $this->testZip);
+        $subscription->add($this->testUser, self::ZIPCODE);
 
         $this->queryBuilder->shouldReceive('insertGetId')->withAnyArgs()->once()->andThrow(new Exception("Something"));
         $this->db->shouldReceive('rollBack')->once();
 
-        $dao = new SubscriptionSQL($this->db);
-        $subRepo = new SubscriptionRepositorySQL($dao, $this->db);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
         $id = $subRepo->save($subscription);
 
         $this->assertEquals(null, $id);
@@ -71,8 +76,7 @@ class SubscriptionSQLTest extends TestCase {
         $this->set_up_subscribed_to_zipcode_tests();
         $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
 
-        $dao = new SubscriptionSQL($this->db);
-        $subRepo = new SubscriptionRepositorySQL($dao, $this->db);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
         $results = $subRepo->isUserSubscribedToAccount($this->testUser, $this->testAccount);
         $this->assertTrue($results);
     }
@@ -83,8 +87,7 @@ class SubscriptionSQLTest extends TestCase {
         $this->set_up_subscribed_to_zipcode_tests();
         $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
 
-        $dao = new SubscriptionSQL($this->db);
-        $subRepo = new SubscriptionRepositorySQL($dao, $this->db);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
         $results = $subRepo->isUserSubscribedToAccount($this->testUser, $this->testAccount);
         $this->assertFalse($results);
     }
@@ -100,9 +103,8 @@ class SubscriptionSQLTest extends TestCase {
         $this->queryBuilder->shouldReceive('where')->withAnyArgs()->andReturn($this->queryBuilder);
         $this->queryBuilder->shouldReceive('get')->withNoArgs()->andReturn($return);
 
-        $dao = new SubscriptionSQL($this->db);
-        $subRepo = new SubscriptionRepositorySQL($dao, $this->db);
-        $results = $subRepo->getAllUserIdsSubscribedToZipcode($this->testZip);
+        $subRepo = new SubscriptionRepositorySQL($this->dao, $this->db);
+        $results = $subRepo->getAllUserIdsSubscribedToZipcode(self::ZIPCODE);
 
         $returnCount = count($results);
 

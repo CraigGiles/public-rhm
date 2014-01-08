@@ -7,7 +7,8 @@ class SubscriptionRepositorySQL extends SQLRepository {
 
 
     public function subscribeUserToZipcode($user, $zipcode) {
-        return $this->dao->save($user, $zipcode);
+        $id = $this->dao->save($user, $zipcode);
+        return isset($id);
     }
 
     /**
