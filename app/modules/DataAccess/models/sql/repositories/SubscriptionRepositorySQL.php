@@ -7,8 +7,6 @@ class SubscriptionRepositorySQL extends SQLRepository {
 
 
     public function subscribeUserToZipcode($user, $zipcode) {
-//        $sub = new Subscription();
-//        $sub->add($user, $zipcode);
         return $this->dao->save($user, $zipcode);
     }
 
@@ -68,7 +66,7 @@ class SubscriptionRepositorySQL extends SQLRepository {
     /**
      * Performs a query in order to determine if the user is already subscribed to a particular account
      *
-     * @param User $user
+     * @param UserEloquent $user
      * @param Account $account
      * @return bool
      */

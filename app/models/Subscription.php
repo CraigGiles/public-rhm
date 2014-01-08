@@ -2,6 +2,7 @@
 
 
 class Subscription {
+    /** @var  User $user */
     private $user;
     private $zipCode;
 
@@ -19,8 +20,16 @@ class Subscription {
         return $this->zipCode;
     }
 
-    public function add($user, $zipCode) {
-        $this->userId = $user;
+    public function add(User $user, $zipCode) {
+        $this->user = $user;
         $this->zipCode = intval($zipCode);
+    }
+
+    public function getUserName() {
+        return $this->user->getUsername();
+    }
+
+    public function getUserID() {
+        return $this->user->getId();
     }
 }
