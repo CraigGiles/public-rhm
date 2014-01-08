@@ -8,7 +8,7 @@ class SubscriptionSQL extends DataAccessObjectSQL {
 
     public function getValues(Subscription $subscription) {
         return array(
-            self::USER_ID => $subscription->getUser(),
+            self::USER_ID => $subscription->getUserID(),
             self::ZIP_CODE => $subscription->getZipCode(),
             self::CREATED_AT => new DateTime,
             self::UPDATED_AT => new DateTime,
