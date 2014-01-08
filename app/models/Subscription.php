@@ -2,14 +2,14 @@
 
 
 class Subscription {
-    private $userId;
+    private $user;
     private $zipCode;
 
     /**
      * @return mixed
      */
-    public function getUserId() {
-        return $this->userId;
+    public function getuser() {
+        return $this->user;
     }
 
     /**
@@ -19,8 +19,8 @@ class Subscription {
         return $this->zipCode;
     }
 
-    public function add($userId, $zipCode) {
-        $this->userId = $userId;
+    public function add($user, $zipCode) {
+        $this->userId = $user;
         $this->zipCode = intval($zipCode);
     }
 }

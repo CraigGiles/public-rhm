@@ -1,10 +1,10 @@
 <?php
 
 class SQLRepository implements Repository {
-    private $dao;
+    protected $dao;
 
-    public function __construct($dataAccessObjectLabel) {
-        $this->dao = DataAccess::getDAO($dataAccessObjectLabel);
+    public function __construct($dao) {
+        $this->dao = $dao;
     }
 
     public function all() {

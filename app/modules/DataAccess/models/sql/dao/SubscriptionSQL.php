@@ -1,6 +1,6 @@
 <?php
 
-class SubscriptionSQL {
+class SubscriptionSQL extends DataAccessObjectSQL {
     const USER_ID = 'userId';
     const ZIP_CODE = 'zipCode';
     const CREATED_AT = 'created_at';
@@ -8,7 +8,7 @@ class SubscriptionSQL {
 
     public function getValues(Subscription $subscription) {
         return array(
-            self::USER_ID => $subscription->getUserId(),
+            self::USER_ID => $subscription->getUser(),
             self::ZIP_CODE => $subscription->getZipCode(),
             self::CREATED_AT => new DateTime,
             self::UPDATED_AT => new DateTime,
@@ -19,20 +19,17 @@ class SubscriptionSQL {
      * @param Subscription $subscription
      */
     public function save($subscription) {
-        DB::beginTransaction();
-
+        $this->db->beginTransaction();
+        $values = $this->getValues($subscription);
         try {
-            $id = DB::table('subscriptions')
-                    ->insertGetId(
-                    $this->getValues($subscription)
-                );
+            $id = $this->db->table('subscriptions')
+                           ->insertGetId($values);
 
-            DB::commit();
+            $this->db->commit();
             return $id;
         } catch (Exception $e) {
             //todo: Log Exception
-            Log::error($e);
-            DB::rollback();
+            $this->db->rollBack();
             return null;
         }
     }

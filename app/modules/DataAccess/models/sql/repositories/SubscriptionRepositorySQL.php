@@ -2,12 +2,32 @@
 
 class SubscriptionRepositorySQL extends SQLRepository {
     /**
+     * NEW FUNCTIONS BASED ON TDD
+     */
+
+
+    public function subscribeUserToZipcode($user, $zipcode) {
+//        $sub = new Subscription();
+//        $sub->add($user, $zipcode);
+        return $this->dao->save($user, $zipcode);
+    }
+
+    public function isUserSubscribedToZipcode($user, $zipcode) {
+
+    }
+
+    /**
+     * OLD FUNCTIONS BASED ON NON-TDD WORK
+     */
+
+
+    /**
      * Obtain an array of user id's subscribed to a particular zipcode
      *
      * @param $zipcode
      * @return array
      */
-    public function getAllUsersSubscribedToZipcode($zipcode) {
+    public function getAllUserIdsSubscribedToZipcode($zipcode) {
         $zipcode = intval($zipcode);
         $users = DB::table('subscriptions')->select('userId')->where('zipCode', '=', $zipcode)->get();
         $ids = array();
@@ -31,7 +51,7 @@ class SubscriptionRepositorySQL extends SQLRepository {
 
         foreach ($accounts as $account) {
             $zipcode = $account->getAddress()->getZipCode();
-            $subscribedUsers = $this->getAllUsersSubscribedToZipcode($zipcode);
+            $subscribedUsers = $this->getAllUserIdsSubscribedToZipcode($zipcode);
 
             // if the user is already subscribed to this lead, don't re-sub them
             foreach ($subscribedUsers as $user) {
@@ -45,6 +65,13 @@ class SubscriptionRepositorySQL extends SQLRepository {
         return $unsaved;
     }
 
+    /**
+     * Performs a query in order to determine if the user is already subscribed to a particular account
+     *
+     * @param User $user
+     * @param Account $account
+     * @return bool
+     */
     public function isUserSubscribedToAccount(User $user, Account $account) {
         $address = $account->getAddress();
         $accounts = DB::table('addresses')
@@ -61,15 +88,31 @@ class SubscriptionRepositorySQL extends SQLRepository {
         return false;
     }
 
-    public function subscribeAccountToUser(Account $account, $userId) {
-        $account->setUserID($userId);
-        $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
-        $id = $accountDAO->save($account);
-        if (!isset($id)) {
-            return false;
+    /**
+     * Subscribes the account to a particular user.
+     * This function will create a duplicate row inside the accounts table, setting the account isMaster to false and
+     * assigning the userId column to the user id provided. If the account was successfully subscribed to the user
+     * true will be returned. If the account has already been subscribed to the user, false will be returned.
+     *
+     * @param Account $account
+     * @param unsigned int $userId
+     * @return bool
+     */
+    public function subscribeAccountToUser(Account $account, $user) {
+        $subscribed = $this->isUserSubscribedToAccount($user, $account);
+        if (!$subscribed) {
+            $userId = $user->getId();
+            $account->setUserID($userId);
+            $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
+            $id = $accountDAO->save($account);
+
+            //TODO: QUESTION: if the account couldn't be saved, do i want to throw an exception?
+            if (isset($id)) {
+                $subscribed = true;
+            }
         }
 
-        return true;
+        return $subscribed;
     }
 
 } 
