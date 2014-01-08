@@ -1,9 +1,18 @@
 <?php
 
 class SQLRepository implements Repository {
+    /** @var Illuminate\Database\Connection */
+    protected $db;
+
     protected $dao;
 
-    public function __construct($dao) {
+    public function __construct($dao, $db=null) {
+        //if DB isn't set, use the laravel 4 facade
+        if (!isset($db)) {
+            $this->db = DB;
+        } else {
+            $this->db = $db;
+        }
         $this->dao = $dao;
     }
 
