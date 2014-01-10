@@ -7,16 +7,29 @@
  * @author Craig Giles <craig@gilesc.com>
  * @date 12/2013
  */
-class TexasAMAPI {
-    public function standardizeAddress($streetAddress, $city, $state, $zipcode) {
+class TexasAMAPI implements AddressStandardizationService {
+    /**
+     * Standardize the address into a standard form. This does not verify the integrity of the address, however it will
+     * ensure the address is in a proper form
+     *
+     * @param $street1
+     * @param $street2
+     * @param $city
+     * @param $county
+     * @param $state
+     * @param $zipcode
+     * @param null $maxResponses
+     * @return Address
+     */
+    public function processAddresses($street1, $street2, $city, $county, $state, $zipcode, $maxResponses = null) {
         $address = new Address();
 
-        $streetAddress = urlencode($streetAddress);
+        $street1 = urlencode($street1);
         $city = urlencode($city);
         $state = urlencode($state);
         $zipcode = urlencode($zipcode);
         $key = Config::get('texasam.key');
-        $url = "http://geoservices.tamu.edu/Services/AddressNormalization/WebService/v04_01/Rest/?nonParsedStreetAddress={$streetAddress}&nonParsedCity={$city}&nonParsedState={$state}&nonParsedZip={$zipcode}&apikey={$key}&addressFormat=USPSPublication28&responseFormat=JSON&notStore=true&version=4.01";
+        $url = "http://geoservices.tamu.edu/Services/AddressNormalization/WebService/v04_01/Rest/?nonParsedStreetAddress={$street1}&nonParsedCity={$city}&nonParsedState={$state}&nonParsedZip={$zipcode}&apikey={$key}&addressFormat=USPSPublication28&responseFormat=JSON&notStore=true&version=4.01";
 
         $ch = curl_init();
         $timeout = 500;

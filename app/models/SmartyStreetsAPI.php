@@ -7,11 +7,11 @@
  * @author Craig Giles <craig@gilesc.com>
  * @date 12/2013
  */
-class SmartyStreetsAPI {
+class SmartyStreetsAPI implements CassVerificationService {
     /**
      * @param array $addresses
      */
-    public function processAddresses($street1, $street2, $city, $county, $state, $zipcode, $maxcanidates) {
+    public function processAddresses($street1, $street2, $city, $county, $state, $zipcode, $maxResponses=null) {
         //process the street until you reach an & symbol.
         $arr = explode("&", $street1, 2);
         $street1 = $arr[0];
@@ -27,9 +27,9 @@ class SmartyStreetsAPI {
         $city = urlencode($city);
         $state = urlencode($state);
         $zipcode = urlencode($zipcode);
-        $maxcanidates = urlencode($maxcanidates);
+        $maxResponses = urlencode($maxResponses);
 
-        $url = "https://api.smartystreets.com/street-address?auth-id={$authId}&auth-token={$authToken}&street={$street1}&street2={$street2}&city={$city}&state={$state}&zipcode={$zipcode}&candidates={$maxcanidates}";
+        $url = "https://api.smartystreets.com/street-address?auth-id={$authId}&auth-token={$authToken}&street={$street1}&street2={$street2}&city={$city}&state={$state}&zipcode={$zipcode}&candidates={$maxResponses}";
 
         $ch = curl_init();
         $timeout = 500;

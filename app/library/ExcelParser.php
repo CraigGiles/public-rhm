@@ -43,7 +43,7 @@ class ExcelParser {
         $keys = array();
         $processingKeys = true;
 
-        if (!file_exists($this->filename)) {
+        if (!file_exists($filename)) {
             return $records;
         }
 

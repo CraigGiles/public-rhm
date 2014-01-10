@@ -43,8 +43,12 @@ class ProcessLeadsCommand extends Command {
             throw new InvalidArgumentException('Invalid file name');
         }
 
-        $cb = new AccountDistributionSystem();
-        $function = array($cb, AccountDistributionSystem::PROCESSOR);
+        $this->info('Parsing XLSX file...');
+        $smartyStreets = new SmartyStreetsAPI();
+        $tam = new TexasAMAPI();
+        $google = new GoogleMapsAPI();
+        $s2parser = new AccountParserS2($tam, $smartyStreets, $google);
+        $function = array($s2parser, AccountParserS2::EXCEL_PROCESSOR);
         $excelParser = new ExcelParser();
         $accounts = $excelParser->parse($filename, $function);
 
@@ -52,22 +56,6 @@ class ProcessLeadsCommand extends Command {
             App::info('No records found in XLSX file.');
             return;
         }
-
-
-
-
-
-        $this->info('Parsing XLSX file...');
-        $records = $this->parseExcelFile($filename);
-
-        if (count($records) == 0) {
-            $this->info('No records found in XLSX file.');
-            return;
-        }
-
-        // Verify and fix any address records
-        $this->info('Processing account information...');
-        $accounts = $this->makeObjectsFromRecords($records);
 
         //TODO: Map food styles correctly (Need information from Don)
         //TODO: REFACTOR: move this to utility layer
@@ -115,11 +103,6 @@ class ProcessLeadsCommand extends Command {
 //         }
 //
 
-    }
-
-    private function parseExcelFile($filename) {
-        $excel = new ExcelParser($filename);
-        return $excel->parse();
     }
 
     private function makeObjectsFromRecords($records) {
@@ -172,37 +155,36 @@ class ProcessLeadsCommand extends Command {
         }
     }
 
-    private function processAddressInformation($array) {
-        //TODO: REFACTOR: Refactor this to use model layer / utility layer
-        $sstreets = new SmartyStreetsAPI();
-        $tam = new TexasAMAPI();
-
-        $street1 = $array['ADDRESS'];
-        $city = $array['CITY'];
-        $county = $array['COUNTY'];
-        $state = $array['STATE'];
-        $zipcode = $array['ZIPCODE'];
-        $maxcanidates = 10;
-
-        echo " > Processing address: {$street1}" . PHP_EOL;
-        $sstreetsAddress = $sstreets->processAddresses($street1, null, $city, $county, $state, $zipcode, $maxcanidates);
-
-
-        if (isset($sstreetsAddress)) {
-            $address = $sstreetsAddress;
-        } else {
-            $address = $tam->standardizeAddress($street1, $city, $state, $zipcode);
-        }
-
-        //geocode the location
-        //TODO: BUG: GoogleMapAPI not working
-//        $google = new GoogleMapsAPI();
-//        $geocoded = $google->geocode($address);
-//        $address->setGoogleGeocoded($geocoded);
-        $address->setGoogleGeocoded(false);
-
-        return $address;
-    }
+//    private function processAddressInformation($array) {
+//        //TODO: REFACTOR: Refactor this to use model layer / utility layer
+//        $sstreets = new SmartyStreetsAPI();
+//        $tam = new TexasAMAPI();
+//
+//        $street1 = $array['ADDRESS'];
+//        $city = $array['CITY'];
+//        $county = $array['COUNTY'];
+//        $state = $array['STATE'];
+//        $zipcode = $array['ZIPCODE'];
+//        $maxcanidates = 10;
+//
+//        echo " > Processing address: {$street1}" . PHP_EOL;
+//
+//
+//        if (isset($sstreetsAddress)) {
+//            $address = $sstreetsAddress;
+//        } else {
+//            $address = $tam->standardizeAddress($street1, $city, $state, $zipcode);
+//        }
+//
+//        //geocode the location
+//        //TODO: BUG: GoogleMapAPI not working
+////        $google = new GoogleMapsAPI();
+////        $geocoded = $google->geocode($address);
+////        $address->setGoogleGeocoded($geocoded);
+//        $address->setGoogleGeocoded(false);
+//
+//        return $address;
+//    }
 
     /**
      * Get the console command arguments.
