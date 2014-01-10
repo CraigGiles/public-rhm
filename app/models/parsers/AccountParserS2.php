@@ -1,6 +1,6 @@
 <?php
 
-class AccountParserS2 {
+class AccountParserS2 extends AccountParser {
     const EXCEL_PROCESSOR = 'processAccounts';
     const C_OPERATION = 'OPERATION';
     const C_NAME = 'NAME';
@@ -15,23 +15,6 @@ class AccountParserS2 {
     const C_DESCRIBE = 'DESCRIBE';
     const C_AUTHOR = 'redhotMAYO';
     const C_ACTION = 'RHM Import';
-
-    private $addrStandardization;
-    private $cassVerification;
-    private $geocoder;
-
-    public function __construct(AddressStandardizationService $addrStandardization,
-                                CassVerificationService $cassVerification,
-                                Geocoder $geocoder) {
-        if (!isset($addrStandardization) || !isset($cassVerification) || !isset($geocoder)) {
-            throw new InvalidArgumentException("Invalid address processor detected");
-        }
-
-        $this->addrStandardization = $addrStandardization;
-        $this->cassVerification = $cassVerification;
-        $this->geocoder = $geocoder;
-
-    }
 
     public function processAccounts($accounts) {
         $return = array();
@@ -53,10 +36,11 @@ class AccountParserS2 {
             $note->setText($account[self::C_DESCRIBE]);
             $note->setAuthor(self::C_AUTHOR);
             $note->setAction(self::C_ACTION);
+            $acc->addNote($note);
 
             //do address checking here
             $addressParser = new AddressParserS2();
-            $address = $addressParser->processAddressInformation($account, $this->addrStandardization, $this->cassVerification, $this->geocoder);
+            $address = $addressParser->processAddressInformation($this->addrStandardization, $this->cassVerification, $this->geocoder, $account);
             $acc->setAddress($address);
 
             // calculate the weekly opportunity
@@ -64,7 +48,7 @@ class AccountParserS2 {
 
             $return[] = $acc;
 
-            if (count($return) > 25) {
+            if (count($return) > 5) {
                 break;
             }
         }

@@ -12,27 +12,27 @@ class AddressParserS2 {
         AddressStandardizationService $addrStandardization,
         CassVerificationService $cassVerification,
         Geocoder $geocoder,
-        $array
+        $addressAsArray
     ) {
-        $street1 = $array[self::C_ADDRESS];
-        $city = $array[self::C_CITY];
-        $county = $array[self::C_COUNTY];
-        $state = $array[self::C_STATE];
-        $zipcode = $array[self::C_ZIPCODE];
+        $street1 = $addressAsArray[self::C_ADDRESS];
+        $city = $addressAsArray[self::C_CITY];
+        $county = $addressAsArray[self::C_COUNTY];
+        $state = $addressAsArray[self::C_STATE];
+        $zipcode = $addressAsArray[self::C_ZIPCODE];
 
         $sstreetsAddress = $cassVerification->processAddresses($street1, null, $city, $county, $state, $zipcode, self::MAX_CANIDATED);
         if (isset($sstreetsAddress)) {
-            $address = $sstreetsAddress;
+            $addressAsArray = $sstreetsAddress;
         } else {
             //we couldn't verify the address with a cass service, let's just standardize it
-            $address = $addrStandardization->processAddresses($street1, null, $city, null, $state, $zipcode);
+            $addressAsArray = $addrStandardization->processAddresses($street1, null, $city, null, $state, $zipcode);
         }
 
         //geocode the location
         //TODO: BUG: GoogleMapAPI not working
-        $geocoded = $geocoder->geocode($address);
-        $address->setGoogleGeocoded($geocoded);
+        $geocoded = $geocoder->geocode($addressAsArray);
+        $addressAsArray->setGoogleGeocoded($geocoded);
 
-        return $address;
+        return $addressAsArray;
     }
 }

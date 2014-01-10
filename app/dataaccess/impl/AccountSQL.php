@@ -71,7 +71,7 @@ class AccountSQL implements AccountDAO {
      * @return mixed
      */
     public function save(Account $account) {
-        $this->db->beginTransaction();
+        DB::beginTransaction();
 
         try {
             $userId = $account->getUserID();
@@ -83,7 +83,7 @@ class AccountSQL implements AccountDAO {
             if (isset($userId)) {
                 $master = false;
                 //since this is a distributed lead, check duplicate status
-                $dupResults = $this->db->table('addresses')
+                $dupResults = DB::table('addresses')
                                 ->join('accounts', 'addressId', '=', 'addresses.id')
                                 ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
                                 ->where('userId', '=', $userId)
@@ -96,11 +96,11 @@ class AccountSQL implements AccountDAO {
 
                 if (count($dupResults) > 0) {
                     //we are a dup. Roll back the transaction and return
-                    $this->db->rollback();
+                    DB::rollback();
                     return null;
                 } else {
                     $id = $this->saveAccount($account, $master);
-                    $this->db->commit();
+                    DB::commit();
                     return $id;
                 }
             } else {
@@ -108,12 +108,14 @@ class AccountSQL implements AccountDAO {
 
                 // save the account
                 $id = $this->saveAccount($account, $master);
-                $this->db->commit();
+                DB::commit();
                 return $id;
             }
         } catch (Exception $e) {
             //todo: log exception
-            print_r($e->getMessage());
+            $errorString = get_class($this) . "." . __FUNCTION__ . " -- " . $e->getMessage() . PHP_EOL;
+            print_r($errorString);
+            Log::error($errorString);
             DB::rollback();
             return null;
         }
@@ -128,7 +130,7 @@ class AccountSQL implements AccountDAO {
         $address = $account->getAddress();
 
         //save the address first
-        $addressDAO = DataAccessObject::getDAO(DataAccessObject::ADDRESS);
+        $addressDAO = DataAccessObject::GetAddressDAO();
         $addressDAO->save($address);
 
         $id = DB::table('accounts')
@@ -151,7 +153,7 @@ class AccountSQL implements AccountDAO {
                     'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
                     'owner' => $account->getOwner(),
                     'mobilePhone' => $account->getMobilePhone(),
-                    'website' => $account->getWebsiteAddress(),
+                    'website' => $account->getWebsite(),
                     'isTargetAccount' => $account->getIsTargetAccount(),
                     'isMaster' => $master,
 

@@ -68,7 +68,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      * @param int $zipcode
      * @return array
      */
-    public function getAllUserIdsSubscribedToZipcode(int $zipcode) {
+    public function getAllUserIdsSubscribedToZipcode($zipcode) {
         $zipcode = intval($zipcode);
         $users = DB::table('subscriptions')->select('userId')->where('zipCode', '=', $zipcode)->get();
         $ids = array();

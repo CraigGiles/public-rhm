@@ -20,4 +20,16 @@ class DataAccessObject {
         if ($storage === DataAccessStorage::MYSQL)
             return new AccountSQL();
     }
+
+    public static function GetAddressDAO() {
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
+        if ($storage === DataAccessStorage::MYSQL)
+            return new AddressSQL();
+    }
+
+    public static function GetNoteDAO() {
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
+        if ($storage === DataAccessStorage::MYSQL)
+            return new NoteSQL();
+    }
 } 

@@ -57,29 +57,20 @@ class ProcessLeadsCommand extends Command {
             return;
         }
 
-        //TODO: Map food styles correctly (Need information from Don)
-        //TODO: REFACTOR: move this to utility layer
-        // Map food styles to one of 7 possabilities (Asian, Mexican, etc)
-        $this->info('Mapping food styles...');
-        $tmpFoodMap = array(
-            'MEXICAN' => 'MEXICAN',
-            'N/A' => 'OTHER',
-            'KOREAN' => 'ASIAN',
-            'BBQ' => 'AMERICAN',
-            'CHICKEN' => 'AMERICAN',
-            'CAJUN' => 'AMERICAN'
-        );
-
-        $this->mapFoodStyles($accounts, $tmpFoodMap);
+        $map = new FoodMap();
+        $cuisine = new CuisineMapper($map);
+        foreach ($accounts as $account) {
+            $type = $cuisine->mapCuisine($account->getCuisineType());
+            $account->setCuisineType($type);
+        }
 
         $this->info('Saving all records...');
-        $accountDAO = DataAccessObject::GetAccountDAO();
-        $unsaved = $accountDAO->saveAll($accounts);
+        $accountRepo = RepositoryFactory::GetAccountRepository();
+        $unsaved = $accountRepo->saveAll($accounts);
 
         $this->info('Distributing leads to users...');
-
-        $repo = RepositoryFactory::GetAccountRepository();
-        $undistributed = $repo->distributeAccountsToUsers($accounts);
+        $accountRepo = RepositoryFactory::GetAccountRepository();
+        $undistributed = $accountRepo->distributeAccountsToUsers($accounts);
 
         // How much time did this operation take?
         $time = $timer->stopTimer();
@@ -105,86 +96,6 @@ class ProcessLeadsCommand extends Command {
 
     }
 
-    private function makeObjectsFromRecords($records) {
-        $accounts = array();
-
-        foreach ($records as $value) {
-            $acc = new Account();
-
-            $acc->setAccountName($value['OPERATION']);
-            $acc->setContactName($value['NAME'] . " " . $value['LASTNAME']);
-            $acc->setPhone($value['PHONE']);
-            $acc->setEmailAddress($value['EMAIL']);
-            $acc->setSeatCount($value['NOSEATS']);
-            $acc->setServiceType($value['SERVICETYPE']);
-            $acc->setCuisineType($value['MENU']);
-            $acc->setOperatorType($value['CATEGORY']);
-            $acc->setOpenDate($value['OPENDATE']);
-
-            $note = new Note();
-            $note->setText($value['DESCRIBE']);
-            $note->setAuthor('redhotMAYO');
-            $note->setAction('RHM Import');
-            $acc->addNote($note);
-
-            //do address checking here
-            $address = $this->processAddressInformation($value);
-            $acc->setAddress($address);
-
-            // calculate the weekly opportunity
-            $acc->calculateWeightedOpportunity();
-
-            $accounts[] = $acc;
-
-            if (count($accounts) > 25)  break;
-        }
-
-        return $accounts;
-    }
-
-    private function mapFoodStyles($accounts, $foodMap) {
-        foreach ($accounts as $account) {
-            $menu = $account->getCuisineType();
-            if (!empty($menu)) {
-                $cuisine = 'OTHER';
-                if (array_key_exists($account->getCuisineType(), $foodMap)) {
-                    $cuisine = strtoupper($foodMap[$account->getCuisineType()]);
-                }
-                $account->setCuisineType($cuisine);
-            }
-        }
-    }
-
-//    private function processAddressInformation($array) {
-//        //TODO: REFACTOR: Refactor this to use model layer / utility layer
-//        $sstreets = new SmartyStreetsAPI();
-//        $tam = new TexasAMAPI();
-//
-//        $street1 = $array['ADDRESS'];
-//        $city = $array['CITY'];
-//        $county = $array['COUNTY'];
-//        $state = $array['STATE'];
-//        $zipcode = $array['ZIPCODE'];
-//        $maxcanidates = 10;
-//
-//        echo " > Processing address: {$street1}" . PHP_EOL;
-//
-//
-//        if (isset($sstreetsAddress)) {
-//            $address = $sstreetsAddress;
-//        } else {
-//            $address = $tam->standardizeAddress($street1, $city, $state, $zipcode);
-//        }
-//
-//        //geocode the location
-//        //TODO: BUG: GoogleMapAPI not working
-////        $google = new GoogleMapsAPI();
-////        $geocoded = $google->geocode($address);
-////        $address->setGoogleGeocoded($geocoded);
-//        $address->setGoogleGeocoded(false);
-//
-//        return $address;
-//    }
 
     /**
      * Get the console command arguments.

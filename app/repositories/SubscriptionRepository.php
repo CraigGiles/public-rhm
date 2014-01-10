@@ -17,5 +17,5 @@ interface SubscriptionRepository extends Repository {
      * @param int $zipcode
      * @return array
      */
-    public function getAllUserIdsSubscribedToZipcode(int $zipcode);
+    public function getAllUserIdsSubscribedToZipcode($zipcode);
 } 

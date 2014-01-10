@@ -15,6 +15,7 @@ class AccountRepositorySQL implements Repository {
      * @param Account $account
      */
     public function save($account) {
+        \Illuminate\Support\Facades\Log::info("Saving Account {$account->getAccountName()}");
         DB::beginTransaction();
         try {
             //save the address
@@ -45,6 +46,7 @@ class AccountRepositorySQL implements Repository {
     }
 
     public function saveAll($accounts) {
+        \Illuminate\Support\Facades\Log::info("Saving all accounts");
         $unsaved = array();
         foreach ($accounts as $account) {
             if (!$this->save($account)) {
@@ -96,7 +98,7 @@ class AccountRepositorySQL implements Repository {
 
         $objects = array();
 
-        $accounts = $this->db->table('accounts')
+        $accounts = DB::table('accounts')
                              ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
                              ->join('notes', 'notes.accountId', '=', 'accounts.id')
                              ->select($cols)
