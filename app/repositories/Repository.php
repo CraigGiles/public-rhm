@@ -6,10 +6,10 @@ interface Repository {
     public function create($input);
 
     /**
-     * Save the object to the database returning the ID if successful and null if unsuccessful.
+     * Save the object to the database returning true if the object was saved, false otherwise.
      *
      * @param $object
-     * @return int|null ID of the object
+     * @return bool
      */
     public function save($object);
 

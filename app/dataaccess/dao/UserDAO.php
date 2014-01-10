@@ -4,10 +4,10 @@ interface UserDAO {
     /**
      * Save a record and return the objectId
      *
-     * @param UserEloquent $user
+     * @param User $user
      * @return mixed
      */
-    public function save(UserEloquent $user);
+    public function save(User $user);
 
     /**
      * Save an array of records returning a list of objects that could not be saved.

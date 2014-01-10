@@ -5,10 +5,10 @@
 	"license": "MIT",
 	"require": {
 		"laravel/framework": "4.1.*",
-		"creolab/laravel-modules": "dev-master",
         "PHPOffice/PHPExcel": "*"
 	},
     "require-dev": {
+        "phpunit/phpunit": "3.9.*@dev",
         "mockery/mockery": "dev-master@dev"
     },
 	"autoload": {
@@ -21,7 +21,7 @@
 			"app/tests/TestCase.php",
 			"app/library",
 			"app/repositories",
-			"app/modules"
+            "app/dataaccess"
 		],
         "psr-0": {
             "PHPExcel": "Classes/"

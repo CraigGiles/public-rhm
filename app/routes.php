@@ -10,3 +10,15 @@ Route::get('/', function() {
 Route::get('users', function() {
 	return 'Hello World!';
 });
+
+//Route::get('env', function() {
+//    dd(App::environment());
+//});
+//
+//Route::get('api/accounts?&zip={zip}', function() {
+//    return "All accounts in zipcode {$zip}";
+//});
+//
+//Route::get('api/user/{user}?zipcode={zipcode}&date={date}', function($user, $zipcode, $date) {
+//    return "yep, {$user}, {$zipcode}";
+//});

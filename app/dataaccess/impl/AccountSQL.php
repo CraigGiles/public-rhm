@@ -71,7 +71,7 @@ class AccountSQL implements AccountDAO {
      * @return mixed
      */
     public function save(Account $account) {
-        DB::beginTransaction();
+        $this->db->beginTransaction();
 
         try {
             $userId = $account->getUserID();
@@ -83,7 +83,7 @@ class AccountSQL implements AccountDAO {
             if (isset($userId)) {
                 $master = false;
                 //since this is a distributed lead, check duplicate status
-                $dupResults = DB::table('addresses')
+                $dupResults = $this->db->table('addresses')
                                 ->join('accounts', 'addressId', '=', 'addresses.id')
                                 ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
                                 ->where('userId', '=', $userId)
@@ -96,11 +96,11 @@ class AccountSQL implements AccountDAO {
 
                 if (count($dupResults) > 0) {
                     //we are a dup. Roll back the transaction and return
-                    DB::rollback();
+                    $this->db->rollback();
                     return null;
                 } else {
                     $id = $this->saveAccount($account, $master);
-                    DB::commit();
+                    $this->db->commit();
                     return $id;
                 }
             } else {
@@ -108,7 +108,7 @@ class AccountSQL implements AccountDAO {
 
                 // save the account
                 $id = $this->saveAccount($account, $master);
-                DB::commit();
+                $this->db->commit();
                 return $id;
             }
         } catch (Exception $e) {

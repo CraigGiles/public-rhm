@@ -19,17 +19,17 @@ class SubscriptionSQL extends DataAccessObjectSQL {
      * @param Subscription $subscription
      */
     public function save($subscription) {
-        $this->db->beginTransaction();
+        DB::beginTransaction();
         $values = $this->getValues($subscription);
         try {
-            $id = $this->db->table('subscriptions')
+            $id = DB::table('subscriptions')
                            ->insertGetId($values);
 
-            $this->db->commit();
+            DB::commit();
             return $id;
         } catch (Exception $e) {
             //todo: Log Exception
-            $this->db->rollBack();
+            DB::rollBack();
             return null;
         }
     }
