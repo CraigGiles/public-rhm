@@ -20,7 +20,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      * @return bool
      */
     public function save($subscription) {
-        $dao = DataAccess::GetSubscriptionDAO();
+        $dao = DataAccessObject::GetSubscriptionDAO();
         $id = $dao->save($subscription);
         return isset($id);
     }

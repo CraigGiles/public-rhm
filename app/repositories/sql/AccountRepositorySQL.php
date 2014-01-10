@@ -54,24 +54,29 @@ class AccountRepositorySQL implements Repository {
         return $unsaved;
     }
 
-//    public function distributeAccountsToUsers($accounts) {
-//        $unsaved = array();
-//        foreach ($accounts as $account) {
-//            $zipcode = $account->getAddress()->getZipcode();
-//            $subRepo = RepositoryFactory::
-//            $subscribedUsers = $this->getAllUserIdsSubscribedToZipcode($zipcode);
-//
-//            // if the user is already subscribed to this lead, don't re-sub them
-//            foreach ($subscribedUsers as $user) {
-//                $subscribed = $this->subscribeAccountToUser($account, $user);
-//                if (!$subscribed) {
-//                    Log::info("User is already subscribed to this lead");
-//                }
-//            }
-//        }
-//
-//        return $unsaved;
-//    }
+    public function distributeAccountsToUsers($accounts) {
+        $unsaved = array();
+        foreach ($accounts as $account) {
+            $address = $account->getAddress();
+            if (isset($address)) {
+                $zipcode = $account->getAddress()->getZipcode();
+                $subRepo = RepositoryFactory::GetSubscriptionRepository();
+                $subscribedUsers = $subRepo->getAllUserIdsSubscribedToZipcode($zipcode);
+                // if the user is already subscribed to this lead, don't re-sub them
+                foreach ($subscribedUsers as $user) {
+                    $subscribed = $this->subscribeAccountToUser($account, $user);
+                    if (!$subscribed) {
+                        Log::info("User is already subscribed to this lead");
+                    }
+                }
+            } else {
+                $unsaved[] = $account;
+            }
+
+        }
+
+        return $unsaved;
+    }
 
     /**
      * Returns all master record account objects within the zipcode provided that has been updated

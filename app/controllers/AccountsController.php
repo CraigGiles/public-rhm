@@ -8,7 +8,8 @@ class AccountsController extends \BaseController {
 	 * @return Response
 	 */
 	public function index() {
-        return "Hello World!";
+        //lets try to do a lead distribution here:
+        $accountProcessor = new AccountProcessor();
     }
 
 	/**

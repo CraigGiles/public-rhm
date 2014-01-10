@@ -43,6 +43,22 @@ class ProcessLeadsCommand extends Command {
             throw new InvalidArgumentException('Invalid file name');
         }
 
+
+        $excelParser = new ExcelParser($filename);
+        $accounts = $excelParser->parse();
+
+        if (count($accounts) == 0) {
+            App::info('No records found in XLSX file.');
+            return;
+        }
+
+        $accountDist = new AccountDistribution();
+        $accountDist->distributeAccounts($accounts);
+//        return;
+
+
+
+
         $this->info('Parsing XLSX file...');
         $records = $this->parseExcelFile($filename);
 
@@ -71,11 +87,13 @@ class ProcessLeadsCommand extends Command {
         $this->mapFoodStyles($accounts, $tmpFoodMap);
 
         $this->info('Saving all records...');
-        $accountDAO = DataAccess::getDAO(DataAccessObject::ACCOUNT);
+        $accountDAO = DataAccessObject::GetAccountDAO();
         $unsaved = $accountDAO->saveAll($accounts);
 
         $this->info('Distributing leads to users...');
-        $undistributed = SubscriptionsQueries::DistributeLeadsToUsers($accounts);
+
+        $repo = RepositoryFactory::GetAccountRepository();
+        $undistributed = $repo->distributeAccountsToUsers($accounts);
 
         // How much time did this operation take?
         $time = $timer->stopTimer();

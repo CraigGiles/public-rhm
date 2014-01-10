@@ -68,7 +68,7 @@ class SubscribeCommand extends Command {
             return;
         }
 
-        $subDAO = DataAccess::getDAO(DataAccessObject::SUBSCRIPTION);
+        $subRepo = RepositoryFactory::GetSubscriptionRepository();
         $sub = new Subscription();
         foreach ($records as $subscription) {
             $zips = array();
@@ -97,8 +97,8 @@ class SubscribeCommand extends Command {
 
                 foreach ($zips as $zipcode) {
                     $sub->add($userId, $zipcode);
-                    $id = $subDAO->save($sub);
-                    if (isset($id)) {
+                    $saved = $subRepo->save($sub);
+                    if ($saved) {
                         $this->backdateAccounts($sub, $time);
                     }
                 }

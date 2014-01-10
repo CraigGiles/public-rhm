@@ -10,11 +10,14 @@
  */
 class DataAccessObject {
     public static function GetSubscriptionDAO() {
-        //currently we're just getting the SQL version
-        return new SubscriptionSQL();
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config base
+        if ($storage === DataAccessStorage::MYSQL)
+            return new SubscriptionSQL();
     }
 
     public static function GetAccountDAO() {
-        return new AccountSQL();
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
+        if ($storage === DataAccessStorage::MYSQL)
+            return new AccountSQL();
     }
 } 

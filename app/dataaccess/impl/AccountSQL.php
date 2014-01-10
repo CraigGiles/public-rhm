@@ -128,7 +128,7 @@ class AccountSQL implements AccountDAO {
         $address = $account->getAddress();
 
         //save the address first
-        $addressDAO = DataAccess::getDAO(DataAccessObject::ADDRESS);
+        $addressDAO = DataAccessObject::getDAO(DataAccessObject::ADDRESS);
         $addressDAO->save($address);
 
         $id = DB::table('accounts')
