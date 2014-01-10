@@ -82,6 +82,7 @@ class AccountSQL implements AccountDAO {
             //otherwise, commit the transaction and go about our merry way.
             if (isset($userId)) {
                 $master = false;
+
                 //since this is a distributed lead, check duplicate status
                 $dupResults = DB::table('addresses')
                                 ->join('accounts', 'addressId', '=', 'addresses.id')
@@ -105,6 +106,7 @@ class AccountSQL implements AccountDAO {
                 }
             } else {
                 $master = true;
+                $address->setId(null);
 
                 // save the account
                 $id = $this->saveAccount($account, $master);

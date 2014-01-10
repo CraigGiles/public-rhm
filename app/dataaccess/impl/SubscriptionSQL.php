@@ -20,8 +20,8 @@ class SubscriptionSQL extends DataAccessObjectSQL {
      */
     public function save($subscription) {
         DB::beginTransaction();
-        $values = $this->getValues($subscription);
         try {
+            $values = $this->getValues($subscription);
             $id = DB::table('subscriptions')
                            ->insertGetId($values);
 

@@ -4,7 +4,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class ProcessLeadsCommand extends Command {
+class ProcessAccountsCommand extends Command {
 
     /**
      * The console command name.

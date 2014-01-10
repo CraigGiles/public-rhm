@@ -65,8 +65,8 @@ class AccountRepositorySQL implements Repository {
                 $subRepo = RepositoryFactory::GetSubscriptionRepository();
                 $subscribedUsers = $subRepo->getAllUserIdsSubscribedToZipcode($zipcode);
                 // if the user is already subscribed to this lead, don't re-sub them
-                foreach ($subscribedUsers as $user) {
-                    $subscribed = $this->subscribeAccountToUser($account, $user);
+                foreach ($subscribedUsers as $userId) {
+                    $subscribed = $this->subscribeAccountToUserId($account, $userId);
                     if (!$subscribed) {
                         Log::info("User is already subscribed to this lead");
                     }
@@ -78,6 +78,18 @@ class AccountRepositorySQL implements Repository {
         }
 
         return $unsaved;
+    }
+
+    public function subscribeAccountToUserId(Account $account, $userId) {
+        $account->setUserID($userId);
+        $accountDAO = DataAccessObject::GetAccountDAO();
+        //since this is going to be a freshly saved address, we need to wipe out the objectId
+        $id = $accountDAO->save($account);
+        if (!isset($id)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

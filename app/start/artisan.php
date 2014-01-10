@@ -11,5 +11,5 @@
 |
 */
 
-Artisan::add(new ProcessLeadsCommand);
+Artisan::add(new ProcessAccountsCommand);
 Artisan::add(new SubscribeCommand);
