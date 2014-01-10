@@ -1,27 +1,48 @@
 <?php
 
 class AccountSQL implements AccountDAO {
+    const TABLE_NAME = 'accounts';
+    const C_USER = 'userId';
+    const C_WEEKLY_OPPORTUNITY = 'weeklyOpportunity';
+    const C_ACCOUNT_NAME = 'accountName';
+    const C_OPERATOR_TYPE = 'operatorType';
+    const C_ADDRESS_ID = 'addressId';
+    const C_CONTACT_NAME = 'contactName';
+    const C_PHONE = 'phone';
+    const C_SERVICE_TYPE = 'serviceType';
+    const C_CUISINE_TYPE = 'cuisineType';
+    const C_SEAT_COUNT = 'seatCount';
+    const C_AVERAGE_CHECK = 'averageCheck';
+    const C_EMAIL_ADDRESS = 'emailAddress';
+    const C_OPEN_DATE = 'openDate';
+    const C_ESTIMATED_ANNUAL_SALES = 'estimatedAnnualSales';
+    const C_OWNER = 'owner';
+    const C_MOBILE_PHONE = 'mobilePhone';
+    const C_WEBSITE = 'website';
+    const C_IS_TARGET_ACCOUNT = 'isTargetAccount';
+    const C_IS_MASTER = 'isMaster';
+
     public static function GetColumns() {
         return array(
-            'accounts.userId',
-            'accounts.weeklyOpportunity',
-            'accounts.accountName',
-            'accounts.operatorType',
-            'accounts.addressId',
-            'accounts.contactName',
-            'accounts.phone',
-            'accounts.serviceType',
-            'accounts.cuisineType',
-            'accounts.seatCount',
-            'accounts.averageCheck',
-            'accounts.emailAddress',
-            'accounts.openDate',
-            'accounts.estimatedAnnualSales',
-            'accounts.owner',
-            'accounts.mobilePhone',
-            'accounts.website',
-            'accounts.isTargetAccount',
-            'accounts.isMaster',
+            self::TABLE_NAME . '.' . self::C_USER,
+            self::TABLE_NAME . '.' . self::C_WEEKLY_OPPORTUNITY,
+            self::TABLE_NAME . '.' . self::C_ACCOUNT_NAME,
+            self::TABLE_NAME . '.' . self::C_OPERATOR_TYPE,
+            self::TABLE_NAME . '.' . self::C_ADDRESS_ID,
+            self::TABLE_NAME . '.' . self::C_CONTACT_NAME,
+            self::TABLE_NAME . '.' . self::C_PHONE,
+            self::TABLE_NAME . '.' . self::C_SERVICE_TYPE,
+            self::TABLE_NAME . '.' . self::C_CUISINE_TYPE,
+            self::TABLE_NAME . '.' . self::C_SEAT_COUNT,
+            self::TABLE_NAME . '.' . self::C_AVERAGE_CHECK,
+            self::TABLE_NAME . '.' . self::C_EMAIL_ADDRESS,
+            self::TABLE_NAME . '.' . self::C_OPEN_DATE,
+            self::TABLE_NAME . '.' . self::C_ESTIMATED_ANNUAL_SALES,
+            self::TABLE_NAME . '.' . self::C_OWNER,
+            self::TABLE_NAME . '.' . self::C_MOBILE_PHONE,
+            self::TABLE_NAME . '.' . self::C_WEBSITE,
+            self::TABLE_NAME . '.' . self::C_IS_TARGET_ACCOUNT,
+            self::TABLE_NAME . '.' . self::C_IS_MASTER,
         );
     }
 
@@ -50,7 +71,7 @@ class AccountSQL implements AccountDAO {
      * @return mixed
      */
     public function save(Account $account) {
-        DB::beginTransaction();
+        $this->db->beginTransaction();
 
         try {
             $userId = $account->getUserID();
@@ -62,7 +83,7 @@ class AccountSQL implements AccountDAO {
             if (isset($userId)) {
                 $master = false;
                 //since this is a distributed lead, check duplicate status
-                $dupResults = DB::table('addresses')
+                $dupResults = $this->db->table('addresses')
                                 ->join('accounts', 'addressId', '=', 'addresses.id')
                                 ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
                                 ->where('userId', '=', $userId)
@@ -75,11 +96,11 @@ class AccountSQL implements AccountDAO {
 
                 if (count($dupResults) > 0) {
                     //we are a dup. Roll back the transaction and return
-                    DB::rollback();
+                    $this->db->rollback();
                     return null;
                 } else {
                     $id = $this->saveAccount($account, $master);
-                    DB::commit();
+                    $this->db->commit();
                     return $id;
                 }
             } else {
@@ -87,7 +108,7 @@ class AccountSQL implements AccountDAO {
 
                 // save the account
                 $id = $this->saveAccount($account, $master);
-                DB::commit();
+                $this->db->commit();
                 return $id;
             }
         } catch (Exception $e) {
