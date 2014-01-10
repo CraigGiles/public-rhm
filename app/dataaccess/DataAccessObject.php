@@ -9,11 +9,12 @@
  * @date 12/2013
  */
 class DataAccessObject {
-    const ADDRESS = 'Address';
-    const ACCOUNT = 'Account';
-    const NOTE = 'Note';
-    const SUBSCRIPTION = 'Subscription';
-    const CONTACT = 'Contact';
-    const MOBILE_DEVICE = 'MobileDevice';
-    const USER = 'User';
-}
+    public static function GetSubscriptionDAO() {
+        //currently we're just getting the SQL version
+        return new SubscriptionSQL();
+    }
+
+    public static function GetAccountDAO() {
+        return new AccountSQL();
+    }
+} 
