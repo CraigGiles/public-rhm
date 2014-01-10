@@ -62,5 +62,17 @@ class User extends DataObject {
         return $this->username;
     }
 
+    public static function FromStdClass($values) {
+        $usr = new User();
+        $email = isset($values->email) ? $values->email : null;
+        $username = isset($values->username) ? $values->username : null;
+        $id = isset($values->id) ? $values->id : null;
+
+        $usr->setEmail($email);
+        $usr->setUsername($username);
+        $usr->setId($id);
+
+        return $usr;
+    }
 
 } 

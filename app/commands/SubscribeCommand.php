@@ -78,13 +78,13 @@ class SubscribeCommand extends Command {
             $zipcodes = isset($subscription['ZIPCODES']) ? $subscription['ZIPCODES'] : array();
 
             //goto the users table and find the userId corrisponding to the username $username
-            $userId = DB::table('users')
-                ->select('id')
+            $users = DB::table('users')
+//                ->select('id')
                 ->where('username', '=', $username)
                 ->get();
 
-            if (!empty($userId)) {
-                $userId = $userId[0]->id;
+            if (!empty($users)) {
+                $user = User::FromStdClass($users[0]);
                 $zipcodes = array_map('intval', $zipcodes);
                 $zips = array_merge($zipcodes, $zips);
 
@@ -96,7 +96,7 @@ class SubscribeCommand extends Command {
                 $zips = array_unique($zips);
 
                 foreach ($zips as $zipcode) {
-                    $sub->add($userId, $zipcode);
+                    $sub->add($user, $zipcode);
                     $saved = $subRepo->save($sub);
                     if ($saved) {
                         $this->backdateAccounts($sub, $time);
@@ -193,11 +193,14 @@ class SubscribeCommand extends Command {
 
     private function backdateAccounts(Subscription $sub, $time) {
         //get all leads for $zipcode after $time, and assign a copy for $id
-        $accounts = AccountQueries::GetAllAccountsForZipAfterDate($sub->getZipCode(), $time);
+        $repo = RepositoryFactory::GetAccountRepository();
+        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), $time);
 
         if (count($accounts) > 0) {
             foreach ($accounts as $account) {
-                SubscriptionsQueries::SubscribeAccountToUser($account, $sub->getUserId());
+                //TODO: Not sure we want to use this bool.. here if we need it tho
+                $bool = $repo->subscribeAccountToUserId($account, $sub->getUserID());
+
             }
         }
     }

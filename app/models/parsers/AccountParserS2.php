@@ -47,7 +47,7 @@ class AccountParserS2 extends AccountParser {
             $acc->calculateWeightedOpportunity();
 
             $return[] = $acc;
-break;
+//break;
 //            if (count($return) > 5) {
 //                break;
 //            }
