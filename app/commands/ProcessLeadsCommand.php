@@ -43,18 +43,16 @@ class ProcessLeadsCommand extends Command {
             throw new InvalidArgumentException('Invalid file name');
         }
 
-
-        $excelParser = new ExcelParser($filename);
-        $accounts = $excelParser->parse();
+        $cb = new AccountDistributionSystem();
+        $function = array($cb, AccountDistributionSystem::PROCESSOR);
+        $excelParser = new ExcelParser();
+        $accounts = $excelParser->parse($filename, $function);
 
         if (count($accounts) == 0) {
             App::info('No records found in XLSX file.');
             return;
         }
 
-        $accountDist = new AccountDistribution();
-        $accountDist->distributeAccounts($accounts);
-//        return;
 
 
 
