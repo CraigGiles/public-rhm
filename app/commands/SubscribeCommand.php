@@ -1,6 +1,12 @@
 <?php
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use redhotmayo\dataaccess\repository\RepositoryFactory;
+use redhotmayo\library\Timer;
+use redhotmayo\model\Subscription;
+use redhotmayo\model\User;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
