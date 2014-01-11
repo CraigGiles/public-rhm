@@ -31,7 +31,7 @@ class Account extends DataObject {
     /**
      * Calculates the weighted opportunity of this lead
      */
-    public function calculateWeightedOpportunity() {
+    public function calculateWeeklyOpportunity() {
         $val = rand(0, 10);
         $this->weeklyOpportunity = $val ;
     }

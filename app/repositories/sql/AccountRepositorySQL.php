@@ -15,34 +15,37 @@ class AccountRepositorySQL implements Repository {
      * @param Account $account
      */
     public function save($account) {
-        \Illuminate\Support\Facades\Log::info("Saving Account {$account->getAccountName()}");
         DB::beginTransaction();
+        $saved = false;
         try {
-            //save the address
+            //save address
             $address = $account->getAddress();
-            $addressSQL = new AddressSQL();
-            $addressSQL->save($address);
+            $addressDAO = DataAccessObject::GetAddressDAO();
+            $addressDAO->save($address);
 
-            //save teh account
-            $accountSQL = new AccountSQL();
-            $accountSQL->save($account);
+            //save account
+            $accountDAO = DataAccessObject::GetAccountDAO();
+            $accountId = $accountDAO->save($account);
 
-            //save all the notes
+            //save all notes
+            $noteDAO = DataAccessObject::GetNoteDAO();
             $notes = $account->getNotes();
             foreach ($notes as $note) {
-                $noteSQL = new NoteSQL();
-                $note->setAccountId($account->getId());
-                $noteSQL->save($note);
+                $note->setAccountId($accountId);
+                $noteDAO->save($note);
             }
 
-            // if no problems, commit the transaction
-            DB::commit();
-            return true;
+            // only commit this transaction if the account was saved.
+            if (isset($accountId)) {
+                DB::commit();
+                $saved = true;
+            }
         } catch (Exception $e) {
-            //todo: log exception
             DB::rollback();
-            return false;
+            $id = null;
         }
+
+        return $saved;
     }
 
     public function saveAll($accounts) {
@@ -82,14 +85,14 @@ class AccountRepositorySQL implements Repository {
 
     public function subscribeAccountToUserId(Account $account, $userId) {
         $account->setUserID($userId);
-        $accountDAO = DataAccessObject::GetAccountDAO();
-        //since this is going to be a freshly saved address, we need to wipe out the objectId
-        $id = $accountDAO->save($account);
-        if (!isset($id)) {
-            return false;
-        }
+        $address = $account->getAddress();
+        $address->setId(null);
 
-        return true;
+        $notes = $account->getNotes();
+        foreach ($notes as $note) {
+            $note->setId(null);
+        }
+        $this->save($account);
     }
 
     /**

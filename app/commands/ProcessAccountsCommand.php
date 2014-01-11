@@ -64,12 +64,11 @@ class ProcessAccountsCommand extends Command {
             $account->setCuisineType($type);
         }
 
-        $this->info('Saving all records...');
         $accountRepo = RepositoryFactory::GetAccountRepository();
+        $this->info('Saving all records...');
         $unsaved = $accountRepo->saveAll($accounts);
 
         $this->info('Distributing leads to users...');
-        $accountRepo = RepositoryFactory::GetAccountRepository();
         $undistributed = $accountRepo->distributeAccountsToUsers($accounts);
 
         // How much time did this operation take?

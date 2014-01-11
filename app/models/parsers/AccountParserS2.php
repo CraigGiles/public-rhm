@@ -44,13 +44,13 @@ class AccountParserS2 extends AccountParser {
             $acc->setAddress($address);
 
             // calculate the weekly opportunity
-            $acc->calculateWeightedOpportunity();
+            $acc->calculateWeeklyOpportunity();
 
             $return[] = $acc;
-//break;
-//            if (count($return) > 5) {
-//                break;
-//            }
+break;
+            if (count($return) > 25) {
+                break;
+            }
         }
 
         return $return;

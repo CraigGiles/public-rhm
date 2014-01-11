@@ -47,7 +47,7 @@ class AddressSQL {
      * Save a record and return the objectId
      *
      * @param Address $address
-     * @return int
+     * @return int|null
      */
     public function save(Address $address) {
         $id = $address->getId();
@@ -69,15 +69,12 @@ class AddressSQL {
                         'latitude' => $address->getLatitude(),
                         'cassVerified' => $address->getCassVerified(),
                         'googleGeocoded' => $address->getGoogleGeocoded(),
-                        'created_at' => date("Y-m-d H:i:s"),
-                        'updated_at' => date("Y-m-d H:i:s"),
-//                'created_at' => new DateTime,
-//                'updated_at' => new DateTime,
+                        'created_at' => new DateTime,
+                        'updated_at' => new DateTime,
                     )
                 );
             $address->setId($id);
         }
-
 
         return $id;
     }

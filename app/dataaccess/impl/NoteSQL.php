@@ -42,4 +42,4 @@ class NoteSQL {
         }
         return $id;
     }
-} 
+}
