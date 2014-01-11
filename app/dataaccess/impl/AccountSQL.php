@@ -64,23 +64,6 @@ class AccountSQL implements AccountDAO {
         return $unsaved;
     }
 
-    private function isDuplicate(Account $account) {
-        $address = $account->getAddress();
-        $userId = $account->getUserID();
-        $dupResults = DB::table('addresses')
-                        ->join('accounts', 'addressId', '=', 'addresses.id')
-                        ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
-                        ->where('userId', '=', $userId)
-                        ->where('primaryNumber', '=', $address->getPrimaryNumber())
-                        ->where('streetName', '=', $address->getStreetName())
-                        ->where('zipCode', '=', $address->getZipCode())
-                        ->where('streetSuffix', '=', $address->getStreetSuffix())
-                        ->where('accountName', '=', $account->getAccountName())
-                        ->get();
-
-        return (count($dupResults) > 0);
-    }
-
     /**
      * Save a record and return the objectId
      *
@@ -93,141 +76,34 @@ class AccountSQL implements AccountDAO {
         $master = !isset($userId);
         $address = $account->getAddress();
 
-        // only save the lead if it's not a master and not a duplicate
-        if ($master || (!$master && !$this->isDuplicate($account))) {
-            $id = DB::table('accounts')
-                    ->insertGetId(array(
-                        'userId' => $userId,
-                        'weeklyOpportunity' => $account->getWeeklyOpportunity(),
-                        'accountName' => $account->getAccountName(),
-                        'operatorType' => $account->getOperatorType(),
-                        'addressId' => $address->getId(),
-                        'contactName' => $account->getContactName(),
-                        'phone' => $account->getPhone(),
-                        'serviceType' => $account->getServiceType(),
-                        'cuisineType' => $account->getCuisineType(),
-                        'seatCount' => $account->getSeatCount(),
-                        'averageCheck' => $account->getAverageCheck(),
-                        'emailAddress' => $account->getEmailAddress(),
-                        'openDate' => $account->getOpenDate(),
-                        'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
-                        'owner' => $account->getOwner(),
-                        'mobilePhone' => $account->getMobilePhone(),
-                        'website' => $account->getWebsite(),
-                        'isTargetAccount' => $account->getIsTargetAccount(),
-                        'isMaster' => $master,
-                        'created_at' => new DateTime,
-                        'updated_at' => new DateTime,
-                    )
-                );
-            $account->setId($id);
-        }
+        $id = DB::table('accounts')
+                ->insertGetId(array(
+                    'userId' => $userId,
+                    'weeklyOpportunity' => $account->getWeeklyOpportunity(),
+                    'accountName' => $account->getAccountName(),
+                    'operatorType' => $account->getOperatorType(),
+                    'addressId' => $address->getId(),
+                    'contactName' => $account->getContactName(),
+                    'phone' => $account->getPhone(),
+                    'serviceType' => $account->getServiceType(),
+                    'cuisineType' => $account->getCuisineType(),
+                    'seatCount' => $account->getSeatCount(),
+                    'averageCheck' => $account->getAverageCheck(),
+                    'emailAddress' => $account->getEmailAddress(),
+                    'openDate' => $account->getOpenDate(),
+                    'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
+                    'owner' => $account->getOwner(),
+                    'mobilePhone' => $account->getMobilePhone(),
+                    'website' => $account->getWebsite(),
+                    'isTargetAccount' => $account->getIsTargetAccount(),
+                    'isMaster' => $master,
+                    'created_at' => new DateTime,
+                    'updated_at' => new DateTime,
+                )
+            );
+        $account->setId($id);
 
         return $id;
     }
 
-//    /**
-//     * @param Account $account
-//     * @param $master
-//     * @return mixed
-//     */
-//    public function saveAccount(Account $account, $master) {
-//        //save address
-//        $addressDAO = DataAccessObject::GetAddressDAO();
-//        $address = $account->getAddress();
-//        $addressId = $addressDAO->save($address);
-//
-//        //save account
-//        $id = DB::table('accounts')
-//                ->insertGetId(array(
-//                    'userId' => $account->getUserID(),
-//                    'weeklyOpportunity' => $account->getWeeklyOpportunity(),
-//                    'accountName' => $account->getAccountName(),
-//                    'operatorType' => $account->getOperatorType(),
-//                    'addressId' => $account->getAddress()
-//                                           ->getId(),
-//                    'contactName' => $account->getContactName(),
-//                    'phone' => $account->getPhone(),
-//                    'serviceType' => $account->getServiceType(),
-//                    'cuisineType' => $account->getCuisineType(),
-//                    'seatCount' => $account->getSeatCount(),
-//                    'averageCheck' => $account->getAverageCheck(),
-//                    'emailAddress' => $account->getEmailAddress(),
-//                    'openDate' => $account->getOpenDate(),
-//
-//                    'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
-//                    'owner' => $account->getOwner(),
-//                    'mobilePhone' => $account->getMobilePhone(),
-//                    'website' => $account->getWebsite(),
-//                    'isTargetAccount' => $account->getIsTargetAccount(),
-//                    'isMaster' => $master,
-//
-//                    'created_at' => date("Y-m-d H:i:s"),
-//                    'updated_at' => date("Y-m-d H:i:s"),
-//                )
-//            );
-//        $account->setId($id);
-//
-//        //save all the notes
-//        $notes = $account->getNotes();
-//        foreach ($notes as $note) {
-//            $noteSQL = new NoteSQL();
-//            $note->setAccountId($account->getId());
-//            $noteSQL->save($note);
-//        }
-//
-//        return $id;
-//
-//        //save notes
-
-
-
-
-
-//        $address = $account->getAddress();
-//
-//        //save the address first
-//        $addressDAO = DataAccessObject::GetAddressDAO();
-//        $addressDAO->save($address);
-
-//        $id = DB::table('accounts')
-//                ->insertGetId(array(
-//                    'userId' => $account->getUserID(),
-//                    'weeklyOpportunity' => $account->getWeeklyOpportunity(),
-//                    'accountName' => $account->getAccountName(),
-//                    'operatorType' => $account->getOperatorType(),
-//                    'addressId' => $account->getAddress()
-//                                           ->getId(),
-//                    'contactName' => $account->getContactName(),
-//                    'phone' => $account->getPhone(),
-//                    'serviceType' => $account->getServiceType(),
-//                    'cuisineType' => $account->getCuisineType(),
-//                    'seatCount' => $account->getSeatCount(),
-//                    'averageCheck' => $account->getAverageCheck(),
-//                    'emailAddress' => $account->getEmailAddress(),
-//                    'openDate' => $account->getOpenDate(),
-//
-//                    'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
-//                    'owner' => $account->getOwner(),
-//                    'mobilePhone' => $account->getMobilePhone(),
-//                    'website' => $account->getWebsite(),
-//                    'isTargetAccount' => $account->getIsTargetAccount(),
-//                    'isMaster' => $master,
-//
-//                    'created_at' => date("Y-m-d H:i:s"),
-//                    'updated_at' => date("Y-m-d H:i:s"),
-//                )
-//            );
-//        $account->setId($id);
-//
-//        //save all the notes
-//        $notes = $account->getNotes();
-//        foreach ($notes as $note) {
-//            $noteSQL = new NoteSQL();
-//            $note->setAccountId($account->getId());
-//            $noteSQL->save($note);
-//        }
-//
-//        return $id;
-//    }
 }
