@@ -11,7 +11,7 @@ class DataAccessServiceProvider extends ServiceProvider {
      */
     public function register() {
 
-        //if we're using SQL:
+        //todo: if we're using SQL... :
         $this->app->bind('AccountRepository', 'AccountRepositorySQL');
         $this->app->bind('AddressRepository', 'AddressRepositorySQL');
         $this->app->bind('NoteRepository', 'NoteRepositorySQL');
