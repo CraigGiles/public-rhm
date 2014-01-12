@@ -16,6 +16,12 @@ use redhotmayo\model\Note;
 class AccountRepositorySQL implements AccountRepository {
 
     public function all() {
+        $accounts = DB::table('accounts')
+            ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
+            ->join('notes', 'accounts.id', '=', 'notes.accountId')
+            ->get();
+
+        return $this->convertRecordsToAccounts($accounts);
     }
 
     public function find($id) {
@@ -156,6 +162,17 @@ class AccountRepositorySQL implements AccountRepository {
                       ->where('accounts.updated_at', '>', $afterDate)
                       ->get();
 
+        $objects = $this->convertRecordsToAccounts($accounts);
+
+        return $objects;
+    }
+
+    /**
+     * @param $accounts
+     * @return array
+     */
+    private function convertRecordsToAccounts($accounts) {
+        $objects = array();
         foreach ($accounts as $account) {
             $acct = new Account();
             $addr = new Address();
@@ -204,7 +221,6 @@ class AccountRepositorySQL implements AccountRepository {
 
             $objects[] = $acct;
         }
-
         return $objects;
     }
 
