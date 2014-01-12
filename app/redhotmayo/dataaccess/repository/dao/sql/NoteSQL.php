@@ -35,14 +35,13 @@ class NoteSQL {
         $id = $note->getNoteId();
         if (!isset($id)) {
             $id = DB::table('notes')->insertGetId(array(
-                'accountId' => $note->getAccountId(),
-                'contactId' => $note->getContactId(),
-                'action' => $note->getAction(),
-                'author' => $note->getAuthor(),
-                'text' => $note->getText(),
-
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
+                self::C_ACCOUNT_ID => $note->getAccountId(),
+                self::C_CONTACT_ID => $note->getContactId(),
+                self::C_ACTION => $note->getAction(),
+                self::C_AUTHOR => $note->getAuthor(),
+                self::C_TEXT => $note->getText(),
+                self::C_CREATED_AT => date('Y-m-d H:i:s'),
+                self::C_UPDATED_AT => date('Y-m-d H:i:s'),
             ));
 
             $note->setNoteId($id);

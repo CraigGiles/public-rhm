@@ -27,6 +27,9 @@ class AccountSQL implements AccountDAO {
     const C_WEBSITE = 'website';
     const C_IS_TARGET_ACCOUNT = 'isTargetAccount';
     const C_IS_MASTER = 'isMaster';
+    const C_CREATED_AT = 'created_at';
+    const C_UPDATED_AT = 'updated_at';
+
 
     public static function GetColumns() {
         return array(
@@ -83,33 +86,29 @@ class AccountSQL implements AccountDAO {
         $master = !isset($userId);
         $address = $account->getAddress();
 
-        $target = (bool)$account->getIsTargetAccount();
-
         $id = DB::table('accounts')
                 ->insertGetId(array(
-                    'userId' => $userId,
-                    'weeklyOpportunity' => $account->getWeeklyOpportunity(),
-                    'accountName' => $account->getAccountName(),
-                    'operatorType' => $account->getOperatorType(),
-                    'addressId' => $address->getAddressId(),
-                    'contactName' => $account->getContactName(),
-                    'phone' => $account->getPhone(),
-                    'serviceType' => $account->getServiceType(),
-                    'cuisineType' => $account->getCuisineType(),
-                    'seatCount' => $account->getSeatCount(),
-                    'averageCheck' => $account->getAverageCheck(),
-                    'emailAddress' => $account->getEmailAddress(),
-                    'openDate' => $account->getOpenDate(),
-                    'estimatedAnnualSales' => $account->getEstimatedAnnualSales(),
-                    'owner' => $account->getOwner(),
-                    'mobilePhone' => $account->getMobilePhone(),
-                    'website' => $account->getWebsite(),
-                    'isTargetAccount' => (bool)$account->getIsTargetAccount(),
-                    'isMaster' => $master,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-//                    'created_at' => new DateTime,
-//                    'updated_at' => new DateTime,
+                    self::C_USER => $userId,
+                    self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
+                    self::C_ACCOUNT_NAME => $account->getAccountName(),
+                    self::C_OPERATOR_TYPE => $account->getOperatorType(),
+                    self::C_ADDRESS_ID => $address->getAddressId(),
+                    self::C_CONTACT_NAME => $account->getContactName(),
+                    self::C_PHONE => $account->getPhone(),
+                    self::C_SERVICE_TYPE => $account->getServiceType(),
+                    self::C_CUISINE_TYPE => $account->getCuisineType(),
+                    self::C_SEAT_COUNT => $account->getSeatCount(),
+                    self::C_AVERAGE_CHECK => $account->getAverageCheck(),
+                    self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
+                    self::C_OPEN_DATE => $account->getOpenDate(),
+                    self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
+                    self::C_OWNER => $account->getOwner(),
+                    self::C_MOBILE_PHONE => $account->getMobilePhone(),
+                    self::C_WEBSITE => $account->getWebsite(),
+                    self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
+                    self::C_IS_MASTER => $master,
+                    self::C_CREATED_AT => date('Y-m-d H:i:s'),
+                    self::C_UPDATED_AT => date('Y-m-d H:i:s'),
                 )
             );
         $account->setAccountId($id);

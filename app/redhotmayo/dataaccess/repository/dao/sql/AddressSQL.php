@@ -61,24 +61,23 @@ class AddressSQL {
         if (!isset($id)) {
             $id = DB::table('addresses')
                     ->insertGetId(array(
-                        'primaryNumber' => $address->getPrimaryNumber(),
-                        'streetPredirection' => $address->getStreetPredirection(),
-                        'streetName' => $address->getStreetName(),
-                        'streetSuffix' => $address->getStreetSuffix(),
-                        'suiteType' => $address->getSuiteType(),
-                        'suiteNumber' => $address->getSuiteNumber(),
-                        'cityName' => $address->getCityName(),
-                        'countyName' => $address->getCountyName(),
-                        'stateAbbreviation' => $address->getStateAbbreviation(),
-                        'zipCode' => $address->getZipcode(),
-                        'plus4Code' => $address->getPlus4Code(),
-                        'longitude' => $address->getLongitude(),
-                        'latitude' => $address->getLatitude(),
-                        'cassVerified' => $address->getCassVerified(),
-                        'googleGeocoded' => $address->getGoogleGeocoded(),
-
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s'),
+                        self::C_PRIMARY_NUMBER => $address->getPrimaryNumber(),
+                        self::C_STREET_PREDIRECTION => $address->getStreetPredirection(),
+                        self::C_STREET_NAME => $address->getStreetName(),
+                        self::C_STREET_SUFFIX => $address->getStreetSuffix(),
+                        self::C_SUITE_TYPE => $address->getSuiteType(),
+                        self::C_SUITE_NUMBER => $address->getSuiteNumber(),
+                        self::C_CITY_NAME => $address->getCityName(),
+                        self::C_COUNTY_NAME => $address->getCountyName(),
+                        self::C_STATE_ABBREVIATION => $address->getStateAbbreviation(),
+                        self::C_ZIP_CODE => $address->getZipcode(),
+                        self::C_PLUS_4_CODE => $address->getPlus4Code(),
+                        self::C_LONGITUDE => $address->getLongitude(),
+                        self::C_LATITUDE => $address->getLatitude(),
+                        self::C_CASS_VERIFIED => $address->getCassVerified(),
+                        self::C_GOOGLE_GEOCODED => $address->getGoogleGeocoded(),
+                        self::C_CREATED_AT => date('Y-m-d H:i:s'),
+                        self::C_UPDATED_AT => date('Y-m-d H:i:s'),
                     )
                 );
             $address->setAddressId($id);
