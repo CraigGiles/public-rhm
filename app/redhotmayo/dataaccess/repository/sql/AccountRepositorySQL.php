@@ -14,76 +14,14 @@ use redhotmayo\model\Address;
 use redhotmayo\model\Note;
 
 class AccountRepositorySQL implements AccountRepository {
-
-    public function all() {
-        $accounts = DB::table('accounts')
-            ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
-            ->join('notes', 'accounts.id', '=', 'notes.accountId')
-            ->get();
-
-        return $this->convertRecordsToAccounts($accounts);
-    }
-
-    public function find($id) {
-    }
-
-    public function create($input) {
-    }
-
-    public function saveAll($accounts) {
-        Log::info("Saving all accounts");
-        $unsaved = array();
-        foreach ($accounts as $account) {
-            if (!$this->save($account)) {
-                $unsaved[] = $account;
-            }
-        }
-        return $unsaved;
-    }
-
     /**
+     * Determines weather or not an account is already subscribed to a user
+     *
      * @param Account $account
+     * @param $userId
      * @return bool
      */
-    public function save($account) {
-        DB::beginTransaction();
-        $saved = false;
-        try {
-            $accountDAO = DataAccessObject::GetAccountDAO();
-            $addressDAO = DataAccessObject::GetAddressDAO();
-            $noteDAO = DataAccessObject::GetNoteDAO();
-
-            $userId = $account->getUserID();
-            $master = !isset($userId);
-
-            //only save if account is a master account or the user doesn't already have it
-            if ($master || (!$master && !$this->isUserSubscribedToAccount($account, $userId))) {
-                //save address
-                $address = $account->getAddress();
-                $addressDAO->save($address);
-
-                //save account
-                $accountId = $accountDAO->save($account);
-
-                //save all notes
-                $notes = $account->getNotes();
-                foreach ($notes as $note) {
-                    $note->setAccountId($accountId);
-                    $noteDAO->save($note);
-                }
-
-                DB::commit();
-                $saved = true;
-            }
-        } catch (Exception $e) {
-            DB::rollback();
-            $id = null;
-        }
-
-        return $saved;
-    }
-
-    public function isUserSubscribedToAccount(Account $account, $userId) {
+    public function isAccountSubscribedToUser(Account $account, $userId) {
         $address = $account->getAddress();
         $dupResults = DB::table('addresses')
                         ->join('accounts', 'addressId', '=', 'addresses.id')
@@ -99,9 +37,21 @@ class AccountRepositorySQL implements AccountRepository {
         return (count($dupResults) > 0);
     }
 
+    /**
+     * Given a list of account objects, iterate through each account object and distribute it to all users subscribed
+     * to that accounts zipcode that are not already subscribed to the account. This process will return a list of
+     * accounts that could not be distributed.
+     *
+     * @param $accounts
+     * @return array $unsaved
+     */
     public function distributeAccountsToUsers($accounts) {
         $unsaved = array();
+
+        /** @var Account $account */
         foreach ($accounts as $account) {
+
+            /** @var Address $address */
             $address = $account->getAddress();
             if (isset($address)) {
                 $zipcode = $account->getAddress()
@@ -124,12 +74,22 @@ class AccountRepositorySQL implements AccountRepository {
         return $unsaved;
     }
 
+    /**
+     * Create a copy of the account object, assigning the userId to the new object and save it to the data source.
+     * Returns true if the account was able to be saved, false otherwise.
+     *
+     * @param Account $account
+     * @param $userId
+     * @return bool
+     */
     public function subscribeAccountToUserId(Account $account, $userId) {
         $account->setUserID($userId);
         $address = $account->getAddress();
         $address->setId(null);
 
         $notes = $account->getNotes();
+
+        /** @var Note $note */
         foreach ($notes as $note) {
             $note->setId(null);
         }
@@ -152,8 +112,6 @@ class AccountRepositorySQL implements AccountRepository {
 
         $cols = array_merge($addressCols, $accountCols, $noteCols);
 
-        $objects = array();
-
         $accounts = DB::table('accounts')
                       ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
                       ->join('notes', 'notes.accountId', '=', 'accounts.id')
@@ -162,18 +120,117 @@ class AccountRepositorySQL implements AccountRepository {
                       ->where('accounts.updated_at', '>', $afterDate)
                       ->get();
 
-        $objects = $this->convertRecordsToAccounts($accounts);
+        $objects = $this->convertRecordsToObjects($accounts);
 
         return $objects;
     }
 
     /**
+     * Return an array of all objects
+     *
+     * @return array
+     */
+    public function all() {
+        $accounts = DB::table('accounts')
+                      ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
+                      ->join('notes', 'accounts.id', '=', 'notes.accountId')
+                      ->get();
+
+        return $this->convertRecordsToObjects($accounts);
+    }
+
+    /**
+     * Return an array of all objects that match the given constraints
+     *
+     * @param $constraints
+     * @return mixed
+     */
+    public function find($constraints) {
+        // TODO: Implement find() method.
+    }
+
+    /**
+     * Create an object from given input
+     *
+     * @param $input
+     * @return mixed
+     */
+    public function create($input) {
+        // TODO: Implement create() method.
+    }
+
+    /**
+     * Save the object to the database returning true if the object was saved, false otherwise.
+     *
+     * @param Account $account
+     * @return bool
+     */
+    public function save($account) {
+        DB::beginTransaction();
+        $saved = false;
+        try {
+            $accountDAO = DataAccessObject::GetAccountDAO();
+            $addressDAO = DataAccessObject::GetAddressDAO();
+            $noteDAO = DataAccessObject::GetNoteDAO();
+
+            $userId = $account->getUserID();
+            $master = !isset($userId);
+
+            //only save if account is a master account or the user doesn't already have it
+            if ($master || (!$master && !$this->isAccountSubscribedToUser($account, $userId))) {
+                //save address
+                $address = $account->getAddress();
+                $addressDAO->save($address);
+
+                //save account
+                $accountId = $accountDAO->save($account);
+
+                //save all notes
+                $notes = $account->getNotes();
+
+                /** @var Note $note */
+                foreach ($notes as $note) {
+                    $note->setAccountId($accountId);
+                    $noteDAO->save($note);
+                }
+
+                DB::commit();
+                $saved = true;
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            $id = null;
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Save all objects to the database returning any objects that were unsuccessful.
+     *
      * @param $accounts
      * @return array
      */
-    private function convertRecordsToAccounts($accounts) {
-        $objects = array();
+    public function saveAll($accounts) {
+        Log::info("Saving all accounts");
+        $unsaved = array();
         foreach ($accounts as $account) {
+            if (!$this->save($account)) {
+                $unsaved[] = $account;
+            }
+        }
+        return $unsaved;
+    }
+
+    /**
+     * Take an array of database records and convert them to the appropriate objects
+     *
+     * @param $records
+     * @return array
+     */
+    function convertRecordsToObjects($records) {
+        $objects = array();
+        foreach ($records as $account) {
             $acct = new Account();
             $addr = new Address();
             $note = new Note();
@@ -223,5 +280,4 @@ class AccountRepositorySQL implements AccountRepository {
         }
         return $objects;
     }
-
 }

@@ -21,6 +21,11 @@ abstract class DataObject {
         return $this->id;
     }
 
+    /**
+     * Convert object to json string
+     *
+     * @return string|\Symfony\Component\Serializer\Encoder\scalar
+     */
     public function toJson() {
         $encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());

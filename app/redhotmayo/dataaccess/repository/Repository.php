@@ -1,8 +1,27 @@
 <?php namespace redhotmayo\dataaccess\repository;
 
 interface Repository {
+    /**
+     * Return an array of all objects
+     *
+     * @return array
+     */
     public function all();
-    public function find($id);
+
+    /**
+     * Return an array of all objects that match the given constraints
+     *
+     * @param $constraints
+     * @return mixed
+     */
+    public function find($constraints);
+
+    /**
+     * Create an object from given input
+     *
+     * @param $input
+     * @return mixed
+     */
     public function create($input);
 
     /**
@@ -20,4 +39,12 @@ interface Repository {
      * @return array
      */
     public function saveAll($objects);
+
+    /**
+     * Take an array of database records and convert them to the appropriate objects
+     *
+     * @param $records
+     * @return array
+     */
+    function convertRecordsToObjects($records);
 }
