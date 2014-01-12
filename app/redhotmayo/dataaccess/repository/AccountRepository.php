@@ -2,7 +2,7 @@
 
 use redhotmayo\model\Account;
 
-interface AccountRepository {
+interface AccountRepository extends Repository {
 
     public function all();
 

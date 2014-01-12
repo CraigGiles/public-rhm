@@ -12,7 +12,7 @@ class DataAccessServiceProvider extends ServiceProvider {
     public function register() {
 
         //todo: if we're using SQL... :
-        $this->app->bind('AccountRepository', 'AccountRepositorySQL');
+        $this->app->bind('redhotmayo\dataaccess\repository\AccountRepository', 'redhotmayo\dataaccess\repository\sql\AccountRepositorySQL');
         $this->app->bind('AddressRepository', 'AddressRepositorySQL');
         $this->app->bind('NoteRepository', 'NoteRepositorySQL');
         $this->app->bind('SubscriptionRepository', 'SubscriptionRepositorySQL');

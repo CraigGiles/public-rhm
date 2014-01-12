@@ -3,17 +3,17 @@
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
 use redhotmayo\dataaccess\repository\dao\sql\AddressSQL;
 use redhotmayo\dataaccess\repository\dao\sql\NoteSQL;
-use redhotmayo\dataaccess\repository\Repository;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\model\Account;
 use redhotmayo\model\Address;
 use redhotmayo\model\Note;
 
-class AccountRepositorySQL implements Repository {
+class AccountRepositorySQL implements AccountRepository {
 
     public function all() {
     }
