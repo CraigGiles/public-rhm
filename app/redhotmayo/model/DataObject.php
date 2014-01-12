@@ -1,6 +1,10 @@
 <?php namespace redhotmayo\model;
 
-class DataObject {
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
+
+abstract class DataObject {
     private $id;
 
     /**
@@ -17,4 +21,10 @@ class DataObject {
         return $this->id;
     }
 
-} 
+    public function toJson() {
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        return $serializer->serialize($this, 'json');
+    }
+}
