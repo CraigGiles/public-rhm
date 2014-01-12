@@ -7,6 +7,14 @@ class Note extends DataObject {
     private $action;
     private $author;
 
+    public function getNoteId() {
+        return $this->getId();
+    }
+
+    public function setNoteId($id) {
+        $this->setId($id);
+    }
+
     /**
      * @param mixed $accountId
      */

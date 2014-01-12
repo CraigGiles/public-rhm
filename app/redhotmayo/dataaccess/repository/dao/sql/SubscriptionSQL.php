@@ -6,17 +6,18 @@ use Illuminate\Support\Facades\DB;
 use redhotmayo\model\Subscription;
 
 class SubscriptionSQL extends DataAccessObjectSQL {
-    const USER_ID = 'userId';
-    const ZIP_CODE = 'zipCode';
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    const C_ID = 'id as subscriptionId';
+    const C_USER_ID = 'userId';
+    const C_ZIP_CODE = 'zipCode';
+    const C_CREATED_AT = 'created_at';
+    const C_UPDATED_AT = 'updated_at';
 
     public function getValues(Subscription $subscription) {
         return array(
-            self::USER_ID => $subscription->getUserID(),
-            self::ZIP_CODE => $subscription->getZipCode(),
-            self::CREATED_AT => new DateTime,
-            self::UPDATED_AT => new DateTime,
+            self::C_USER_ID => $subscription->getUserID(),
+            self::C_ZIP_CODE => $subscription->getZipCode(),
+            self::C_CREATED_AT => date('Y-m-d H:i:s'),
+            self::C_UPDATED_AT => date('Y-m-d H:i:s'),
         );
     }
 

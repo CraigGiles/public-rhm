@@ -21,8 +21,8 @@ class AccountsController extends \BaseController {
      */
     public function index() {
         $params = Input::all();
-        dd($params);
-
+        $results = $this->accountRepo->all();
+        return $results[0]->toJson();
         return 'Index accounts page';
     }
 

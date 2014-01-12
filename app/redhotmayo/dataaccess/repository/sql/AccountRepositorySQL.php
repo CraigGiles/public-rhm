@@ -15,29 +15,6 @@ use redhotmayo\model\Note;
 
 class AccountRepositorySQL implements AccountRepository {
     /**
-     * Determines weather or not an account is already subscribed to a user
-     *
-     * @param Account $account
-     * @param $userId
-     * @return bool
-     */
-    public function isAccountSubscribedToUser(Account $account, $userId) {
-        $address = $account->getAddress();
-        $dupResults = DB::table('addresses')
-                        ->join('accounts', 'addressId', '=', 'addresses.id')
-                        ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
-                        ->where('userId', '=', $userId)
-                        ->where('primaryNumber', '=', $address->getPrimaryNumber())
-                        ->where('streetName', '=', $address->getStreetName())
-                        ->where('zipCode', '=', $address->getZipCode())
-                        ->where('streetSuffix', '=', $address->getStreetSuffix())
-                        ->where('accountName', '=', $account->getAccountName())
-                        ->get();
-
-        return (count($dupResults) > 0);
-    }
-
-    /**
      * Given a list of account objects, iterate through each account object and distribute it to all users subscribed
      * to that accounts zipcode that are not already subscribed to the account. This process will return a list of
      * accounts that could not be distributed.
@@ -85,78 +62,15 @@ class AccountRepositorySQL implements AccountRepository {
     public function subscribeAccountToUserId(Account $account, $userId) {
         $account->setUserID($userId);
         $address = $account->getAddress();
-        $address->setId(null);
+        $address->setAddressId(null);
 
         $notes = $account->getNotes();
 
         /** @var Note $note */
         foreach ($notes as $note) {
-            $note->setId(null);
+            $note->setNoteId(null);
         }
         return $this->save($account);
-    }
-
-    /**
-     * Returns all master record account objects within the zipcode provided that has been updated
-     * after the date provided.
-     *
-     * @param $zipcode
-     * @param $afterDate
-     * @return array Account objects
-     */
-    function findAllAccountsForZipcode($zipcode, $afterDate) {
-        $zipcode = intval($zipcode);
-        $addressCols = AddressSQL::GetColumns();
-        $accountCols = AccountSQL::GetColumns();
-        $noteCols = NoteSQL::GetColumns();
-
-        $cols = array_merge($addressCols, $accountCols, $noteCols);
-
-        $accounts = DB::table('accounts')
-                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
-                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
-                      ->select($cols)
-                      ->where('zipCode', '=', $zipcode)
-                      ->where('accounts.updated_at', '>', $afterDate)
-                      ->get();
-
-        $objects = $this->convertRecordsToObjects($accounts);
-
-        return $objects;
-    }
-
-    /**
-     * Return an array of all objects
-     *
-     * @return array
-     */
-    public function all() {
-        $accounts = DB::table('accounts')
-                      ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
-                      ->join('notes', 'accounts.id', '=', 'notes.accountId')
-                      ->get();
-
-        return $this->convertRecordsToObjects($accounts);
-    }
-
-    /**
-     * Return an array of all objects that match the given constraints
-     *
-     * @param $constraints
-     * @return mixed
-     */
-    public function find($constraints) {
-        // TODO: Implement find() method.
-    }
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
     }
 
     /**
@@ -198,6 +112,7 @@ class AccountRepositorySQL implements AccountRepository {
                 $saved = true;
             }
         } catch (Exception $e) {
+            dd($e);
             DB::rollback();
             $id = null;
         }
@@ -206,20 +121,55 @@ class AccountRepositorySQL implements AccountRepository {
     }
 
     /**
-     * Save all objects to the database returning any objects that were unsuccessful.
+     * Determines weather or not an account is already subscribed to a user
      *
-     * @param $accounts
-     * @return array
+     * @param Account $account
+     * @param $userId
+     * @return bool
      */
-    public function saveAll($accounts) {
-        Log::info("Saving all accounts");
-        $unsaved = array();
-        foreach ($accounts as $account) {
-            if (!$this->save($account)) {
-                $unsaved[] = $account;
-            }
-        }
-        return $unsaved;
+    public function isAccountSubscribedToUser(Account $account, $userId) {
+        $address = $account->getAddress();
+        $dupResults = DB::table('addresses')
+                        ->join('accounts', 'addressId', '=', 'addresses.id')
+                        ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
+                        ->where('userId', '=', $userId)
+                        ->where('primaryNumber', '=', $address->getPrimaryNumber())
+                        ->where('streetName', '=', $address->getStreetName())
+                        ->where('zipCode', '=', $address->getZipCode())
+                        ->where('streetSuffix', '=', $address->getStreetSuffix())
+                        ->where('accountName', '=', $account->getAccountName())
+                        ->get();
+
+        return (count($dupResults) > 0);
+    }
+
+    /**
+     * Returns all master record account objects within the zipcode provided that has been updated
+     * after the date provided.
+     *
+     * @param $zipcode
+     * @param $afterDate
+     * @return array Account objects
+     */
+    function findAllAccountsForZipcode($zipcode, $afterDate) {
+        $zipcode = intval($zipcode);
+        $addressCols = AddressSQL::GetColumns();
+        $accountCols = AccountSQL::GetColumns();
+        $noteCols = NoteSQL::GetColumns();
+
+        $cols = array_merge($addressCols, $accountCols, $noteCols);
+
+        $accounts = DB::table('accounts')
+                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
+                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                      ->select($cols)
+                      ->where('zipCode', '=', $zipcode)
+                      ->where('accounts.updated_at', '>', $afterDate)
+                      ->get();
+
+        $objects = $this->convertRecordsToObjects($accounts);
+
+        return $objects;
     }
 
     /**
@@ -235,10 +185,13 @@ class AccountRepositorySQL implements AccountRepository {
             $addr = new Address();
             $note = new Note();
 
+            $note->setNoteId($account->noteId);
+            $note->setAccountId($account->accountId);
             $note->setAction($account->action);
             $note->setText($account->text);
-            $note->setAuthor($account->action);
+            $note->setAuthor($account->author);
 
+            $addr->setAddressId($account->addressId);
             $addr->setPrimaryNumber($account->primaryNumber);
             $addr->setStreetPredirection($account->streetPredirection);
             $addr->setStreetName($account->streetName);
@@ -255,6 +208,7 @@ class AccountRepositorySQL implements AccountRepository {
             $addr->setCassVerified($account->cassVerified);
             $addr->setGoogleGeocoded($account->googleGeocoded);
 
+            $acct->setAccountId($account->accountId);
             $acct->setUserID($account->userId);
             $acct->addNote($note);
             $acct->setWeeklyOpportunity($account->weeklyOpportunity);
@@ -279,5 +233,62 @@ class AccountRepositorySQL implements AccountRepository {
             $objects[] = $acct;
         }
         return $objects;
+    }
+
+    /**
+     * Return an array of all objects
+     *
+     * @return array
+     */
+    public function all() {
+        $addressCols = AddressSQL::GetColumns();
+        $accountCols = AccountSQL::GetColumns();
+        $noteCols = NoteSQL::GetColumns();
+
+        $cols = array_merge($addressCols, $accountCols, $noteCols);
+
+        $accounts = DB::table('accounts')
+                      ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
+                      ->join('notes', 'accounts.id', '=', 'notes.accountId')
+                      ->select($cols)
+                      ->get();
+        return $this->convertRecordsToObjects($accounts);
+    }
+
+    /**
+     * Return an array of all objects that match the given constraints
+     *
+     * @param $constraints
+     * @return mixed
+     */
+    public function find($constraints) {
+        // TODO: Implement find() method.
+    }
+
+    /**
+     * Create an object from given input
+     *
+     * @param $input
+     * @return mixed
+     */
+    public function create($input) {
+        // TODO: Implement create() method.
+    }
+
+    /**
+     * Save all objects to the database returning any objects that were unsuccessful.
+     *
+     * @param $accounts
+     * @return array
+     */
+    public function saveAll($accounts) {
+        Log::info("Saving all accounts");
+        $unsaved = array();
+        foreach ($accounts as $account) {
+            if (!$this->save($account)) {
+                $unsaved[] = $account;
+            }
+        }
+        return $unsaved;
     }
 }

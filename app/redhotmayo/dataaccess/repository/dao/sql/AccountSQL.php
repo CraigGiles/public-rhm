@@ -7,6 +7,7 @@ use redhotmayo\model\Account;
 
 class AccountSQL implements AccountDAO {
     const TABLE_NAME = 'accounts';
+    const C_ID = 'id as accountId';
     const C_USER = 'userId';
     const C_WEEKLY_OPPORTUNITY = 'weeklyOpportunity';
     const C_ACCOUNT_NAME = 'accountName';
@@ -29,6 +30,7 @@ class AccountSQL implements AccountDAO {
 
     public static function GetColumns() {
         return array(
+            self::TABLE_NAME . '.' . self::C_ID,
             self::TABLE_NAME . '.' . self::C_USER,
             self::TABLE_NAME . '.' . self::C_WEEKLY_OPPORTUNITY,
             self::TABLE_NAME . '.' . self::C_ACCOUNT_NAME,
@@ -81,13 +83,15 @@ class AccountSQL implements AccountDAO {
         $master = !isset($userId);
         $address = $account->getAddress();
 
+        $target = (bool)$account->getIsTargetAccount();
+
         $id = DB::table('accounts')
                 ->insertGetId(array(
                     'userId' => $userId,
                     'weeklyOpportunity' => $account->getWeeklyOpportunity(),
                     'accountName' => $account->getAccountName(),
                     'operatorType' => $account->getOperatorType(),
-                    'addressId' => $address->getId(),
+                    'addressId' => $address->getAddressId(),
                     'contactName' => $account->getContactName(),
                     'phone' => $account->getPhone(),
                     'serviceType' => $account->getServiceType(),
@@ -100,13 +104,15 @@ class AccountSQL implements AccountDAO {
                     'owner' => $account->getOwner(),
                     'mobilePhone' => $account->getMobilePhone(),
                     'website' => $account->getWebsite(),
-                    'isTargetAccount' => $account->getIsTargetAccount(),
+                    'isTargetAccount' => (bool)$account->getIsTargetAccount(),
                     'isMaster' => $master,
-                    'created_at' => new DateTime,
-                    'updated_at' => new DateTime,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+//                    'created_at' => new DateTime,
+//                    'updated_at' => new DateTime,
                 )
             );
-        $account->setId($id);
+        $account->setAccountId($id);
 
         return $id;
     }

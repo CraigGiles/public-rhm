@@ -34,7 +34,7 @@ class CreateAccountsTable extends Migration {
             $table->unsignedInteger('estimatedAnnualSales')->nullable();
             $table->unsignedInteger('averageCheck')->nullable();
             $table->string('website')->nullable();
-            $table->boolean('isTargetAccount')->nullable()->default(false);
+            $table->boolean('isTargetAccount')->default(false);
 
             $table->unsignedInteger('userId')->nullable();
             $table->boolean('deleted')->default(intval(false));

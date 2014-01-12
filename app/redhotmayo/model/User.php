@@ -6,6 +6,14 @@ class User extends DataObject {
     private $email;
     private $emailVerified;
 
+    public function getUserId() {
+        return $this->getId();
+    }
+
+    public function setUserId($id) {
+        $this->setId($id);
+    }
+
     /**
      * @param mixed $email
      */
@@ -24,7 +32,7 @@ class User extends DataObject {
      * @param mixed $emailVerified
      */
     public function setEmailVerified($emailVerified) {
-        $this->emailVerified = $emailVerified;
+        $this->emailVerified = (bool)$emailVerified;
     }
 
     /**

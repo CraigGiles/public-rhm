@@ -6,6 +6,7 @@ use redhotmayo\model\Note;
 
 class NoteSQL {
     const TABLE_NAME = 'notes';
+    const C_ID = 'id as noteId';
     const C_ACCOUNT_ID = 'accountId';
     const C_CONTACT_ID = 'contactId';
     const C_ACTION = 'action';
@@ -16,6 +17,7 @@ class NoteSQL {
 
     public static function GetColumns() {
         return array(
+            self::TABLE_NAME . '.' . self::C_ID,
             self::TABLE_NAME . '.' . self::C_ACCOUNT_ID,
             self::TABLE_NAME . '.' . self::C_CONTACT_ID,
             self::TABLE_NAME . '.' . self::C_ACTION,
@@ -30,7 +32,7 @@ class NoteSQL {
      * @param Note $note
      */
     public function save(Note $note) {
-        $id = $note->getId();
+        $id = $note->getNoteId();
         if (!isset($id)) {
             $id = DB::table('notes')->insertGetId(array(
                 'accountId' => $note->getAccountId(),
@@ -38,11 +40,12 @@ class NoteSQL {
                 'action' => $note->getAction(),
                 'author' => $note->getAuthor(),
                 'text' => $note->getText(),
-                'created_at' => new DateTime,
-                'updated_at' => new DateTime,
+
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ));
 
-            $note->setId($id);
+            $note->setNoteId($id);
         }
         return $id;
     }

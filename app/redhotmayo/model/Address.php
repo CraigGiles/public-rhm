@@ -24,6 +24,14 @@ class Address extends DataObject {
     private $googleGeocoded;
     private $deliveryLine;
 
+    public function getAddressId() {
+        return $this->getId();
+    }
+
+    public function setAddressId($id) {
+        $this->setId($id);
+    }
+
     /**
      * @return bool
      */
@@ -35,7 +43,7 @@ class Address extends DataObject {
      * @param bool $googleGeocoded
      */
     public function setGoogleGeocoded($googleGeocoded) {
-        $this->googleGeocoded = $googleGeocoded;
+        $this->googleGeocoded = (bool)$googleGeocoded;
     }
 
     /**
@@ -231,7 +239,7 @@ class Address extends DataObject {
      * @param bool $verified
      */
     public function setCassVerified($verified) {
-        $this->cassVerified = $verified;
+        $this->cassVerified = (bool)$verified;
     }
 
     public function getDeliveryLine() {

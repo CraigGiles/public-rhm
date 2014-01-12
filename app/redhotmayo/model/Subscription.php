@@ -20,7 +20,11 @@ class Subscription {
         return $this->zipCode;
     }
 
-    public function add(User $user, $zipCode) {
+    /**
+     * @param User $user
+     * @param $zipCode
+     */
+    public function add($user, $zipCode) {
         $this->user = $user;
         $this->zipCode = intval($zipCode);
     }
@@ -30,6 +34,6 @@ class Subscription {
     }
 
     public function getUserID() {
-        return $this->user->getId();
+        return $this->user->getUserId();
     }
 }

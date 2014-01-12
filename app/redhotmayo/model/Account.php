@@ -28,6 +28,14 @@ class Account extends DataObject {
     private $notes;
     private $isMaster;
 
+    public function getAcountId() {
+        return $this->getId();
+    }
+
+    public function setAccountId($id) {
+        $this->setId($id);
+    }
+
     /**
      * Calculates the weighted opportunity of this lead
      */
@@ -151,7 +159,7 @@ class Account extends DataObject {
      * @param mixed $isTargetAccount
      */
     public function setIsTargetAccount($isTargetAccount) {
-        $this->isTargetAccount = $isTargetAccount;
+        $this->isTargetAccount = (bool)$isTargetAccount;
     }
 
     /**
@@ -319,7 +327,7 @@ class Account extends DataObject {
      * @param mixed $isMaster
      */
     public function setIsMaster($isMaster) {
-        $this->isMaster = $isMaster;
+        $this->isMaster = (bool)$isMaster;
     }
 
 

@@ -8,6 +8,7 @@ use redhotmayo\model\Address;
 class AddressSQL {
     const TABLE_NAME = 'addresses';
 
+    const C_ID = 'id as addressId';
     const C_PRIMARY_NUMBER = 'primaryNumber';
     const C_STREET_PREDIRECTION = 'streetPredirection';
     const C_STREET_NAME = 'streetName';
@@ -28,6 +29,7 @@ class AddressSQL {
 
     public static function GetColumns() {
         return array(
+            self::TABLE_NAME . '.' . self::C_ID,
             self::TABLE_NAME . '.' . self::C_PRIMARY_NUMBER,
             self::TABLE_NAME . '.' . self::C_STREET_PREDIRECTION,
             self::TABLE_NAME . '.' . self::C_STREET_NAME,
@@ -55,7 +57,7 @@ class AddressSQL {
      * @return int|null
      */
     public function save(Address $address) {
-        $id = $address->getId();
+        $id = $address->getAddressId();
         if (!isset($id)) {
             $id = DB::table('addresses')
                     ->insertGetId(array(
@@ -74,11 +76,12 @@ class AddressSQL {
                         'latitude' => $address->getLatitude(),
                         'cassVerified' => $address->getCassVerified(),
                         'googleGeocoded' => $address->getGoogleGeocoded(),
-                        'created_at' => new DateTime,
-                        'updated_at' => new DateTime,
+
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
                     )
                 );
-            $address->setId($id);
+            $address->setAddressId($id);
         }
 
         return $id;

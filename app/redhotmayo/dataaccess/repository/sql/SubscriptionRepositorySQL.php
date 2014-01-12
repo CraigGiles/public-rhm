@@ -57,7 +57,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
         $accounts = DB::table('addresses')
                              ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
                              ->select('primaryNumber', 'streetPredirection', 'streetName', 'streetSuffix', 'zipCode', 'addressId', 'userId', 'accountName')
-                             ->where('userId', '=', $user->getId())
+                             ->where('userId', '=', $user->getUserId())
                              ->where('primaryNumber', '=', $address->getPrimaryNumber())
                              ->where('streetName', '=', $address->getStreetName())
                              ->where('zipCode', '=', $address->getZipCode())
@@ -85,5 +85,15 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
 
         return $ids;
 
+    }
+
+    /**
+     * Take an array of database records and convert them to the appropriate objects
+     *
+     * @param $records
+     * @return array
+     */
+    function convertRecordsToObjects($records) {
+        // TODO: Implement convertRecordsToObjects() method.
     }
 }
