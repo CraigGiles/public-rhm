@@ -11,8 +11,14 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
         // TODO: Implement all() method.
     }
 
-    public function find($id) {
-        // TODO: Implement find() method.
+    /**
+     * Return an array of all objects that match the given constraints
+     *
+     * @param $search
+     * @param $parameters
+     * @return mixed
+     */
+    public function find($search, $parameters) {
     }
 
     public function create($input) {

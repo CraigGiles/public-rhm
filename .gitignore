@@ -8,3 +8,4 @@ storage/
 .idea/
 tags
 _ide-helper.php
+public/

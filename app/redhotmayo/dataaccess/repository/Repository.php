@@ -11,10 +11,11 @@ interface Repository {
     /**
      * Return an array of all objects that match the given constraints
      *
-     * @param $constraints
+     * @param $search
+     * @param $parameters
      * @return mixed
      */
-    public function find($constraints);
+    public function find($search, $parameters);
 
     /**
      * Create an object from given input

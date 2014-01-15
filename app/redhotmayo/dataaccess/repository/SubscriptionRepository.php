@@ -6,7 +6,14 @@ use redhotmayo\model\User;
 interface SubscriptionRepository extends Repository {
     public function all();
 
-    public function find($id);
+    /**
+     * Return an array of all objects that match the given constraints
+     *
+     * @param $search
+     * @param $parameters
+     * @return mixed
+     */
+    public function find($search, $parameters);
 
     public function create($input);
 

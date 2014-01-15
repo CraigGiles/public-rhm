@@ -2,7 +2,13 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\AccountRepository;
+use redhotmayo\rest\AccountSearch;
+use redhotmayo\rest\SearchParameters;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class AccountsController extends \BaseController {
     /**
@@ -32,7 +38,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function create() {
-        return 'create new account';
+        return View::make('accounts.create');
     }
 
     /**
@@ -41,18 +47,33 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function store() {
-        dd(Input::all());
+        return 'store';
+        $parameters = Input::all();
+        $data = $parameters;
+        $account = $this->accountRepo->convertArrayToObjects($data);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  $searchType
      * @return Response
      */
-    public function show($id) {
-        $params = Input::all();
-        dd($params);
+    public function show($searchType) {
+        $results = $this->accountRepo->find($searchType, Input::all());
+
+        $return = array();
+        foreach ($results as $result) {
+//            var_dump($result);
+            $return[] = $result->toJson();
+        }
+        return $return;
+
+//        $parameters = new SearchParameters($searchType, Input::all());
+//        $search = new AccountSearch($this->accountRepo, $parameters);
+//$results =  $search->execute();
+//        dd(Input::all());
+//        return "show {$searchType}";
     }
 
     /**
@@ -62,7 +83,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function edit($id) {
-        //
+        return "edit {$id}";
     }
 
     /**
@@ -72,7 +93,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function update($id) {
-        //
+        return "update {$id}";
     }
 
     /**
@@ -91,7 +112,19 @@ class AccountsController extends \BaseController {
      * @author Craig Giles <craig@gilesc.com>
      */
     public function upload() {
-        return "Upload excel spreadsheet";
+//        dd(Input::all());
+        $file = Input::file('accounts');
+        if (isset($file)) {
+            $ext = $file->getClientOriginalExtension();
+            $time = date('Ymdhms');
+            $filename = public_path() . '/accounts/' . $time . '.' . $ext;
+            $file->move($filename);
+
+            //launch lead distribution process
+
+        }
+
+//        return "{$filename} uploaded";
     }
 
 }

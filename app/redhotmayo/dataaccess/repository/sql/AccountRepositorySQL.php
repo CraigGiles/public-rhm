@@ -12,6 +12,7 @@ use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\model\Account;
 use redhotmayo\model\Address;
 use redhotmayo\model\Note;
+use redhotmayo\rest\Constraint;
 
 class AccountRepositorySQL implements AccountRepository {
     /**
@@ -255,14 +256,44 @@ class AccountRepositorySQL implements AccountRepository {
         return $this->convertRecordsToObjects($accounts);
     }
 
+    public function show($searchType, $paramters) {
+
+    }
+
     /**
      * Return an array of all objects that match the given constraints
      *
-     * @param $constraints
+     * @param $search
+     * @param $parameters
      * @return mixed
      */
-    public function find($constraints) {
-        // TODO: Implement find() method.
+    public function find($search, $parameters) {
+        $constraints = $this->setupSearchConstraints($parameters);
+        $order = $this->setupOrderBy($parameters);
+
+        var_dump($constraints);
+        $addressCols = AddressSQL::GetColumns();
+        $accountCols = AccountSQL::GetColumns();
+        $noteCols = NoteSQL::GetColumns();
+
+        $cols = array_merge($addressCols, $accountCols, $noteCols);
+
+        /** @var Constraint $constraint */
+        $db = DB::table('accounts')
+          ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
+          ->join('notes', 'accounts.id', '=', 'notes.accountId')
+          ->select($cols);
+        foreach ($constraints as $constraint) {
+            $db->where($constraint->getColumn(), $constraint->getOperator(), $constraint->getValue());
+        }
+//            $db->orderBy('accounts.id', 'desc');
+
+        if (isset($order)) {
+            $db->orderBy($order->getColumn(), $order->getValue());
+        }
+
+        $accounts = $db->get();
+        return $this->convertRecordsToObjects($accounts);
     }
 
     /**
@@ -290,5 +321,51 @@ class AccountRepositorySQL implements AccountRepository {
             }
         }
         return $unsaved;
+    }
+
+    public function convertArrayToObjects($array) {
+        //Account::FromArray($data);
+        $accounts = array();
+        foreach ($array as $account) {
+            $accounts[] = $this->getAccountFromArray($account);
+        }
+        return $accounts;
+    }
+
+    private function getAccountFromArray($account) {
+
+    }
+
+    private function setupSearchConstraints($parameters) {
+        $return = array();
+        foreach ($parameters as $param => $value) {
+            switch ($param) {
+                case 'account':
+                    $return[] = new Constraint(AccountSQL::C_ACCOUNT_NAME, 'like', "%{$value}%");
+                    break;
+
+                case 'targeted':
+                    $return[] = new Constraint(AccountSQL::C_IS_TARGET_ACCOUNT, '=', intval($value));
+                    break;
+
+                case 'zipcode':
+                    $return[] = new Constraint(AddressSQL::C_ZIP_CODE, '=', intval($value));
+                    break;
+
+                case 'user':
+                    $return[] = new Constraint(AccountSQL::C_USER, '=', intval($value));
+                    break;
+            }
+        }
+        return $return;
+    }
+
+    private function setupOrderBy($parameters) {
+        foreach ($parameters as $param => $value) {
+            switch ($param) {
+                case 'order':
+                    if ($value === 'created_at') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
+            }
+        }
     }
 }

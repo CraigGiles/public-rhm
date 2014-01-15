@@ -32,4 +32,11 @@ abstract class DataObject {
         $serializer = new Serializer($normalizers, $encoders);
         return $serializer->serialize($this, 'json');
     }
+
+    public function fromJson($json) {
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        return $serializer->deserialize($json, $this, 'json');
+    }
 }

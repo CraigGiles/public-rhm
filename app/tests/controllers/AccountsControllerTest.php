@@ -7,6 +7,11 @@ class AccountsControllerTest extends TestCase {
         m::close();
     }
 
+    public function test_post_accounts() {
+        $json = Config::get('testdata.testaccount01');
+        $this->post('accounts', $json);
+    }
+
     public function test_get_accounts_index_page() {
 //        $records[] = m::mock('Account');
 //        $records[0]->shouldReceive('toJson')
