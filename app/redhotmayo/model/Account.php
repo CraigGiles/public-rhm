@@ -331,4 +331,31 @@ class Account extends DataObject {
     }
 
 
+    public function toArray() {
+        $json = (
+            array(
+                'userId' => $this->userId,
+                'weeklyOpportunity' => $this->weeklyOpportunity,
+                'estimatedAnnualSales' => $this->estimatedAnnualSales,
+                'owner' => $this->owner,
+                'mobilePhone' => $this->mobilePhone,
+                'websiteAddress' => $this->websiteAddress,
+                'isTargetAccount' => $this->isTargetAccount,
+                'accountName' => $this->accountName,
+                'operatorType' => $this->operatorType,
+                'address' => $this->address->toArray(),
+                'contactName' => $this->contactName,
+                'phone' => $this->phone,
+                'serviceType' => $this->serviceType,
+                'cuisineType' => $this->cuisineType,
+                'seatCount' => $this->seatCount,
+                'averageCheck' => $this->averageCheck,
+                'emailAddress' => $this->emailAddress,
+                'openDate' => $this->openDate,
+                'notes' => $this->notes[0]->toArray(),
+                'isMaster' => $this->isMaster,
+            )
+        );
+        return $json;
+    }
 }

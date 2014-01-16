@@ -85,4 +85,14 @@ class Note extends DataObject {
         return $this->text;
     }
 
+    public function toArray() {
+        return array(
+            'accountId' => $this->accountId,
+            'contactId' => $this->contactId,
+            'text' => $this->text,
+            'action' => $this->action,
+            'author' => $this->author,
+        );
+    }
+
 } 

@@ -262,4 +262,24 @@ class Address extends DataObject {
         $return .= empty($this->zipcode)           ? '' : $this->getZipcode() . " " ;
         return $return;
     }
+
+    public function toArray() {
+        return array(
+            'primaryNumber' => $this->primaryNumber,
+            'streetName' => $this->streetName,
+            'streetSuffix' => $this->streetSuffix,
+            'suiteType' => $this->suiteType,
+            'suiteNumber' => $this->suiteNumber,
+            'cityName' => $this->cityName,
+            'countyName' => $this->countyName,
+            'stateAbbreviation' => $this->stateAbbreviation,
+            'zipcode' => $this->zipcode,
+            'plus4Code' => $this->plus4Code,
+            'streetPredirection' => $this->streetPredirection,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'cassVerified' => $this->cassVerified,
+            'googleGeocoded' => $this->googleGeocoded,
+        );
+    }
 }
