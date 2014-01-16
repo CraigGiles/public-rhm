@@ -25,8 +25,8 @@ $app = new Illuminate\Foundation\Application;
 */
 
 $env = $app->detectEnvironment(array(
-    'dev' => array('redhotmayo.dev'),
-    'development' => array('http://rhmdev.eu1.frbit.net'),
+    'local' => array('local.*','*.local'),
+    'production' => array('http://rhmdev.eu1.frbit.net'),
 ));
 
 /*
