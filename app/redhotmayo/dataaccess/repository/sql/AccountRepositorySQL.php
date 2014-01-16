@@ -271,7 +271,6 @@ class AccountRepositorySQL implements AccountRepository {
         $constraints = $this->setupSearchConstraints($parameters);
         $order = $this->setupOrderBy($parameters);
 
-        var_dump($constraints);
         $addressCols = AddressSQL::GetColumns();
         $accountCols = AccountSQL::GetColumns();
         $noteCols = NoteSQL::GetColumns();
@@ -286,7 +285,6 @@ class AccountRepositorySQL implements AccountRepository {
         foreach ($constraints as $constraint) {
             $db->where($constraint->getColumn(), $constraint->getOperator(), $constraint->getValue());
         }
-//            $db->orderBy('accounts.id', 'desc');
 
         if (isset($order)) {
             $db->orderBy($order->getColumn(), $order->getValue());

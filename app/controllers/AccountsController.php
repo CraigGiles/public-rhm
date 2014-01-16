@@ -64,7 +64,6 @@ class AccountsController extends \BaseController {
 
         $return = array();
         foreach ($results as $result) {
-//            var_dump($result);
             $return[] = $result->toJson();
         }
         return $return;
