@@ -3,7 +3,6 @@
 composer.phar
 .DS_Store
 Thumbs.db
-config/
 storage/
 .idea/
 tags
