@@ -64,7 +64,7 @@ class AccountsController extends \BaseController {
 
         $return = array();
         foreach ($results as $result) {
-            $return[] = $result->toArray();
+            $return[] = $result->toJson();
         }
         $response = array('response' => 'success', 'data' => $return);
         return $response;
