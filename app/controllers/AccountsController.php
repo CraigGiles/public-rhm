@@ -50,7 +50,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function show($searchType) {
-        $array['result'] = 'success';
+        $array['status'] = 'success';
         $array['data'] = $this->accountRepo->find($searchType, Input::all());
         return $array;
     }
