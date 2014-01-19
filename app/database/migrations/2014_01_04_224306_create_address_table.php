@@ -25,8 +25,8 @@ class CreateAddressTable extends Migration {
             $table->string('cityName');
             $table->string('countyName')->nullable();
             $table->string('stateAbbreviation');
-            $table->integer('zipCode');
-            $table->integer('plus4Code')->nullable();
+            $table->string('zipCode');
+            $table->string('plus4Code')->nullable();
             $table->boolean('googleGeocoded')->default(false);
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();

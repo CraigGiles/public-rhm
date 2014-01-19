@@ -7,7 +7,8 @@ use redhotmayo\model\Account;
 
 class AccountSQL implements AccountDAO {
     const TABLE_NAME = 'accounts';
-    const C_ID = 'id as accountId';
+    const C_ID_AS_ACCOUNT_ID = 'id as accountId';
+    const C_ACCOUNT_ID = 'accountId';
     const C_USER = 'userId';
     const C_WEEKLY_OPPORTUNITY = 'weeklyOpportunity';
     const C_ACCOUNT_NAME = 'accountName';
@@ -30,10 +31,14 @@ class AccountSQL implements AccountDAO {
     const C_CREATED_AT = 'created_at';
     const C_UPDATED_AT = 'updated_at';
 
+    //class constants
+    const NOTES = 'notes';
+    const ADDRESS = 'address';
+
 
     public static function GetColumns() {
         return array(
-            self::TABLE_NAME . '.' . self::C_ID,
+            self::TABLE_NAME . '.' . self::C_ID_AS_ACCOUNT_ID,
             self::TABLE_NAME . '.' . self::C_USER,
             self::TABLE_NAME . '.' . self::C_WEEKLY_OPPORTUNITY,
             self::TABLE_NAME . '.' . self::C_ACCOUNT_NAME,

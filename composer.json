@@ -10,7 +10,8 @@
 	},
     "require-dev": {
         "phpunit/phpunit": "3.9.*@dev",
-        "mockery/mockery": "dev-master@dev"
+        "mockery/mockery": "dev-master@dev",
+        "php-vcr/php-vcr": "dev-master"
     },
 	"autoload": {
 		"classmap": [

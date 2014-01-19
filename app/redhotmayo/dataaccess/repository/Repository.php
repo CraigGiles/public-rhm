@@ -47,5 +47,5 @@ interface Repository {
      * @param $records
      * @return array
      */
-    function convertRecordsToObjects($records);
+    function convertRecordsToJsonObjects($records);
 }
