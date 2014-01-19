@@ -8,7 +8,7 @@ use redhotmayo\model\Address;
 class AddressSQL {
     const TABLE_NAME = 'addresses';
 
-    const C_ID = 'id as addressId';
+    const C_ID = 'id';
     const C_PRIMARY_NUMBER = 'primaryNumber';
     const C_STREET_PREDIRECTION = 'streetPredirection';
     const C_STREET_NAME = 'streetName';

@@ -186,7 +186,7 @@ class AccountRepositorySQL implements AccountRepository {
             $acct = array();
 
             $acct = $account;
-            $accountId = $acct[AccountSQL::C_ACCOUNT_ID];
+            $accountId = $acct[AccountSQL::C_ID];
 
             //add address
             $acct[AccountSQL::ADDRESS] = $this->getAllAddressesForAccount($accountId);
