@@ -50,8 +50,17 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function show($searchType) {
-        $array['status'] = 'success';
-        $array['data'] = $this->accountRepo->find($searchType, Input::all());
+        $success = false;
+        $array = array();
+
+        try {
+            $success = true;
+            $array['data'] = $this->accountRepo->find($searchType, Input::all());
+        } catch (Exception $e) {
+            $success = false;
+        }
+
+        $array['status'] = $success;
         return $array;
     }
 

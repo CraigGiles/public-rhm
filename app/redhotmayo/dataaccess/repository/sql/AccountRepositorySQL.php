@@ -290,7 +290,7 @@ class AccountRepositorySQL implements AccountRepository {
                     break;
 
                 case 'targeted':
-                    $return[] = new Constraint(AccountSQL::C_IS_TARGET_ACCOUNT, '=', intval($value));
+                    $return[] = new Constraint(AccountSQL::C_IS_TARGET_ACCOUNT, '=', intval(true));
                     break;
 
                 case 'zipcode':
@@ -308,8 +308,9 @@ class AccountRepositorySQL implements AccountRepository {
     private function setupOrderBy($parameters) {
         foreach ($parameters as $param => $value) {
             switch ($param) {
-                case 'order':
-                    if ($value === 'created_at') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
+                case 'sort':
+                    if ($value === 'createdAt') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
+                    if ($value === 'weeklyOpportunity') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_WEEKLY_OPPORTUNITY, '>', 'desc');
             }
         }
     }
