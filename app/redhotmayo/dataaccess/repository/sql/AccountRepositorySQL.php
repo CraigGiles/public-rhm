@@ -184,14 +184,10 @@ class AccountRepositorySQL implements AccountRepository {
         $accountId = null;
         foreach ($records as $account) {
             $acct = array();
-
             $acct = $account;
             $accountId = $acct[AccountSQL::C_ID];
 
-            //add address
-            $acct[AccountSQL::ADDRESS] = $this->getAllAddressesForAccount($accountId);
-
-            //add notes
+            $acct[AccountSQL::ADDRESS] = $this->getAddressForAccount($accountId);
             $acct[AccountSQL::NOTES] = $this->getAllNotesForAccount($accountId);
 
             $objects[] = $acct;
@@ -333,19 +329,20 @@ class AccountRepositorySQL implements AccountRepository {
         return $ary;
     }
 
-    private function getAllAddressesForAccount($accountId) {
-        $addresses = array();
+    private function getAddressForAccount($accountId) {
         $records = DB::table('addresses')
                  ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
                  ->select(AddressSQL::GetColumns())
                  ->where('accounts.addressId', '=', $accountId)
                  ->get();
 
-        foreach ($records as $address) {
-            $addresses[] = $this->removeNullValues($address);
+        $address = null;
+        if (isset($records) && count($records) > 0) {
+            $address = $this->removeNullValues($records[0]);
+
         }
 
-        return $addresses;
+        return $address;
     }
 
     private function getAllNotesForAccount($accountId) {
