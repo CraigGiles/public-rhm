@@ -1,15 +1,19 @@
 <?php
 
-//Route::any('/', array( 'as' => 'home', 'uses' => 'AccountsController@index' ));
-Route::get('/', function() {
-    dd(App::environment());
-});
+Route::get('/', ['as' => 'home', function() {
+    return 'Home page';
+}]);
+
+Route::get('profile', function() {
+    dd(Auth::user());
+    return "Welcome ". Auth::user()->username;
+})->before('auth');
 
 Route::resource('accounts', 'AccountsController');
 Route::post('/accounts/create', 'AccountsController@upload');
 
-Route::get('logon', 'SessionsController@create');
+Route::get('login', 'SessionsController@create');
 Route::get('logout', 'SessionsController@destroy');
-Route::resource('sessions', 'SessionsController');
+Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
 

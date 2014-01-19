@@ -17,10 +17,11 @@ class CreateContactsTable extends Migration {
             $table->increments('id');
             $table->unsignedInteger('accountId');
             $table->string('name');
+            $table->string('title')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
 
-            $table->foreign('accountId')->references('id')->on('accounts')->onUpdate('cascade');
+            $table->index('accountId');
 
             $table->timestamps();
 		});

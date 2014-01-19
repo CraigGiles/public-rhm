@@ -21,6 +21,7 @@ class CreateMobileDevicesTable extends Migration {
             $table->unsignedInteger('appVersion');
 
             $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->index('userId');
 
             $table->timestamps();
 		});

@@ -4,7 +4,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration {
-
 	/**
 	 * Run the migrations.
 	 *
@@ -15,11 +14,26 @@ class CreateUsersTable extends Migration {
 		Schema::create('users', function(Blueprint $table)
 		{
             $table->increments('id');
+
             $table->string('username')->unique();
             $table->string('password');
             $table->string('email')->unique();
-            $table->boolean('emailVerified')->default(0);
+            $table->boolean('emailVerified')->default(false);
+            $table->text('permissions')->nullable();
+            $table->tinyInteger('activated')->default(0);
+            $table->string('activationCode')->nullable();
+            $table->timestamp('activatedAt')->nullable();
+            $table->timestamp('lastLogin')->nullable();
+            $table->string('persistCode')->nullable();
+            $table->string('resetPasswordCode')->nullable();
+
             $table->timestamps();
+
+            // We'll need to ensure that MySQL uses the InnoDB engine to
+            // support the indexes, other engines aren't affected.
+            $table->engine = 'InnoDB';
+            $table->index('activationCode');
+            $table->index('resetPasswordCode');
 		});
 	}
 

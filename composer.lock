@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5b277b066632c68a45f79705c9270735",
+    "hash": "cd1cb4fed8050611ebb27286bfef6ad4",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -230,12 +230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "a54dda66de814f8c2085e71c69e44e91f1b46a9c"
+                "reference": "7b1b90e5ee8420758c5c880d5d6ec92092315b13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/a54dda66de814f8c2085e71c69e44e91f1b46a9c",
-                "reference": "a54dda66de814f8c2085e71c69e44e91f1b46a9c",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7b1b90e5ee8420758c5c880d5d6ec92092315b13",
+                "reference": "7b1b90e5ee8420758c5c880d5d6ec92092315b13",
                 "shasum": ""
             },
             "require": {
@@ -339,7 +339,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2014-01-18 16:40:32"
+            "time": "2014-01-19 03:23:30"
         },
         {
             "name": "monolog/monolog",
@@ -1541,53 +1541,6 @@
             "time": "2014-01-07 13:28:54"
         },
         {
-            "name": "symfony/serializer",
-            "version": "v2.4.1",
-            "target-dir": "Symfony/Component/Serializer",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Serializer.git",
-                "reference": "60c54346958604379392672a3a998650a169a7f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Serializer/zipball/60c54346958604379392672a3a998650a169a7f4",
-                "reference": "60c54346958604379392672a3a998650a169a7f4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Serializer\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Serializer Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-01-01 08:14:50"
-        },
-        {
             "name": "symfony/translation",
             "version": "2.4.x-dev",
             "target-dir": "Symfony/Component/Translation",
@@ -1991,12 +1944,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "e7ac8f05f9e954d4387732e58d9be43b102fbe93"
+                "reference": "067918f6ea113788cdb5109b9033537206cb278d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/e7ac8f05f9e954d4387732e58d9be43b102fbe93",
-                "reference": "e7ac8f05f9e954d4387732e58d9be43b102fbe93",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/067918f6ea113788cdb5109b9033537206cb278d",
+                "reference": "067918f6ea113788cdb5109b9033537206cb278d",
                 "shasum": ""
             },
             "require": {
@@ -2004,7 +1957,8 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "hamcrest/hamcrest-php": "~1.1"
+                "hamcrest/hamcrest-php": "~1.1",
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "extra": {
@@ -2047,7 +2001,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-01-17 11:55:29"
+            "time": "2014-01-19 15:43:02"
         },
         {
             "name": "php-vcr/php-vcr",
@@ -2350,12 +2304,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8ae58bad52c7890ea17676e66025cb1cf7444674"
+                "reference": "888c4b658ba370f0d58aabfe45f71657ca9b29d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8ae58bad52c7890ea17676e66025cb1cf7444674",
-                "reference": "8ae58bad52c7890ea17676e66025cb1cf7444674",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/888c4b658ba370f0d58aabfe45f71657ca9b29d1",
+                "reference": "888c4b658ba370f0d58aabfe45f71657ca9b29d1",
                 "shasum": ""
             },
             "require": {
@@ -2416,7 +2370,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-01-18 14:50:36"
+            "time": "2014-01-19 11:59:40"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
