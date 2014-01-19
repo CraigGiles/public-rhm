@@ -99,7 +99,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      * @param $records
      * @return array
      */
-    function convertRecordsToObjects($records) {
-        // TODO: Implement convertRecordsToObjects() method.
+    function convertRecordsToJsonObjects($records) {
+        // TODO: Implement convertRecordsToJsonObjects() method.
     }
 }

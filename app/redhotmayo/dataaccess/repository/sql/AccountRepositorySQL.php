@@ -168,7 +168,7 @@ class AccountRepositorySQL implements AccountRepository {
                       ->where('accounts.updated_at', '>', $afterDate)
                       ->get();
 
-        $objects = $this->convertRecordsToObjects($accounts);
+        $objects = $this->convertRecordsToJsonObjects($accounts);
 
         return $objects;
     }
@@ -179,57 +179,20 @@ class AccountRepositorySQL implements AccountRepository {
      * @param $records
      * @return array
      */
-    function convertRecordsToObjects($records) {
+    function convertRecordsToJsonObjects($records) {
         $objects = array();
+        $accountId = null;
         foreach ($records as $account) {
-            $acct = new Account();
-            $addr = new Address();
-            $note = new Note();
+            $acct = array();
 
-            $note->setNoteId($account->noteId);
-            $note->setAccountId($account->accountId);
-            $note->setAction($account->action);
-            $note->setText($account->text);
-            $note->setAuthor($account->author);
+            $acct = $account;
+            $accountId = $acct[AccountSQL::C_ACCOUNT_ID];
 
-            $addr->setAddressId($account->addressId);
-            $addr->setPrimaryNumber($account->primaryNumber);
-            $addr->setStreetPredirection($account->streetPredirection);
-            $addr->setStreetName($account->streetName);
-            $addr->setStreetSuffix($account->streetSuffix);
-            $addr->setSuiteType($account->suiteType);
-            $addr->setSuiteNumber($account->suiteNumber);
-            $addr->setCityName($account->cityName);
-            $addr->setCountyName($account->countyName);
-            $addr->setStateAbbreviation($account->stateAbbreviation);
-            $addr->setZipcode($account->zipCode);
-            $addr->setPlus4Code($account->plus4Code);
-            $addr->setLongitude($account->longitude);
-            $addr->setLatitude($account->latitude);
-            $addr->setCassVerified($account->cassVerified);
-            $addr->setGoogleGeocoded($account->googleGeocoded);
+            //add address
+            $acct[AccountSQL::ADDRESS] = $this->getAllAddressesForAccount($accountId);
 
-            $acct->setAccountId($account->accountId);
-            $acct->setUserID($account->userId);
-            $acct->addNote($note);
-            $acct->setWeeklyOpportunity($account->weeklyOpportunity);
-            $acct->setAccountName($account->accountName);
-            $acct->setOperatorType($account->operatorType);
-            $acct->setAddress($addr);
-            $acct->setContactName($account->contactName);
-            $acct->setPhone($account->phone);
-            $acct->setServiceType($account->serviceType);
-            $acct->setCuisineType($account->cuisineType);
-            $acct->setSeatCount($account->seatCount);
-            $acct->setAverageCheck($account->averageCheck);
-            $acct->setEmailAddress($account->emailAddress);
-            $acct->setOpenDate($account->openDate);
-            $acct->setEstimatedAnnualSales($account->estimatedAnnualSales);
-            $acct->setOwner($account->owner);
-            $acct->setMobilePhone($account->mobilePhone);
-            $acct->setWebsite($account->website);
-            $acct->setIsTargetAccount($account->isTargetAccount);
-            $acct->setIsMaster($account->isMaster);
+            //add notes
+            $acct[AccountSQL::NOTES] = $this->getAllNotesForAccount($accountId);
 
             $objects[] = $acct;
         }
@@ -253,7 +216,7 @@ class AccountRepositorySQL implements AccountRepository {
                       ->join('notes', 'accounts.id', '=', 'notes.accountId')
                       ->select($cols)
                       ->get();
-        return $this->convertRecordsToObjects($accounts);
+        return $this->convertRecordsToJsonObjects($accounts);
     }
 
     public function show($searchType, $paramters) {
@@ -271,17 +234,13 @@ class AccountRepositorySQL implements AccountRepository {
         $constraints = $this->setupSearchConstraints($parameters);
         $order = $this->setupOrderBy($parameters);
 
-        $addressCols = AddressSQL::GetColumns();
-        $accountCols = AccountSQL::GetColumns();
-        $noteCols = NoteSQL::GetColumns();
-
-        $cols = array_merge($addressCols, $accountCols, $noteCols);
+        $cols = array_merge(AccountSQL::GetColumns());
 
         /** @var Constraint $constraint */
         $db = DB::table('accounts')
           ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
-          ->join('notes', 'accounts.id', '=', 'notes.accountId')
           ->select($cols);
+
         foreach ($constraints as $constraint) {
             $db->where($constraint->getColumn(), $constraint->getOperator(), $constraint->getValue());
         }
@@ -290,8 +249,13 @@ class AccountRepositorySQL implements AccountRepository {
             $db->orderBy($order->getColumn(), $order->getValue());
         }
 
-        $accounts = $db->get();
-        return $this->convertRecordsToObjects($accounts);
+        $records = $db->get();
+        $accounts = array();
+        foreach ($records as $record) {
+           $accounts[] = $this->removeNullValues($record);
+        }
+        $json = $this->convertRecordsToJsonObjects($accounts);
+        return $json;
     }
 
     /**
@@ -319,19 +283,6 @@ class AccountRepositorySQL implements AccountRepository {
             }
         }
         return $unsaved;
-    }
-
-    public function convertArrayToObjects($array) {
-        //Account::FromArray($data);
-        $accounts = array();
-        foreach ($array as $account) {
-            $accounts[] = $this->getAccountFromArray($account);
-        }
-        return $accounts;
-    }
-
-    private function getAccountFromArray($account) {
-
     }
 
     private function setupSearchConstraints($parameters) {
@@ -365,5 +316,48 @@ class AccountRepositorySQL implements AccountRepository {
                     if ($value === 'created_at') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
             }
         }
+    }
+
+    /**
+     * @param $values
+     * @param $acct
+     * @return mixed
+     */
+    private function removeNullValues($values) {
+        $ary = array();
+        foreach ($values as $col => $value) {
+            if (isset($value)) {
+                $ary[$col] = $value;
+            }
+        }
+        return $ary;
+    }
+
+    private function getAllAddressesForAccount($accountId) {
+        $addresses = array();
+        $records = DB::table('addresses')
+                 ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
+                 ->select(AddressSQL::GetColumns())
+                 ->where('accounts.addressId', '=', $accountId)
+                 ->get();
+
+        foreach ($records as $address) {
+            $addresses[] = $this->removeNullValues($address);
+        }
+
+        return $addresses;
+    }
+
+    private function getAllNotesForAccount($accountId) {
+        $records = DB::table('notes')
+                   ->where(NoteSQL::C_ACCOUNT_ID, '=', $accountId)
+                   ->get();
+
+        $notes = array();
+        foreach ($records as $note) {
+            $notes[] = $this->removeNullValues($note);
+        }
+
+        return $notes;
     }
 }

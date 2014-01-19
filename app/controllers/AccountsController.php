@@ -4,11 +4,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\AccountRepository;
-use redhotmayo\rest\AccountSearch;
-use redhotmayo\rest\SearchParameters;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 class AccountsController extends \BaseController {
     /**
@@ -27,9 +22,7 @@ class AccountsController extends \BaseController {
      */
     public function index() {
         $params = Input::all();
-        $results = $this->accountRepo->all();
-        return $results[0]->toJson();
-        return 'Index accounts page';
+        return $this->accountRepo->all();
     }
 
     /**
@@ -48,9 +41,6 @@ class AccountsController extends \BaseController {
      */
     public function store() {
         return 'store';
-        $parameters = Input::all();
-        $data = $parameters;
-        $account = $this->accountRepo->convertArrayToObjects($data);
     }
 
     /**
@@ -60,40 +50,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function show($searchType) {
-        $results = $this->accountRepo->find($searchType, Input::all());
-
-        $return = array();
-        foreach ($results as $result) {
-            $return[] = $result->toArray();
-        }
-        $response = array('response' => 'success', 'data' => $return);
-        return $response;
-    }
-
-    private function php2js($a)
-    {
-        if (is_null($a)) return 'null';
-        if ($a === false) return 'false';
-        if ($a === true) return 'true';
-        if (is_scalar($a)) {
-            $a = addslashes($a);
-            $a = str_replace(" ", ' ', $a);
-            $a = str_replace(" ", ' ', $a);
-            $a = preg_replace('{(</)(script)}i', "$1'+'$2", $a);
-            return "'$a'";
-        }
-        $isList = true;
-        for ($i=0, reset($a); $i<count($a); $i++, next($a))
-            if (key($a) !== $i) { $isList = false; break; }
-        $result = array();
-        if ($isList) {
-            foreach ($a as $v) $result[] = $this->php2js($v);
-            return '[ ' . join(', ', $result) . ' ]';
-        } else {
-            foreach ($a as $k=>$v)
-                $result[] = $this->php2js($k) . ': ' . $this->php2js($v);
-            return '{ ' . join(', ', $result) . ' }';
-        }
+        return $this->accountRepo->find($searchType, Input::all());
     }
 
     /**
@@ -144,7 +101,41 @@ class AccountsController extends \BaseController {
 
         }
 
-//        return "{$filename} uploaded";
+        return 'uploaded';
     }
+
+//    private function php2js($a) {
+//        if (is_null($a)) {
+//            return 'null';
+//        }
+//        if ($a === false) {
+//            return 'false';
+//        }
+//        if ($a === true) {
+//            return 'true';
+//        }
+//        if (is_scalar($a)) {
+//            $a = addslashes($a);
+//            $a = str_replace(" ", ' ', $a);
+//            $a = str_replace(" ", ' ', $a);
+//            $a = preg_replace('{(</)(script)}i', "$1'+'$2", $a);
+//            return "'$a'";
+//        }
+//        $isList = true;
+//        for ($i = 0, reset($a); $i < count($a); $i++, next($a))
+//            if (key($a) !== $i) {
+//                $isList = false;
+//                break;
+//            }
+//        $result = array();
+//        if ($isList) {
+//            foreach ($a as $v) $result[] = $this->php2js($v);
+//            return '[ ' . join(', ', $result) . ' ]';
+//        } else {
+//            foreach ($a as $k => $v)
+//                $result[] = $this->php2js($k) . ': ' . $this->php2js($v);
+//            return '{ ' . join(', ', $result) . ' }';
+//        }
+//    }
 
 }

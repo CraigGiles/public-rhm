@@ -42,6 +42,4 @@ interface AccountRepository extends Repository {
      * @return array Account objects
      */
     function findAllAccountsForZipcode($zipcode, $afterDate);
-
-    function convertArrayToObjects($array);
 }
