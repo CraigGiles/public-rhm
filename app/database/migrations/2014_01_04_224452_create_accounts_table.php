@@ -42,6 +42,8 @@ class CreateAccountsTable extends Migration {
             // set up foreign key constraints
             $table->foreign('addressId')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade');
+            $table->index('addressId');
+            $table->index('userId');
 
             $table->timestamps();
 		});

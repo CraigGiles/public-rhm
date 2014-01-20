@@ -6,6 +6,12 @@
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     </head>
 <body>
-    <div class="container">@yield('container')</div>
+    @if (Session::get('flash_message'))
+        <div class="flash">
+            {{ Session::get('flash_message') }}
+        </div>
+    @endif
+
+    <div class="container">@yield('content')</div>
 </body>
 </html>

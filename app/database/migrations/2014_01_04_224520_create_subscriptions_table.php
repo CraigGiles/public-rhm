@@ -16,9 +16,10 @@ class CreateSubscriptionsTable extends Migration {
 		{
             $table->increments('id');
             $table->unsignedInteger('userId');
-            $table->integer('zipCode');
+            $table->string('zipCode');
 
             $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->index('userId');
 
             $table->timestamps();
 		});

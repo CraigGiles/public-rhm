@@ -4,6 +4,7 @@ use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
 use redhotmayo\dataaccess\repository\dao\sql\AddressSQL;
 use redhotmayo\dataaccess\repository\dao\sql\NoteSQL;
 use redhotmayo\dataaccess\repository\dao\sql\SubscriptionSQL;
+use redhotmayo\dataaccess\repository\dao\sql\UserSQL;
 
 /**
  * This class contains a list of all models that need to be stored in some sort of data storage
@@ -36,5 +37,11 @@ class DataAccessObject {
         $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
         if ($storage === DataAccessStorage::MYSQL)
             return new NoteSQL();
+    }
+
+    public static function GetUserDAO() {
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
+        if ($storage === DataAccessStorage::MYSQL)
+            return new UserSQL();
     }
 } 

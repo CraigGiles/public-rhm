@@ -25,6 +25,9 @@ class CreateNotesTable extends Migration {
             $table->foreign('accountId')->references('id')->on('accounts')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('contactId')->references('id')->on('contacts')->onUpdate('cascade')->onDelete('cascade');
 
+            $table->index('accountId');
+            $table->index('contactId');
+
             $table->timestamps();
 		});
 	}
