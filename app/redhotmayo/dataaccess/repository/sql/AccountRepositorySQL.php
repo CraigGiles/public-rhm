@@ -226,7 +226,11 @@ class AccountRepositorySQL implements AccountRepository {
      * @param $parameters
      * @return mixed
      */
-    public function find($search, $parameters) {
+    public function find($parameters) {
+        if (empty($parameters)) {
+                
+        }
+
         $constraints = $this->setupSearchConstraints($parameters);
         $order = $this->setupOrderBy($parameters);
 

@@ -1,10 +1,9 @@
 <?php
 
-use Bogardo\Mailgun\Facades\Mailgun;
-
 Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
+Route::get('/api/accounts', 'redhotmayo\api\controllers\ApiAccountsController@search');
 
 Route::get('profile', function() {
     dd(Auth::user());

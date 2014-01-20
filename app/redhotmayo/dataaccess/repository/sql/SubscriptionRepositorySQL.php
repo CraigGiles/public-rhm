@@ -18,7 +18,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      * @param $parameters
      * @return mixed
      */
-    public function find($search, $parameters) {
+    public function find($parameters) {
     }
 
     public function create($input) {
