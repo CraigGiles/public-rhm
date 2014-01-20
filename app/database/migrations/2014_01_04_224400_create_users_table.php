@@ -20,20 +20,12 @@ class CreateUsersTable extends Migration {
             $table->string('email')->unique();
             $table->boolean('emailVerified')->default(false);
             $table->text('permissions')->nullable();
-            $table->tinyInteger('activated')->default(0);
-            $table->string('activationCode')->nullable();
-            $table->timestamp('activatedAt')->nullable();
-            $table->timestamp('lastLogin')->nullable();
-            $table->string('persistCode')->nullable();
-            $table->string('resetPasswordCode')->nullable();
 
             $table->timestamps();
 
             // We'll need to ensure that MySQL uses the InnoDB engine to
             // support the indexes, other engines aren't affected.
             $table->engine = 'InnoDB';
-            $table->index('activationCode');
-            $table->index('resetPasswordCode');
 		});
 	}
 

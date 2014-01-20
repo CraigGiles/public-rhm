@@ -1,12 +1,19 @@
-<?php namespace redhotmayo\dataaccess\repository;
+<?php namespace redhotmayo\dataaccess\repository\sql;
 
-interface Repository {
+
+use redhotmayo\dataaccess\repository\dao\DataAccessObject;
+use redhotmayo\dataaccess\repository\UserRepository;
+
+class UserRepositorySQL implements UserRepository {
+
     /**
      * Return an array of all objects
      *
      * @return array
      */
-    public function all();
+    public function all() {
+        // TODO: Implement all() method.
+    }
 
     /**
      * Return an array of all objects that match the given constraints
@@ -15,7 +22,9 @@ interface Repository {
      * @param $parameters
      * @return mixed
      */
-    public function find($search, $parameters);
+    public function find($search, $parameters) {
+        // TODO: Implement find() method.
+    }
 
     /**
      * Create an object from given input
@@ -23,7 +32,9 @@ interface Repository {
      * @param $input
      * @return mixed
      */
-    public function create($input);
+    public function create($input) {
+        // TODO: Implement create() method.
+    }
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
@@ -31,7 +42,10 @@ interface Repository {
      * @param $user
      * @return bool
      */
-    public function save($user);
+    public function save($user) {
+        $userDAO = DataAccessObject::GetUserDAO();
+        $userDAO->save($user);
+    }
 
     /**
      * Save all objects to the database returning any objects that were unsuccessful.
@@ -39,7 +53,9 @@ interface Repository {
      * @param $objects
      * @return array
      */
-    public function saveAll($objects);
+    public function saveAll($objects) {
+        // TODO: Implement saveAll() method.
+    }
 
     /**
      * Take an array of database records and convert them to the appropriate objects
@@ -47,5 +63,7 @@ interface Repository {
      * @param $records
      * @return array
      */
-    function convertRecordsToJsonObjects($records);
+    function convertRecordsToJsonObjects($records) {
+        // TODO: Implement convertRecordsToJsonObjects() method.
+    }
 }

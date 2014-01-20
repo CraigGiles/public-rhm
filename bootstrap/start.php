@@ -68,4 +68,6 @@ require $framework . '/Illuminate/Foundation/start.php';
 |
 */
 
+$app->bind('RemindableInterface', 'redhotmayo\model\user');
+
 return $app;

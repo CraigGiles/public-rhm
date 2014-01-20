@@ -7,6 +7,7 @@ class User extends DataObject implements RemindableInterface {
     private $password;
     private $email;
     private $emailVerified;
+    private $permissions;
 
     public function getUserId() {
         return $this->getId();
@@ -72,15 +73,17 @@ class User extends DataObject implements RemindableInterface {
         return $this->username;
     }
 
+
+
     public static function FromStdClass($values) {
         $usr = new User();
         $email = isset($values->email) ? $values->email : null;
         $username = isset($values->username) ? $values->username : null;
         $id = isset($values->id) ? $values->id : null;
 
-        $usr->setEmail($email);
-        $usr->setUsername($username);
         $usr->setId($id);
+        $usr->setUsername($username);
+        $usr->setEmail($email);
 
         return $usr;
     }
@@ -91,7 +94,20 @@ class User extends DataObject implements RemindableInterface {
      * @return string
      */
     public function getReminderEmail() {
-        dd($this);
         return $this->email;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPermissions() {
+        return $this->permissions;
+    }
+
+    /**
+     * @param mixed $permissions
+     */
+    public function setPermissions($permissions) {
+        $this->permissions = $permissions;
     }
 }

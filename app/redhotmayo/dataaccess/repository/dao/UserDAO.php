@@ -4,6 +4,14 @@ use redhotmayo\model\User;
 
 interface UserDAO {
     /**
+     * Obtains a user record based on the credentials
+     *
+     * @param $credentials
+     * @return mixed
+     */
+    public function getUser($credentials);
+
+    /**
      * Save a record and return the objectId
      *
      * @param User $user
