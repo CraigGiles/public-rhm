@@ -114,39 +114,4 @@ class AccountsController extends \BaseController {
 
         return 'uploaded';
     }
-
-//    private function php2js($a) {
-//        if (is_null($a)) {
-//            return 'null';
-//        }
-//        if ($a === false) {
-//            return 'false';
-//        }
-//        if ($a === true) {
-//            return 'true';
-//        }
-//        if (is_scalar($a)) {
-//            $a = addslashes($a);
-//            $a = str_replace(" ", ' ', $a);
-//            $a = str_replace(" ", ' ', $a);
-//            $a = preg_replace('{(</)(script)}i', "$1'+'$2", $a);
-//            return "'$a'";
-//        }
-//        $isList = true;
-//        for ($i = 0, reset($a); $i < count($a); $i++, next($a))
-//            if (key($a) !== $i) {
-//                $isList = false;
-//                break;
-//            }
-//        $result = array();
-//        if ($isList) {
-//            foreach ($a as $v) $result[] = $this->php2js($v);
-//            return '[ ' . join(', ', $result) . ' ]';
-//        } else {
-//            foreach ($a as $k => $v)
-//                $result[] = $this->php2js($k) . ': ' . $this->php2js($v);
-//            return '{ ' . join(', ', $result) . ' }';
-//        }
-//    }
-
 }
