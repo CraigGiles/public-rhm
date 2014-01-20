@@ -26,7 +26,7 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(array(
     'local' => array('local.*','*.local'),
-    'fortrabbit' => array('http://rhmdev.eu1.frbit.net'),
+    'fortrabbit' => array('*.frbit.net'),
 ));
 
 /*
