@@ -22,10 +22,26 @@ class ApiAccountsController extends ApiController {
             $array['data'] = $this->accountRepo->find($conditions);
         } catch (Exception $e) {
             $success = false;
+            $array['message'] = $e->getMessage();
         }
 
         $array['status'] = $success;
         return $array;
     }
 
-} 
+    public function distance() {
+        dd(Input::all());
+    }
+
+    public function delete() {
+        dd(Input::all());
+    }
+
+    public function target() {
+        dd(Input::all());
+    }
+
+    public function update() {
+        dd(Input::all());
+    }
+}
