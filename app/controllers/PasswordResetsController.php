@@ -3,10 +3,10 @@
 use Illuminate\Auth\Reminders\PasswordBroker;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Redirect;
-use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\dataaccess\repository\UserRepository;
 
 class PasswordResetsController extends \BaseController {
+    private $userRepo;
 
     public function __construct(UserRepository $repo) {
         $this->userRepo= $repo;
@@ -27,10 +27,8 @@ class PasswordResetsController extends \BaseController {
      * @return Response
      */
     public function store() {
-        $return = Password::remind(['email' => Input::get('email')]);
+        Password::remind(['email' => Input::get('email')]);
         return View::make('password_resets.sent')->withSuccess(true);
-//        return Redirect::route($return)->withSuccess(true);
-//        return Redirect::route('password_resets.sent')->withSuccess(true);
     }
 
     public function resetPasswordForm($token) {
@@ -65,8 +63,7 @@ class PasswordResetsController extends \BaseController {
 
         $something = Password::reset($creds, function ($user, $password) use ($creds) {
             $user->setPassword(Hash::make($password));
-            $repo = RepositoryFactory::GetUserRepository();
-            $repo->save($user);
+            $this->userRepo->save($user);
 
             return Redirect::route('sessions.create');
         });
