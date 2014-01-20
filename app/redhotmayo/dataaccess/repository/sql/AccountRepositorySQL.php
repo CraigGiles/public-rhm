@@ -3,6 +3,7 @@
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
@@ -226,7 +227,7 @@ class AccountRepositorySQL implements AccountRepository {
      * @param $parameters
      * @return mixed
      */
-    public function find($search, $parameters) {
+    public function find($parameters) {
         $constraints = $this->setupSearchConstraints($parameters);
         $order = $this->setupOrderBy($parameters);
 
@@ -300,8 +301,12 @@ class AccountRepositorySQL implements AccountRepository {
                 case 'user':
                     $return[] = new Constraint(AccountSQL::C_USER, '=', intval($value));
                     break;
+
+                default:
+                    throw new InvalidArgumentException("{$param} is not a valid parameter");
             }
         }
+
         return $return;
     }
 

@@ -21,8 +21,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function index() {
-        $params = Input::all();
-        return $this->accountRepo->all();
+        return 'Accounts';
     }
 
     /**
@@ -46,22 +45,23 @@ class AccountsController extends \BaseController {
     /**
      * Display the specified resource.
      *
-     * @param  $searchType
+     * @param  $id
      * @return Response
      */
-    public function show($searchType) {
-        $success = false;
-        $array = array();
-
-        try {
-            $success = true;
-            $array['data'] = $this->accountRepo->find($searchType, Input::all());
-        } catch (Exception $e) {
-            $success = false;
-        }
-
-        $array['status'] = $success;
-        return $array;
+    public function show($id) {
+        return "show {$id}";
+//        $success = false;
+//        $array = array();
+//
+//        try {
+//            $success = true;
+//            $array['data'] = $this->accountRepo->find($id, Input::all());
+//        } catch (Exception $e) {
+//            $success = false;
+//        }
+//
+//        $array['status'] = $success;
+//        return $array;
     }
 
     /**
@@ -91,7 +91,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function destroy($id) {
-        //
+        return "destroy {$id}";
     }
 
     /**
@@ -114,39 +114,4 @@ class AccountsController extends \BaseController {
 
         return 'uploaded';
     }
-
-//    private function php2js($a) {
-//        if (is_null($a)) {
-//            return 'null';
-//        }
-//        if ($a === false) {
-//            return 'false';
-//        }
-//        if ($a === true) {
-//            return 'true';
-//        }
-//        if (is_scalar($a)) {
-//            $a = addslashes($a);
-//            $a = str_replace(" ", ' ', $a);
-//            $a = str_replace(" ", ' ', $a);
-//            $a = preg_replace('{(</)(script)}i', "$1'+'$2", $a);
-//            return "'$a'";
-//        }
-//        $isList = true;
-//        for ($i = 0, reset($a); $i < count($a); $i++, next($a))
-//            if (key($a) !== $i) {
-//                $isList = false;
-//                break;
-//            }
-//        $result = array();
-//        if ($isList) {
-//            foreach ($a as $v) $result[] = $this->php2js($v);
-//            return '[ ' . join(', ', $result) . ' ]';
-//        } else {
-//            foreach ($a as $k => $v)
-//                $result[] = $this->php2js($k) . ': ' . $this->php2js($v);
-//            return '{ ' . join(', ', $result) . ' }';
-//        }
-//    }
-
 }
