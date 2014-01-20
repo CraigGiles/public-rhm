@@ -3,8 +3,7 @@
 use Bogardo\Mailgun\Facades\Mailgun;
 
 Route::get('/', ['as' => 'home', function() {
-    dd(App::environment());
-    return 'Home page';
+    return 'Red Hot Mayo Homepage';
 }]);
 
 Route::get('profile', function() {
