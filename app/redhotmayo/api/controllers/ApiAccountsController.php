@@ -10,8 +10,6 @@ class ApiAccountsController extends ApiController {
     public function __construct(AccountRepository $accounts) {
         $this->accountRepo = $accounts;
     }
-    public function accounts() {
-    }
 
     public function search() {
         $array = array();
