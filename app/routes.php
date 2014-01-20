@@ -1,25 +1,6 @@
 <?php
 
 use Bogardo\Mailgun\Facades\Mailgun;
-//
-//Route::get('/test', function() {
-//    $data = array(
-//        'customer' => 'John Smith',
-//        'url' => 'http://laravel.com'
-//    );
-//
-//    Mail::queue('emails.welcome', $data, function($message)
-//        {
-//            $message->to('craig@gilesc.com', 'John Smith')->subject('Welcome!');
-//        }
-//    );
-////    Mailgun::send('emails.welcome', $data, function($message)
-////    {
-////        $message->to('craig@gilesc.com', 'John Smith')->subject('Welcome!');
-////    });
-//
-//    return 'email sent?';
-//});
 
 Route::get('/', ['as' => 'home', function() {
     return 'Home page';

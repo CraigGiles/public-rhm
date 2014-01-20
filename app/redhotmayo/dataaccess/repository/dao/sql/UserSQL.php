@@ -24,12 +24,6 @@ class UserSQL implements UserDAO {
             self::TABLE_NAME .'.'. self::C_EMAIL,
             self::TABLE_NAME .'.'. self::C_EMAIL_VERIFIED,
             self::TABLE_NAME .'.'. self::C_PERMISSIONS,
-            self::TABLE_NAME .'.'. self::C_ACTIVATED,
-            self::TABLE_NAME .'.'. self::C_ACTIVATION_CODE,
-            self::TABLE_NAME .'.'. self::C_ACTIVATED_AT,
-            self::TABLE_NAME .'.'. self::C_LAST_LOGIN,
-            self::TABLE_NAME .'.'. self::C_PERSIST_CODE,
-            self::TABLE_NAME .'.'. self::C_RESET_PASSWORD_CODE,
             self::TABLE_NAME .'.'. self::C_CREATED_AT,
             self::TABLE_NAME .'.'. self::C_UPDATED_AT,
         ];
@@ -44,7 +38,8 @@ class UserSQL implements UserDAO {
         $userid = $user->getUserId();
 
         if (isset($userid)) {
-            return $this->update($user);
+            $this->update($user);
+            return $userid;
         } else {
             $id = DB::table('users')
                     ->insertGetId([
@@ -79,6 +74,8 @@ class UserSQL implements UserDAO {
      * @return mixed
      */
     public function getUser($credentials) {
+
+        //todo: THis is such a hack job, teh credentials should be dynamic.. i have it coded so it finds the user based on email. FIX ME
         $user = DB::table('users')
             ->where('email', '=', $credentials['email'])
             ->get();

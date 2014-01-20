@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Auth\Reminders\DatabaseReminderRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Redirect;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
