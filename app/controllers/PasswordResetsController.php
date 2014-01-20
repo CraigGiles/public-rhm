@@ -4,12 +4,13 @@ use Illuminate\Auth\Reminders\DatabaseReminderRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Redirect;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
+use redhotmayo\dataaccess\repository\UserRepository;
 
 class PasswordResetsController extends \BaseController {
 
-//    public function __construct(UserRepository $repo) {
-//        $this->userRepo= $repo;
-//    }
+    public function __construct(UserRepository $repo) {
+        $this->userRepo= $repo;
+    }
 
     /**
      * Display a listing of the resource.
