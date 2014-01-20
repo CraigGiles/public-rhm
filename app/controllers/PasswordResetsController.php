@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\Reminders\PasswordBroker;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Redirect;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
@@ -9,15 +10,6 @@ class PasswordResetsController extends \BaseController {
 
     public function __construct(UserRepository $repo) {
         $this->userRepo= $repo;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index() {
-        //
     }
 
     /**
@@ -35,46 +27,15 @@ class PasswordResetsController extends \BaseController {
      * @return Response
      */
     public function store() {
-        Password::remind(['email' => Input::get('email')]);
-        return Redirect::route('password_resets.create')->withSuccess(true);
-
-        // find user with email address Input::get('email')
-        // generate a random 32 char key and place it into the password_reminders table
-        // email user with the key
+        $return = Password::remind(['email' => Input::get('email')]);
+        return View::make('password_resets.sent')->withSuccess(true);
+//        return Redirect::route($return)->withSuccess(true);
+//        return Redirect::route('password_resets.sent')->withSuccess(true);
     }
 
     public function resetPasswordForm($token) {
         return View::make('password_resets.reset')
                    ->withToken($token);
-    }
-
-    public function reset($token) {
-        //verify token is valid (< 60 min old)
-        $creds = [
-            'token' => $token,
-            'username' => 'testuser',
-            'email' => Input::get('email'),
-            'password' => Input::get('password'),
-            'password_confirmation' => Input::get('password_confirmation'),
-        ];
-
-        return Password::reset($creds, function ($user, $password) use ($creds) {
-            $user->setPassword(Hash::make($password));
-            $repo = RepositoryFactory::GetUserRepository();
-            $repo->save($user);
-
-            return Redirect::route('sessions.create');
-        });
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function show($id) {
-        //
     }
 
     /**
@@ -90,11 +51,37 @@ class PasswordResetsController extends \BaseController {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int $id
+     * @param  string $token
      * @return Response
      */
-    public function update($id) {
-        //
+    public function update($token) {
+        $creds = [
+            'token' => $token,
+            'username' => 'testuser',
+            'email' => Input::get('email'),
+            'password' => Input::get('password'),
+            'password_confirmation' => Input::get('password_confirmation'),
+        ];
+
+        $something = Password::reset($creds, function ($user, $password) use ($creds) {
+            $user->setPassword(Hash::make($password));
+            $repo = RepositoryFactory::GetUserRepository();
+            $repo->save($user);
+
+            return Redirect::route('sessions.create');
+        });
+
+        $message = 'Invalid Password';
+        if ($something === PasswordBroker::INVALID_TOKEN) {
+            $message = 'Your session expired. Please fill request another password reset';
+            return Redirect::route('password_resets.create')->with('flash_message', $message);
+        } else if ($something === PasswordBroker::INVALID_PASSWORD) {
+            if (count($creds['password'] < 6)) { $message = 'Password must be at lesat 6 characters'; }
+            return Redirect::back()->with('flash_message', $message)->withInput();
+        }
+
+
+        return Redirect::home()->with('flash_message', 'Your credentials have been updated');
     }
 
     /**

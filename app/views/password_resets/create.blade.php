@@ -12,5 +12,10 @@
         {{ Form::submit('Reset') }}
     </div>
     {{ Form::close() }}
+
+@if (Session::has('error'))
+<p>{{ Session::get('reason') }}</p>
+@endif
+
 @stop
 

@@ -19,6 +19,6 @@ Route::get('logout', 'SessionsController@destroy');
 Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
 Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
-Route::post('password_resets/reset/{token}', 'PasswordResetsController@reset');
-Route::resource('password_resets', 'PasswordResetsController');
+Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
+Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 

@@ -5,11 +5,12 @@
     {{ Form::open() }}
 
         <h1>Password Reset Form</h1>
+        <p>Passwords must be AT LEAST 6 characters in length:</p>
         {{ Form::hidden('token', $token) }}
 
         <div>
             {{ Form::label('email', 'Email Address:') }}
-            {{ Form::text('email') }}
+            {{ Form::text('email', null, ['required' => true]) }}
         </div>
 
         <div>
@@ -27,8 +28,7 @@
         </div>
     {{ Form::close() }}
 
-    @if (Session::has('error'))
-        <p>{{ Session::get('reason') }}</p>
-    @endif
+
+
 
 @stop
