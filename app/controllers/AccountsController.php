@@ -21,8 +21,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function index() {
-        $params = Input::all();
-        return $this->accountRepo->all();
+        return 'Accounts';
     }
 
     /**
@@ -46,22 +45,23 @@ class AccountsController extends \BaseController {
     /**
      * Display the specified resource.
      *
-     * @param  $searchType
+     * @param  $id
      * @return Response
      */
-    public function show($searchType) {
-        $success = false;
-        $array = array();
-
-        try {
-            $success = true;
-            $array['data'] = $this->accountRepo->find($searchType, Input::all());
-        } catch (Exception $e) {
-            $success = false;
-        }
-
-        $array['status'] = $success;
-        return $array;
+    public function show($id) {
+        return "show {$id}";
+//        $success = false;
+//        $array = array();
+//
+//        try {
+//            $success = true;
+//            $array['data'] = $this->accountRepo->find($id, Input::all());
+//        } catch (Exception $e) {
+//            $success = false;
+//        }
+//
+//        $array['status'] = $success;
+//        return $array;
     }
 
     /**
@@ -91,7 +91,7 @@ class AccountsController extends \BaseController {
      * @return Response
      */
     public function destroy($id) {
-        //
+        return "destroy {$id}";
     }
 
     /**
