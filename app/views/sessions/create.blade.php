@@ -18,6 +18,7 @@
 
     <li>
         {{ Form::submit() }}
+        {{ link_to_route('password_resets.create', 'Forgot your password') }}
     </li>
 </ul>
 

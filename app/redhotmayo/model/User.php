@@ -1,6 +1,8 @@
 <?php namespace redhotmayo\model;
 
-class User extends DataObject {
+use Illuminate\Auth\Reminders\RemindableInterface;
+
+class User extends DataObject implements RemindableInterface {
     private $username;
     private $password;
     private $email;
@@ -83,4 +85,13 @@ class User extends DataObject {
         return $usr;
     }
 
-} 
+    /**
+     * Get the e-mail address where password reminders are sent.
+     *
+     * @return string
+     */
+    public function getReminderEmail() {
+        dd($this);
+        return $this->email;
+    }
+}
