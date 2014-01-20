@@ -32,18 +32,7 @@ class PasswordResetsController extends \BaseController {
     }
 
     public function resetPasswordForm($token) {
-        return View::make('password_resets.reset')
-                   ->withToken($token);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function edit($id) {
-        //
+        return View::make('password_resets.reset')->withToken($token);
     }
 
     /**
@@ -78,17 +67,6 @@ class PasswordResetsController extends \BaseController {
         }
 
 
-        return Redirect::home()->with('flash_message', 'Your credentials have been updated');
+        return Redirect::route('login')->with('flash_message', 'Your credentials have been updated');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return Response
-     */
-    public function destroy($id) {
-        //
-    }
-
 }

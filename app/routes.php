@@ -14,8 +14,8 @@ Route::get('profile', function() {
 Route::resource('accounts', 'AccountsController');
 Route::post('/accounts/create', 'AccountsController@upload');
 
-Route::get('login', 'SessionsController@create');
-Route::get('logout', 'SessionsController@destroy');
+Route::get('login', array('as' => 'login', 'uses' => 'SessionsController@create'));
+Route::get('logout', array('as' => 'logout', 'uses' => 'SessionsController@destroy'));
 Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
 Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
