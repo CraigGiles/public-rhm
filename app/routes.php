@@ -3,6 +3,7 @@
 use Bogardo\Mailgun\Facades\Mailgun;
 
 Route::get('/', ['as' => 'home', function() {
+    dd(App::environment());
     return 'Home page';
 }]);
 
