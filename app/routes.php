@@ -5,6 +5,7 @@ Route::get('/', ['as' => 'home', function() {
 }]);
 
 // Mobile API
+Route::post('/api/authorize/', 'redhotmayo\api\controllers\ApiController@authorize');
 Route::get('/api/accounts/search', 'redhotmayo\api\controllers\ApiAccountsController@search');
 Route::get('/api/accounts/distance', 'redhotmayo\api\controllers\ApiAccountsController@distance');
 Route::get('/api/accounts/delete', 'redhotmayo\api\controllers\ApiAccountsController@delete');
