@@ -22,7 +22,7 @@ class UserRepositorySQL implements UserRepository {
      * @param $parameters
      * @return mixed
      */
-    public function find($search, $parameters) {
+    public function find($parameters) {
         // TODO: Implement find() method.
     }
 
