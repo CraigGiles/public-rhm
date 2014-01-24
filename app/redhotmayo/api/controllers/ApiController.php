@@ -7,6 +7,7 @@ use redhotmayo\facade\ApiAuthorizer;
 class ApiController extends BaseController {
 
     public function authorize() {
-        ApiAuthorizer::authorize(Input::all());
+        $response = ApiAuthorizer::authorize(Input::all());
+        return $response;
     }
 } 

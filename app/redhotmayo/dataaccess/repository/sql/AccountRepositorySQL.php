@@ -228,8 +228,11 @@ class AccountRepositorySQL implements AccountRepository {
      * @return mixed
      */
     public function find($parameters) {
-        $constraints = $this->setupSearchConstraints($parameters);
-        $order = $this->setupOrderBy($parameters);
+        $searchParameters = $this->filterSearchParameters($parameters);
+        $sortParams = $this->filterSortParams($parameters);
+
+        $constraints = $this->setupSearchConstraints($searchParameters);
+        $order = $this->setupOrderBy($sortParams);
 
         $cols = array_merge(AccountSQL::GetColumns());
 
@@ -302,11 +305,6 @@ class AccountRepositorySQL implements AccountRepository {
                     $return[] = new Constraint(AccountSQL::C_USER, '=', intval($value));
                     break;
 
-                case 'sort':
-                    if ($value === 'createdAt') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
-                    if ($value === 'weeklyOpportunity') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_WEEKLY_OPPORTUNITY, '>', 'desc');
-                    break;
-
                 default:
                     throw new InvalidArgumentException("{$param} is not a valid parameter");
             }
@@ -316,13 +314,13 @@ class AccountRepositorySQL implements AccountRepository {
     }
 
     private function setupOrderBy($parameters) {
-//        foreach ($parameters as $param => $value) {
-//            switch ($param) {
-//                case 'sort':
-//                    if ($value === 'createdAt') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'asc');
-//                    if ($value === 'weeklyOpportunity') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_WEEKLY_OPPORTUNITY, '>', 'desc');
-//            }
-//        }
+        foreach ($parameters as $param => $value) {
+            switch ($param) {
+                case 'sort':
+                    if ($value === 'createdAt') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_CREATED_AT, '>', 'desc');
+                    if ($value === 'weeklyOpportunity') return new Constraint(AccountSQL::TABLE_NAME .'.'. AccountSQL::C_WEEKLY_OPPORTUNITY, '>', 'desc');
+            }
+        }
     }
 
     /**
@@ -367,5 +365,44 @@ class AccountRepositorySQL implements AccountRepository {
         }
 
         return $notes;
+    }
+
+    private function filterSortParams($parameters) {
+        $array = array();
+
+        foreach ($parameters as $key => $param) {
+            if ($key === 'sort' && in_array($param, $this->getValidSortParams())) {
+                $array[$key] = $param;
+            }
+        }
+
+        return $array;
+    }
+
+    private function filterSearchParameters($parameters) {
+        $array = array();
+        foreach ($parameters as $key => $param) {
+            if (in_array($key, $this->getValidSearchParameters())) {
+                $array[$key] = $param;
+            }
+        }
+
+        return $array;
+    }
+
+    private function getValidSearchParameters() {
+        return array(
+            'account',
+            'targeted',
+            'zipcode',
+            'user'
+        );
+    }
+
+    private function getValidSortParams() {
+        return array(
+            'createdAt',
+            'weeklyOpportunity'
+        );
     }
 }

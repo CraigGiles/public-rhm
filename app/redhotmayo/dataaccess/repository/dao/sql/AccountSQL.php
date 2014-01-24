@@ -58,6 +58,8 @@ class AccountSQL implements AccountDAO {
             self::TABLE_NAME . '.' . self::C_WEBSITE,
             self::TABLE_NAME . '.' . self::C_IS_TARGET_ACCOUNT,
             self::TABLE_NAME . '.' . self::C_IS_MASTER,
+            self::TABLE_NAME . '.' . self::C_CREATED_AT,
+            self::TABLE_NAME . '.' . self::C_UPDATED_AT,
         );
     }
 
