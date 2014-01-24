@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Config;
 
-class ApiAccountsControllerTest extends TestCase {
+class ApiAccountControllerTest extends TestCase {
 
     public function test_testaccount() {
         $json = Config::get('testdata.testaccount01');

@@ -7,6 +7,22 @@ class Note extends DataObject {
     private $action;
     private $author;
 
+    public static function FromStdClass($note) {
+        $accountId = isset($note->accountId) ? intval($note->accountId) : null;
+        $contactId = isset($note->contactId) ? intval($note->contactId) : null;
+        $action = isset($note->action) ? $note->action : null;
+        $text = $note->text;
+        $author = $note->author;
+
+        $note = new Note();
+        $note->setAccountId($accountId);
+        $note->setContactId($contactId);
+        $note->setText($text);
+        $note->setAccountId($action);
+        $note->setAuthor($author);
+        return $note;
+    }
+
     public function getNoteId() {
         return $this->getId();
     }
@@ -19,7 +35,9 @@ class Note extends DataObject {
      * @param mixed $accountId
      */
     public function setAccountId($accountId) {
-        $this->accountId = $accountId;
+        if (isset($accountId)) {
+            $this->accountId = $accountId;
+        }
     }
 
     /**
@@ -33,7 +51,9 @@ class Note extends DataObject {
      * @param mixed $contactId
      */
     public function setContactId($contactId) {
-        $this->contactId = $contactId;
+        if (isset($contactId)) {
+            $this->contactId = $contactId;
+        }
     }
 
     /**
@@ -47,7 +67,9 @@ class Note extends DataObject {
      * @param mixed $action
      */
     public function setAction($action) {
-        $this->action = $action;
+        if (isset($action)) {
+            $this->action = $action;
+        }
     }
 
     /**

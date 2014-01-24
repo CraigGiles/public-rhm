@@ -43,7 +43,6 @@ class NoteSQL {
                 self::C_CREATED_AT => date('Y-m-d H:i:s'),
                 self::C_UPDATED_AT => date('Y-m-d H:i:s'),
             ));
-
             $note->setNoteId($id);
         }
         return $id;

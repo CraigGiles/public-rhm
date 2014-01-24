@@ -4,7 +4,7 @@ use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\dataaccess\repository\AccountRepository;
 
-class ApiAccountsController extends ApiController {
+class ApiAccountController extends ApiController {
     private $accountRepo;
 
     public function __construct(AccountRepository $accounts) {

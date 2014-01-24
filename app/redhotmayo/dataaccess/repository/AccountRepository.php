@@ -42,4 +42,12 @@ interface AccountRepository extends Repository {
      * @return array Account objects
      */
     function findAllAccountsForZipcode($zipcode, $afterDate);
+
+    /**
+     *
+     *
+     * @param $note
+     * @return mixed
+     */
+    public function attachNotesToAccount($notes);
 }

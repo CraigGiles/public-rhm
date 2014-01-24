@@ -405,4 +405,19 @@ class AccountRepositorySQL implements AccountRepository {
             'weeklyOpportunity'
         );
     }
+
+    /**
+     *
+     *
+     * @param $note
+     * @return mixed
+     */
+    public function attachNotesToAccount($notes) {
+        $noteDAO = DataAccessObject::GetNoteDAO();
+        $noteDAO->save($notes);
+        /** @var Note $note */
+        foreach ($notes as $note) {
+            dd($note);
+        }
+    }
 }
