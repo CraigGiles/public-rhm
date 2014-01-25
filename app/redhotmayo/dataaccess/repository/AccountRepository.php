@@ -44,9 +44,9 @@ interface AccountRepository extends Repository {
     function findAllAccountsForZipcode($zipcode, $afterDate);
 
     /**
+     * Adds a note to the specified account
      *
-     *
-     * @param $note
+     * @param array $notes
      * @return mixed
      */
     public function attachNotesToAccount($notes);

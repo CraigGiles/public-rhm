@@ -11,7 +11,8 @@ class ApiNoteControllerTest extends TestCase {
     }
 
     public function test_getting_it_to_work() {
-        $json = Config::get('testdata.testnote01');
+//        $json = Config::get('testdata.testnote_with_no_author');
+        $json = Config::get('testdata.testnotes02');
 
         $results = $this->call('POST', 'api/notes/add', array($json));
         dd($results);

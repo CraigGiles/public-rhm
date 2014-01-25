@@ -407,17 +407,16 @@ class AccountRepositorySQL implements AccountRepository {
     }
 
     /**
+     * Adds a note to the specified account
      *
-     *
-     * @param $note
+     * @param array $notes
      * @return mixed
      */
     public function attachNotesToAccount($notes) {
-        $noteDAO = DataAccessObject::GetNoteDAO();
-        $noteDAO->save($notes);
         /** @var Note $note */
         foreach ($notes as $note) {
-            dd($note);
+            $noteDAO = DataAccessObject::GetNoteDAO();
+            $noteDAO->save($note);
         }
     }
 }

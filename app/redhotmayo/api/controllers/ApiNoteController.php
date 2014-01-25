@@ -23,9 +23,8 @@ class ApiNoteController extends BaseController {
             $stdObjects = json_decode($notesAsJson);
             $stdNotes = $stdObjects->notes;
             foreach ($stdNotes as $obj) {
-                $notes = Note::FromStdClass($obj);
+                $notes[] = Note::FromStdClass($obj);
             }
-
             $this->accountRepo->attachNotesToAccount($notes);
             $success = true;
         } catch (Exception $e) {
