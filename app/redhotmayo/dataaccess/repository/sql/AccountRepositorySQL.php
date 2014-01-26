@@ -440,4 +440,18 @@ class AccountRepositorySQL implements AccountRepository {
         $accountDAO = DataAccessObject::GetAccountDAO();
         $accountDAO->delete($accounts);
     }
+
+    /**
+     * Mark the given accounts as target accounts
+     *
+     * @param $accounts
+     */
+    public function markAccountsTargeted($accounts) {
+        if (!is_array($accounts)) {
+            $accounts = array($accounts);
+        }
+
+        $accountDAO = DataAccessObject::GetAccountDAO();
+        $accountDAO->target($accounts);
+    }
 }

@@ -58,4 +58,11 @@ interface AccountRepository extends Repository {
      * @return mixed
      */
     public function markAccountsDeleted($accounts);
+
+    /**
+     * Mark the given accounts as target accounts
+     *
+     * @param $accounts
+     */
+    public function markAccountsTargeted($accounts);
 }

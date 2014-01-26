@@ -78,7 +78,21 @@ class ApiAccountController extends ApiController {
     }
 
     public function target() {
-        dd(Input::all());
+        $array = array();
+        $success = false;
+
+        try {
+            $values = Input::get('account');
+            $accounts = explode(',', $values);
+            $this->accountRepo->markAccountsTargeted($accounts);
+
+            $success = true;
+        } catch (Exception $e) {
+            $array['message'] = $e->getMessage();
+        }
+
+        $array ['status'] = $success;
+        return $array;
     }
 
     public function update() {

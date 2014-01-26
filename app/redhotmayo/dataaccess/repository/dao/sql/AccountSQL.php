@@ -130,6 +130,14 @@ class AccountSQL implements AccountDAO {
         return $id;
     }
 
+    public function target($accounts) {
+        foreach ($accounts as $id) {
+            DB::table('accounts')
+              ->where(self::C_ID, $id)
+              ->update(array(self::C_IS_TARGET_ACCOUNT => true));
+        }
+    }
+
     public function delete($accounts) {
         foreach ($accounts as $id) {
             DB::table('accounts')
