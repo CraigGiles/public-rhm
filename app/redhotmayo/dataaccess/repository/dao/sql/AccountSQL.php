@@ -34,6 +34,7 @@ class AccountSQL implements AccountDAO {
     //class constants
     const NOTES = 'notes';
     const ADDRESS = 'address';
+    const C_DELETED = 'deleted';
 
 
     public static function GetColumns() {
@@ -129,6 +130,14 @@ class AccountSQL implements AccountDAO {
         return $id;
     }
 
+    public function delete($accounts) {
+        foreach ($accounts as $id) {
+            DB::table('accounts')
+              ->where(self::C_ID, $id)
+              ->update(array(self::C_DELETED => true));
+        }
+    }
+
     private function update(Account $account) {
         $id = $account->getAccountId();
         $values = $this->getValues($account, isset($id));
@@ -172,6 +181,7 @@ class AccountSQL implements AccountDAO {
 
         return $values;
     }
+
 
 
 }

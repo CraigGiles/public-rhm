@@ -3,6 +3,7 @@
 use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\dataaccess\repository\AccountRepository;
+use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
 use redhotmayo\model\Account;
 
 class ApiAccountController extends ApiController {
@@ -59,7 +60,21 @@ class ApiAccountController extends ApiController {
     }
 
     public function delete() {
-        dd(Input::all());
+        $array = array();
+        $success = false;
+
+        try {
+            $values = Input::get('account');
+            $accounts = explode(',', $values);
+            $this->accountRepo->markAccountsDeleted($accounts);
+
+            $success = true;
+        } catch (Exception $e) {
+            $array['message'] = $e->getMessage();
+        }
+
+        $array ['status'] = $success;
+        return $array;
     }
 
     public function target() {

@@ -50,4 +50,12 @@ interface AccountRepository extends Repository {
      * @return mixed
      */
     public function attachNotesToAccount($notes);
+
+    /**
+     * Mark the given accounts as deleted
+     *
+     * @param array $accounts
+     * @return mixed
+     */
+    public function markAccountsDeleted($accounts);
 }

@@ -426,4 +426,18 @@ class AccountRepositorySQL implements AccountRepository {
         }
     }
 
+    /**
+     * Mark the given accounts as deleted
+     *
+     * @param array $accounts
+     * @return mixed
+     */
+    public function markAccountsDeleted($accounts) {
+        if (!is_array($accounts)) {
+            $accounts = array($accounts);
+        }
+
+        $accountDAO = DataAccessObject::GetAccountDAO();
+        $accountDAO->delete($accounts);
+    }
 }
