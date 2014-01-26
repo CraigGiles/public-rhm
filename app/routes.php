@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use redhotmayo\api\controllers\ApiAccountController;
+
 Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
@@ -13,7 +17,9 @@ Route::get('/api/accounts/search', 'redhotmayo\api\controllers\ApiAccountControl
 Route::get('/api/accounts/distance', 'redhotmayo\api\controllers\ApiAccountController@distance');
 Route::get('/api/accounts/delete', 'redhotmayo\api\controllers\ApiAccountController@delete');
 Route::get('/api/accounts/target', 'redhotmayo\api\controllers\ApiAccountController@target');
-Route::post('/api/accounts/update', 'redhotmayo\api\controllers\ApiAccountController@update');
+//Route::post('/api/accounts/update', 'redhotmayo\api\controllers\ApiAccountController@store');
+Route::post('/api/accounts/update', ApiAccountController::UPDATE);
+
 
 // Notes
 Route::post('/api/notes/add', 'redhotmayo\api\controllers\ApiNoteController@add');

@@ -82,16 +82,22 @@ class AccountRepositorySQL implements AccountRepository {
      * @return bool
      */
     public function save($account) {
+        $accountDAO = DataAccessObject::GetAccountDAO();
+        $addressDAO = DataAccessObject::GetAddressDAO();
+        $noteDAO = DataAccessObject::GetNoteDAO();
+
+        $accountId = $account->getAccountId();
+
+        if (isset($accountId)) {
+            return $accountDAO->save($account);
+        }
+
         DB::beginTransaction();
         $saved = false;
         try {
-            $accountDAO = DataAccessObject::GetAccountDAO();
-            $addressDAO = DataAccessObject::GetAddressDAO();
-            $noteDAO = DataAccessObject::GetNoteDAO();
 
             $userId = $account->getUserID();
             $master = !isset($userId);
-
             //only save if account is a master account or the user doesn't already have it
             if ($master || (!$master && !$this->isAccountSubscribedToUser($account, $userId))) {
                 //save address
@@ -419,4 +425,5 @@ class AccountRepositorySQL implements AccountRepository {
             $noteDAO->save($note);
         }
     }
+
 }

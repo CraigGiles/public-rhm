@@ -28,7 +28,57 @@ class Account extends DataObject {
     private $notes;
     private $isMaster;
 
-    public function getAcountId() {
+    public static function FromStdClass($account) {
+        $userId = isset($account->userId) ? $account->userId : null;
+        $weeklyOpportunity = isset($account->weeklyOpportunity) ? $account->weeklyOpportunity : null;
+        $estimatedAnnualSales = isset($account->estimatedAnnualSales) ? $account->estimatedAnnualSales : null;
+        $owner = isset($account->owner) ? $account->owner : null;
+        $mobilePhone = isset($account->mobilePhone) ? $account->mobilePhone : null;
+        $websiteAddress = isset($account->websiteAddress) ? $account->websiteAddress : null;
+        $isTargetAccount = isset($account->isTargetAccount) ? $account->isTargetAccount : null;
+        $accountName = isset($account->accountName) ? $account->accountName : null;
+        $operatorType = isset($account->operatorType) ? $account->operatorType : null;
+        $address = isset($account->address) ? $account->address : null;
+        $contactName = isset($account->contactName) ? $account->contactName : null;
+        $phone = isset($account->phone) ? $account->phone : null;
+        $serviceType = isset($account->serviceType) ? $account->serviceType : null;
+        $cuisineType = isset($account->cuisineType) ? $account->cuisineType : null;
+        $seatCount = isset($account->seatCount) ? $account->seatCount : null;
+        $averageCheck = isset($account->averageCheck) ? $account->averageCheck : null;
+        $emailAddress = isset($account->emailAddress) ? $account->emailAddress : null;
+        $openDate = isset($account->openDate) ? $account->openDate : null;
+        $notes = isset($account->notes) ? $account->notes : null;
+        $isMaster = isset($account->isMaster) ? $account->isMaster : null;
+        $id = isset($account->id) ? $account->id : null;
+
+        $obj = new Account();
+        $obj->setUserID($userId);
+        $obj->setWeeklyOpportunity($weeklyOpportunity);
+        $obj->setEstimatedAnnualSales($estimatedAnnualSales);
+        $obj->setOwner($owner);
+        $obj->setMobilePhone($mobilePhone);
+        $obj->setWebsite($websiteAddress);
+        $obj->setIsTargetAccount($isTargetAccount);
+        $obj->setAccountName($accountName);
+        $obj->setOperatorType($operatorType);
+        $obj->setAddress($address);
+        $obj->setContactName($contactName);
+        $obj->setPhone($phone);
+        $obj->setServiceType($serviceType);
+        $obj->setCuisineType($cuisineType);
+        $obj->setSeatCount($seatCount);
+        $obj->setAverageCheck($averageCheck);
+        $obj->setEmailAddress($emailAddress);
+        $obj->setOpenDate($openDate);
+        $obj->setIsMaster($isMaster);
+        $obj->setAccountId($id);
+
+        //todo: notes are not in this list
+        //todo: address isn't in this list
+        return $obj;
+    }
+
+    public function getAccountId() {
         return $this->getId();
     }
 

@@ -40,8 +40,8 @@ class ApiNoteController extends BaseController {
 
         try {
             $conditions = Input::all();
-            $success = true;
             $array['data'] = $this->accountRepo->find($conditions);
+            $success = true;
         } catch (Exception $e) {
             $success = false;
             $array['message'] = $e->getMessage();

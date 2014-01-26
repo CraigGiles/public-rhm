@@ -3,12 +3,39 @@
 use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\dataaccess\repository\AccountRepository;
+use redhotmayo\model\Account;
 
 class ApiAccountController extends ApiController {
+    const UPDATE = 'redhotmayo\api\controllers\ApiAccountController@store';
     private $accountRepo;
 
     public function __construct(AccountRepository $accounts) {
         $this->accountRepo = $accounts;
+    }
+
+    public function store() {
+        $array = array();
+        $unsaved = array();
+        $success = false;
+
+        try {
+            $accountsAsJson = Input::all();
+            $accountsAsJson = $accountsAsJson[0];
+            $stdObjects = json_decode($accountsAsJson);
+            $stdAccounts = $stdObjects->accounts;
+            foreach ($stdAccounts as $account) {
+                $save = Account::FromStdClass($account);
+                $unsaved[] = $this->accountRepo->save($save);
+            }
+
+            $success = true;
+        } catch (Exception $e) {
+            $array['message'] = $e->getMessage();
+        }
+
+        $array['status'] = $success;
+
+        return $array;
     }
 
     public function search() {

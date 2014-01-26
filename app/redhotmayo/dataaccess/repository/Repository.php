@@ -27,10 +27,10 @@ interface Repository {
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
-     * @param $user
+     * @param $object
      * @return bool
      */
-    public function save($user);
+    public function save($object);
 
     /**
      * Save all objects to the database returning any objects that were unsuccessful.

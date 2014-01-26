@@ -66,4 +66,14 @@ class UserRepositorySQL implements UserRepository {
     function convertRecordsToJsonObjects($records) {
         // TODO: Implement convertRecordsToJsonObjects() method.
     }
+
+    /**
+     *
+     *
+     * @param $user
+     * @return mixed
+     */
+    public function update($user) {
+        // TODO: Implement update() method.
+    }
 }

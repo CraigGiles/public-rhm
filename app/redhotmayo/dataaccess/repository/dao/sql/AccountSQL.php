@@ -88,39 +88,89 @@ class AccountSQL implements AccountDAO {
      * @return int|null
      */
     public function save(Account $account) {
-        $id = null;
+        $id = $account->getAccountId();
+        if (isset($id)) {
+            //update account
+            $this->update($account);
+        } else {
+            //save account
+            $userId = $account->getUserID();
+            $master = !isset($userId);
+            $address = $account->getAddress();
+
+            $id = DB::table('accounts')
+                    ->insertGetId(array(
+                        self::C_USER => $userId,
+                        self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
+                        self::C_ACCOUNT_NAME => $account->getAccountName(),
+                        self::C_OPERATOR_TYPE => $account->getOperatorType(),
+                        self::C_ADDRESS_ID => $address->getAddressId(),
+                        self::C_CONTACT_NAME => $account->getContactName(),
+                        self::C_PHONE => $account->getPhone(),
+                        self::C_SERVICE_TYPE => $account->getServiceType(),
+                        self::C_CUISINE_TYPE => $account->getCuisineType(),
+                        self::C_SEAT_COUNT => $account->getSeatCount(),
+                        self::C_AVERAGE_CHECK => $account->getAverageCheck(),
+                        self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
+                        self::C_OPEN_DATE => $account->getOpenDate(),
+                        self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
+                        self::C_OWNER => $account->getOwner(),
+                        self::C_MOBILE_PHONE => $account->getMobilePhone(),
+                        self::C_WEBSITE => $account->getWebsite(),
+                        self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
+                        self::C_IS_MASTER => $master,
+                        self::C_CREATED_AT => date('Y-m-d H:i:s'),
+                        self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+                    )
+                );
+            $account->setAccountId($id);
+        }
+
+        return $id;
+    }
+
+    private function update(Account $account) {
+        $id = $account->getAccountId();
+        $values = $this->getValues($account, isset($id));
+        DB::table('accounts')
+            ->where(self::C_ID, $id)
+            ->update($values);
+    }
+
+    private function getValues(Account $account, $updating=false) {
+        //save account
         $userId = $account->getUserID();
         $master = !isset($userId);
         $address = $account->getAddress();
 
-        $id = DB::table('accounts')
-                ->insertGetId(array(
-                    self::C_USER => $userId,
-                    self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
-                    self::C_ACCOUNT_NAME => $account->getAccountName(),
-                    self::C_OPERATOR_TYPE => $account->getOperatorType(),
-                    self::C_ADDRESS_ID => $address->getAddressId(),
-                    self::C_CONTACT_NAME => $account->getContactName(),
-                    self::C_PHONE => $account->getPhone(),
-                    self::C_SERVICE_TYPE => $account->getServiceType(),
-                    self::C_CUISINE_TYPE => $account->getCuisineType(),
-                    self::C_SEAT_COUNT => $account->getSeatCount(),
-                    self::C_AVERAGE_CHECK => $account->getAverageCheck(),
-                    self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
-                    self::C_OPEN_DATE => $account->getOpenDate(),
-                    self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
-                    self::C_OWNER => $account->getOwner(),
-                    self::C_MOBILE_PHONE => $account->getMobilePhone(),
-                    self::C_WEBSITE => $account->getWebsite(),
-                    self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
-                    self::C_IS_MASTER => $master,
-                    self::C_CREATED_AT => date('Y-m-d H:i:s'),
-                    self::C_UPDATED_AT => date('Y-m-d H:i:s'),
-                )
-            );
-        $account->setAccountId($id);
+        $values = [
+            self::C_USER => $userId,
+            self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
+            self::C_ACCOUNT_NAME => $account->getAccountName(),
+            self::C_OPERATOR_TYPE => $account->getOperatorType(),
+            self::C_CONTACT_NAME => $account->getContactName(),
+            self::C_PHONE => $account->getPhone(),
+            self::C_SERVICE_TYPE => $account->getServiceType(),
+            self::C_CUISINE_TYPE => $account->getCuisineType(),
+            self::C_SEAT_COUNT => $account->getSeatCount(),
+            self::C_AVERAGE_CHECK => $account->getAverageCheck(),
+            self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
+            self::C_OPEN_DATE => $account->getOpenDate(),
+            self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
+            self::C_OWNER => $account->getOwner(),
+            self::C_MOBILE_PHONE => $account->getMobilePhone(),
+            self::C_WEBSITE => $account->getWebsite(),
+            self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
+            self::C_IS_MASTER => $master,
+            self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+        ];
 
-        return $id;
+        if (!$updating) {
+            $values[self::C_ADDRESS_ID] = $address->getAddressId();
+            $values[self::C_CREATED_AT] = date('Y-m-d H:i:s');
+        }
+
+        return $values;
     }
 
 
