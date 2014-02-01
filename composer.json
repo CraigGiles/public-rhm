@@ -9,8 +9,8 @@
         "PHPOffice/PHPExcel": "*"
 	},
     "require-dev": {
-        "phpunit/phpunit": "3.9.*@dev",
-        "mockery/mockery": "dev-master@dev"
+        "mockery/mockery": "dev-master@dev",
+        "codeception/codeception": "dev-master"
     },
 	"autoload": {
 		"classmap": [
