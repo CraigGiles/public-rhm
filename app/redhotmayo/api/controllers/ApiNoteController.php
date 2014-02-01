@@ -7,6 +7,12 @@ use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\model\Note;
 
 class ApiNoteController extends BaseController {
+    const ADD = 'redhotmayo\api\controllers\ApiNoteController@add';
+
+    const R_DATA = 'data';
+    const R_STATUS = 'status';
+    const R_MESSAGE = 'message';
+
     private $accountRepo;
 
     public function __construct(AccountRepository $accounts) {

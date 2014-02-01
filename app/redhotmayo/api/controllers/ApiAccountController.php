@@ -3,11 +3,16 @@
 use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\dataaccess\repository\AccountRepository;
-use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
 use redhotmayo\model\Account;
 
 class ApiAccountController extends ApiController {
     const UPDATE = 'redhotmayo\api\controllers\ApiAccountController@store';
+    const TARGET = 'redhotmayo\api\controllers\ApiAccountController@target';
+    const DELETE = 'redhotmayo\api\controllers\ApiAccountController@delete';
+    const DISTANCE = 'redhotmayo\api\controllers\ApiAccountController@distance';
+    const SEARCH = 'redhotmayo\api\controllers\ApiAccountController@search';
+    const AUTHORIZE = 'redhotmayo\api\controllers\ApiAccountController@authorize';
+
     private $accountRepo;
 
     public function __construct(AccountRepository $accounts) {
