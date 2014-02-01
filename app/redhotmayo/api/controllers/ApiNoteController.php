@@ -34,10 +34,10 @@ class ApiNoteController extends BaseController {
             $this->accountRepo->attachNotesToAccount($notes);
             $success = true;
         } catch (Exception $e) {
-            $array['message'] = $e->getMessage();
+            $array[self::R_MESSAGE] = $e->getMessage();
         }
 
-        $array['status'] = $success;
+        $array[self::R_STATUS] = $success;
         return $array;
     }
 
@@ -46,14 +46,14 @@ class ApiNoteController extends BaseController {
 
         try {
             $conditions = Input::all();
-            $array['data'] = $this->accountRepo->find($conditions);
+            $array[self::R_DATA] = $this->accountRepo->find($conditions);
             $success = true;
         } catch (Exception $e) {
             $success = false;
-            $array['message'] = $e->getMessage();
+            $array[self::R_MESSAGE] = $e->getMessage();
         }
 
-        $array['status'] = $success;
+        $array[self::R_STATUS] = $success;
         return $array;
     }
 
