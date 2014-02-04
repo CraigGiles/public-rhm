@@ -11,7 +11,7 @@ Route::get('/', ['as' => 'home', function() {
 
 // Mobile API
 // Authorization / Authentication
-Route::post('/api/authorize/', ApiAccountController::AUTHORIZE);
+Route::post('/api/login/', ApiSessionController::LOGIN);
 
 // Accounts
 Route::get('/api/accounts/search', ApiAccountController::SEARCH);
