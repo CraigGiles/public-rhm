@@ -11,7 +11,6 @@ class ApiAccountController extends ApiController {
     const DELETE = 'redhotmayo\api\controllers\ApiAccountController@delete';
     const DISTANCE = 'redhotmayo\api\controllers\ApiAccountController@distance';
     const SEARCH = 'redhotmayo\api\controllers\ApiAccountController@search';
-    const AUTHORIZE = 'redhotmayo\api\controllers\ApiAccountController@authorize';
 
     private $accountRepo;
 

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use redhotmayo\api\controllers\ApiAccountController;
 use redhotmayo\api\controllers\ApiNoteController;
+use redhotmayo\api\controllers\ApiSessionController;
 
 Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
@@ -11,7 +12,7 @@ Route::get('/', ['as' => 'home', function() {
 
 // Mobile API
 // Authorization / Authentication
-Route::post('/api/authorize/', ApiAccountController::AUTHORIZE);
+Route::post('/api/login/', ApiSessionController::LOGIN);
 
 // Accounts
 Route::get('/api/accounts/search', ApiAccountController::SEARCH);

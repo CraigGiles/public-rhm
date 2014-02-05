@@ -74,11 +74,18 @@ class UserSQL implements UserDAO {
      * @return mixed
      */
     public function getUser($credentials) {
+        $user = null;
 
         //todo: THis is such a hack job, teh credentials should be dynamic.. i have it coded so it finds the user based on email. FIX ME
-        $user = DB::table('users')
-            ->where('email', '=', $credentials['email'])
-            ->get();
+        if (isset($credentials['email'])) {
+            $user = DB::table('users')
+                      ->where('email', '=', $credentials['email'])
+                      ->get();
+        } else {
+            $user = DB::table('users')
+                ->where('username', '=', $credentials['username'])
+                ->get();
+        }
 
         if (isset($user) && count($user) === 1) return $user[0];
         else return null;
