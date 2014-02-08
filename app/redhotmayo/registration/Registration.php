@@ -1,9 +1,9 @@
 <?php namespace redhotmayo\registration;
 
-
-use redhotmayo\api\validator\InputValidator;
+use InvalidArgumentException;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\model\User;
+use redhotmayo\validation\Validator;
 
 class Registration {
     /**
@@ -15,43 +15,21 @@ class Registration {
         $this->userRepository = $userRepository;
     }
 
-    public function register($input) {
+    public function register($input, $validator) {
         //validate input
-        UserValidator::validate
-        //save user
-        //return message
-
-
-    }
-
-    public function apiRegistration($json) {
-        $required = [
-            'username',
-            'password',
-            'passwordConfirmation',
-            'email',
-            'deviceType',
-            'installationId',
-            'appVersion',
-        ];
-
-        $validator = new InputValidator();
-        $valid = $validator->validate($json, $required);
-
-        $this->userRepository->register($parameters);
-    }
-
-    /**
-     * @param $parameters
-     * @throws \InvalidArgumentException
-     */
-    private function validateInput($parameters) {
-
-        //extract this
-        foreach ($required as $req) {
-            if (!array_key_exists($req, $parameters)) {
-                throw new \InvalidArgumentException("{$req} was not found.");
-            }
+        if (isset($validator) && $validator instanceof Validator) {
+            $validated = $validator->validate($input, $validator->getCreationRules());
+        } else {
+            throw new InvalidArgumentException("Registration Validator must be instanceof Validator");
         }
+
+        //save user
+        if ($validated) {
+            $user = json_decode(json_encode($input));
+            return $this->userRepository->save(User::FromStdClass($user));
+        }
+
+        //user was not registered
+        return false;
     }
 }
