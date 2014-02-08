@@ -44,7 +44,8 @@ class UserRepositorySQL implements UserRepository {
      */
     public function save($user) {
         $userDAO = DataAccessObject::GetUserDAO();
-        $userDAO->save($user);
+        $id = $userDAO->save($user);
+        return (isset($id) && $id > 0);
     }
 
     /**
