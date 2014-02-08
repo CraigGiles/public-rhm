@@ -4,11 +4,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use redhotmayo\api\controllers\ApiAccountController;
 use redhotmayo\api\controllers\ApiNoteController;
+use redhotmayo\api\controllers\ApiRegistrationController;
 use redhotmayo\api\controllers\ApiSessionController;
 
 Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
+
+Route::post('/users/new', ApiRegistrationController::STORE);
 
 // Mobile API
 // Authorization / Authentication
