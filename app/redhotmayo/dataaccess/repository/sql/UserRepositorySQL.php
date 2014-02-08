@@ -3,6 +3,7 @@
 
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\model\User;
 
 class UserRepositorySQL implements UserRepository {
 
@@ -18,12 +19,12 @@ class UserRepositorySQL implements UserRepository {
     /**
      * Return an array of all objects that match the given constraints
      *
-     * @param $search
      * @param $parameters
      * @return mixed
      */
     public function find($parameters) {
-        // TODO: Implement find() method.
+        $userDAO = DataAccessObject::GetUserDAO();
+        return User::FromStdClass($userDAO->getUser($parameters));
     }
 
     /**
