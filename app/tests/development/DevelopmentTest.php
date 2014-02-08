@@ -11,18 +11,26 @@ use TestCase;
 
 class DevelopmentTest extends TestCase {
     public function test_it_should_verify_valid_api_json() {
-        $validator = new MobileRegistrationValidator();
-        $userRepo = new UserRepositorySQL();
-        $json = Config::get('testdata.register_user');
-        $input = json_decode($json, true);
-
         try {
-            $r = new Registration($userRepo);
-            $registered = $r->register($input, $validator);
-            $this->assertTrue($registered);
+            $json = Config::get('testdata.register_user');
+            $results = $this->call('post', '/api/users/new', [$json]);
+            var_dump("Got a reply");
+            dd($results);
         } catch (ValidationException $e) {
             dd($e->getErrors());
         }
+//        $validator = new MobileRegistrationValidator();
+//        $userRepo = new UserRepositorySQL();
+//        $json = Config::get('testdata.register_user');
+//        $input = json_decode($json, true);
+//
+//        try {
+//            $r = new Registration($userRepo);
+//            $registered = $r->register($input, $validator);
+//            dd($registered);
+//        } catch (ValidationException $e) {
+//            dd($e->getErrors());
+//        }
     }
 }
  

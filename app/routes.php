@@ -11,7 +11,7 @@ Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
 
-Route::post('/users/new', ApiRegistrationController::STORE);
+Route::post('/api/users/new', ApiRegistrationController::STORE);
 
 // Mobile API
 // Authorization / Authentication
