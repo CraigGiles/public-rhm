@@ -18,7 +18,7 @@ class CreateMobileDevicesTable extends Migration {
             $table->unsignedInteger('userId');
             $table->string('deviceType');
             $table->string('installationId')->unique();
-            $table->unsignedInteger('appVersion');
+            $table->string('appVersion');
 
             $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->index('userId');

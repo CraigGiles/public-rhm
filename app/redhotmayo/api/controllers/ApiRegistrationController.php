@@ -1,7 +1,6 @@
 <?php namespace redhotmayo\api\controllers;
 
 use BaseController;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\facade\Registration;
 use redhotmayo\registration\exceptions\UserExistsException;

@@ -6,9 +6,9 @@ use redhotmayo\validation\Validator;
 class RegistrationValidator extends Validator {
     public function getCreationRules() {
         return [
-            'username' => "required|min:5",
+            'username' => "required|min:5|unique:users,username",
             'password' => "required|confirmed|min:8",
-            'email' => "required|email",
+            'email' => "required|email|unique:users,email",
         ];
     }
 
