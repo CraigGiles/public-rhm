@@ -29,7 +29,7 @@ class SessionsController extends \BaseController {
             'username' => $input['username'],
             'password' => $input['password']
         ));
-dd($attempt);
+
         if ($attempt) {
             //set user's last logon to NOW()
             //redirect to intended page
