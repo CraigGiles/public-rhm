@@ -15,21 +15,24 @@ class Registration {
         $this->userRepository = $userRepository;
     }
 
-    public function register($input, $validator) {
+    /**
+     * @param $input
+     * @param RegistrationValidator $validator
+     * @return bool
+     */
+    public function register($input, RegistrationValidator $validator) {
+        $registered = false;
+
         //validate input
-        if (isset($validator) && $validator instanceof Validator) {
-            $validated = $validator->validate($input, $validator->getCreationRules());
-        } else {
-            throw new InvalidArgumentException("Registration Validator must be instanceof Validator");
-        }
+        $validated = $validator->validate($input, $validator->getCreationRules());
 
         //save user
         if ($validated) {
             $user = json_decode(json_encode($input));
-            return $this->userRepository->save(User::FromStdClass($user));
+            $registered = $this->userRepository->save(User::FromStdClass($user));
         }
 
         //user was not registered
-        return false;
+        return $registered;
     }
 }
