@@ -32,6 +32,10 @@ class Registration {
             $registered = $this->userRepository->save(User::FromStdClass($user));
         }
 
+        if ($registered) {
+            //send welcome email
+        }
+
         //user was not registered
         return $registered;
     }
