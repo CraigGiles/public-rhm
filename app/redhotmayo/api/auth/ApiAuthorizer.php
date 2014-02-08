@@ -9,7 +9,7 @@ use redhotmayo\model\User;
 
 class ApiAuthorizer {
     public function login($input) {
-        $input = json_decode($input[0]);
+        $input = json_decode($input);
 
         $attempt = Auth::attempt([
             'username' => $input->username,

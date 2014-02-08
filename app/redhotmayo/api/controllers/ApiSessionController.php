@@ -13,7 +13,7 @@ class ApiSessionController extends BaseController {
         $array = array();
 
         try {
-            $key = ApiAuthorizer::login(Input::all());
+            $key = ApiAuthorizer::login(Input::get(0));
             $array['token'] = $key;
         } catch (Exception $e) {
             $array['message'] = $e->getMessage();
