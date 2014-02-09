@@ -29,6 +29,7 @@ class ApiRegistrationController extends BaseController {
 
         try {
             $status = Registration::register($input, $this->validator);
+            dd($this->validator);
             $user = $this->userRepo->find(['username' => $input['username']]);
             $results['status'] = $status;
             $results['api_key'] = $this->session->create($user);
