@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\registration;
 
+use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\model\User;
@@ -29,6 +30,7 @@ class Registration {
         //save user
         if ($validated) {
             $user = json_decode(json_encode($input));
+            $user->password = Hash::make($user->password);
             $registered = $this->userRepository->save(User::FromStdClass($user));
         }
 
