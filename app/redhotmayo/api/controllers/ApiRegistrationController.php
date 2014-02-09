@@ -25,11 +25,10 @@ class ApiRegistrationController extends BaseController {
 
     public function store() {
         $results = [];
-        $input = json_decode(Input::get(0), true);
+        $input = Input::json()->all();
 
         try {
             $status = Registration::register($input, $this->validator);
-            dd($this->validator);
             $user = $this->userRepo->find(['username' => $input['username']]);
             $results['status'] = $status;
             $results['api_key'] = $this->session->create($user);
