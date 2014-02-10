@@ -1,7 +1,9 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use redhotmayo\dataaccess\repository\dao\UserDAO;
 use redhotmayo\model\User;
 
@@ -41,15 +43,16 @@ class UserSQL implements UserDAO {
             $this->update($user);
             return $userid;
         } else {
+            // New users must have their passwords hashed
             $id = DB::table('users')
                     ->insertGetId([
                     self::C_USER_NAME => $user->getUsername(),
-                    self::C_PASSWORD => $user->getPassword(),
+                    self::C_PASSWORD => Hash::make($user->getPassword()),
                     self::C_EMAIL => $user->getEmail(),
                     self::C_EMAIL_VERIFIED => $user->getEmailVerified(),
                     self::C_PERMISSIONS => $user->getPermissions(),
-                    self::C_CREATED_AT => date('Y-m-d H:i:s'),
-                    self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+                    self::C_CREATED_AT => Carbon::now(),
+                    self::C_UPDATED_AT => Carbon::now(),
                 ]);
 
             $user->setUserId($id);
@@ -104,15 +107,15 @@ class UserSQL implements UserDAO {
 
         $values = [
             self::C_USER_NAME => $user->getUsername(),
-            self::C_PASSWORD => $user->getPassword(),
             self::C_EMAIL => $user->getEmail(),
             self::C_EMAIL_VERIFIED => $emailVerified,
             self::C_PERMISSIONS => $user->getPermissions(),
-            self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+            self::C_UPDATED_AT => Carbon::now(),
         ];
 
         if (!$updating) {
-            $values[self::C_CREATED_AT] = date('Y-m-d H:i:s');
+            $values[self::C_PASSWORD] = Hash::make($user->getPassword());
+            $values[self::C_CREATED_AT] = Carbon::now();
         }
 
         return $values;
