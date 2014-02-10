@@ -1,29 +1,38 @@
 <?php namespace redhotmayo\model;
 
 use Illuminate\Auth\Reminders\RemindableInterface;
+use stdClass;
 
 class User extends DataObject implements RemindableInterface {
+    public static function create($input) {
+        if ($input instanceof stdClass) {
+            return User::FromStdClass($input);
+        } else if (is_array($input)) {
+            return User::FromArray($input);
+        }
+    }
+
+    public static function FromArray($input) {
+        $mobileDevice = MobileDevice::FromArray($input);
+
+        $id = isset($input['id']) ? $input['id'] : null;
+        $username = isset($input['username']) ? $input['username'] : null;
+        $email = isset($input['email']) ? $input['email'] : null;
+        $password = isset($input['password']) ? $input['password'] : null;
+        $permissions = isset($input['permissions']) ? $input['permissions'] : null;
+
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice);
+    }
+
     public static function FromStdClass($values) {
-        $usr = new User();
         $email = isset($values->email) ? $values->email : null;
         $username = isset($values->username) ? $values->username : null;
         $password = isset($values->password) ? $values->password : null;
         $id = isset($values->id) ? $values->id : null;
+        $permissions = isset($values->permissions) ? $values->permissions : null;
+        $mobileDevice = isset($values->mobileDevice) ? $values->mobileDevice : null;
 
-        $deviceType = isset($values->deviceType) ? $values->deviceType : null;
-        $installationId = isset($values->installationId) ? $values->installationId: null;
-        $appVersion = isset($values->appVersion) ? $values->appVersion: null;
-
-        $usr->setId($id);
-        $usr->setUsername($username);
-        $usr->setEmail($email);
-        $usr->setPassword($password);
-        $usr->setDeviceType($deviceType);
-        $usr->setInstallationId($installationId);
-        $usr->setAppVersion($appVersion);
-
-
-        return $usr;
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice);
     }
 
     private $username;
@@ -32,9 +41,19 @@ class User extends DataObject implements RemindableInterface {
     private $emailVerified = false;
     private $permissions;
 
-    private $deviceType;
-    private $installationId;
-    private $appVersion;
+    /** @var  MobileDevice $mobileDevice */
+    private $mobileDevice;
+
+    function __construct($id, $username, $password, $email, $permissions, $mobileDevice) {
+        $this->setUserId($id);
+        $this->setUsername($username);
+        $this->setPassword($password);
+        $this->setEmail($email);
+        $this->setPermissions($permissions);
+        $this->setMobileDevice($mobileDevice);
+    }
+
+
 
     public function getUserId() {
         return $this->getId();
@@ -123,46 +142,17 @@ class User extends DataObject implements RemindableInterface {
         $this->permissions = $permissions;
     }
 
-    /**
-     * @param mixed $appVersion
-     */
-    public function setAppVersion($appVersion) {
-        $this->appVersion = $appVersion;
+    public function setMobileDevice($mobileDevice) {
+        if ($mobileDevice instanceof MobileDevice) {
+            $this->mobileDevice = $mobileDevice;
+        }
     }
 
     /**
-     * @return mixed
+     * @return \redhotmayo\model\MobileDevice
      */
-    public function getAppVersion() {
-        return $this->appVersion;
-    }
-
-    /**
-     * @param mixed $deviceType
-     */
-    public function setDeviceType($deviceType) {
-        $this->deviceType = $deviceType;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeviceType() {
-        return $this->deviceType;
-    }
-
-    /**
-     * @param mixed $installationId
-     */
-    public function setInstallationId($installationId) {
-        $this->installationId = $installationId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getInstallationId() {
-        return $this->installationId;
+    public function getMobileDevice() {
+        return $this->mobileDevice;
     }
 
 

@@ -28,7 +28,7 @@ class ApiRegistrationController extends BaseController {
         $input = Input::json()->all();
 
         try {
-            $status = Registration::register($input, $this->validator);
+            $status = Registration::mobileRegistration($input, $this->validator);
             $user = $this->userRepo->find(['username' => $input['username']]);
             $results['status'] = $status;
             $results['api_key'] = $this->session->create($user);

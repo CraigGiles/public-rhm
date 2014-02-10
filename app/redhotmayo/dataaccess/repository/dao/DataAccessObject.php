@@ -2,6 +2,7 @@
 use redhotmayo\dataaccess\DataAccessStorage;
 use redhotmayo\dataaccess\repository\dao\sql\AccountSQL;
 use redhotmayo\dataaccess\repository\dao\sql\AddressSQL;
+use redhotmayo\dataaccess\repository\dao\sql\MobileDeviceSQL;
 use redhotmayo\dataaccess\repository\dao\sql\NoteSQL;
 use redhotmayo\dataaccess\repository\dao\sql\SubscriptionSQL;
 use redhotmayo\dataaccess\repository\dao\sql\UserSQL;
@@ -43,5 +44,11 @@ class DataAccessObject {
         $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
         if ($storage === DataAccessStorage::MYSQL)
             return new UserSQL();
+    }
+
+    public static function GetMobileDevicesDAO() {
+        $storage = DataAccessStorage::MYSQL; //TODO: later make this config based
+        if ($storage === DataAccessStorage::MYSQL)
+            return new MobileDeviceSQL();
     }
 } 

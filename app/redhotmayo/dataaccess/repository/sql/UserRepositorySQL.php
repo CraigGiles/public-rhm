@@ -1,6 +1,9 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\model\User;
@@ -24,7 +27,8 @@ class UserRepositorySQL implements UserRepository {
      */
     public function find($parameters) {
         $userDAO = DataAccessObject::GetUserDAO();
-        return User::FromStdClass($userDAO->getUser($parameters));
+        $user = $userDAO->getUser($parameters);
+        return User::FromStdClass($user);
     }
 
     /**
@@ -40,12 +44,29 @@ class UserRepositorySQL implements UserRepository {
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
-     * @param $user
+     * @param User $user
      * @return bool
      */
     public function save($user) {
-        $userDAO = DataAccessObject::GetUserDAO();
-        $id = $userDAO->save($user);
+        DB::beginTransaction();
+        try {
+            $userDAO = DataAccessObject::GetUserDAO();
+            $mobileDAO = DataAccessObject::GetMobileDevicesDAO();
+
+            $id = $userDAO->save($user);
+            $mobile = $user->getMobileDevice();
+
+            if (isset($mobile)) {
+                $mobile->setUserId($user->getUserId());
+                $mobileDAO->save($mobile);
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            Log::error($e);
+            DB::rollback();
+        }
+
         return (isset($id) && $id > 0);
     }
 
@@ -77,5 +98,10 @@ class UserRepositorySQL implements UserRepository {
      */
     public function update($user) {
         // TODO: Implement update() method.
+    }
+
+    public function registerMobileDevice($user, $input) {
+        $mobileDAO = DataAccessObject::GetMobileDevicesDAO();
+        $mobileDAO->save($mobileDevice);
     }
 }

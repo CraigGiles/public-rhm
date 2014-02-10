@@ -17,11 +17,11 @@ class Registration {
     }
 
     /**
-     * @param $input
+     * @param array $input
      * @param RegistrationValidator $validator
      * @return bool
      */
-    public function register($input, RegistrationValidator $validator) {
+    public function mobileRegistration(array $input, RegistrationValidator $validator) {
         $registered = false;
 
         //validate input
@@ -29,8 +29,8 @@ class Registration {
 
         //save user
         if ($validated) {
-            $user = json_decode(json_encode($input));
-            $registered = $this->userRepository->save(User::FromStdClass($user));
+            $user = User::FromArray($input);
+            $registered = $this->userRepository->save($user);
         }
 
         if ($registered) {
