@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
 use redhotmayo\validation\Validator;
 
@@ -12,8 +13,14 @@ class Registration {
      */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository) {
+    /**
+     * @var \redhotmayo\mailers\UserMailer
+     */
+    private $mailer;
+
+    public function __construct(UserRepository $userRepository, UserMailer $mailer) {
         $this->userRepository = $userRepository;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -31,10 +38,12 @@ class Registration {
         if ($validated) {
             $user = User::FromArray($input);
             $registered = $this->userRepository->save($user);
+
         }
 
-        if ($registered) {
-            //send welcome email
+        //send user an email
+        if ($registered && isset($user)) {
+            $this->mailer->welcome($user);
         }
 
         //user was not registered

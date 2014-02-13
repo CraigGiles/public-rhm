@@ -2,6 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
+use redhotmayo\mailers\UserMailer;
 
 class RegistrationServiceProvider extends ServiceProvider {
 
@@ -16,7 +17,9 @@ class RegistrationServiceProvider extends ServiceProvider {
         $this->app['registration'] = $this->app->share(function($app)
         {
             $userRepo = RepositoryFactory::GetUserRepository();
-            return new Registration($userRepo);
+            //todo: inject this
+            $userMailer = new UserMailer();
+            return new Registration($userRepo, $userMailer);
         });
 
         // Shortcut so developers don't need to add an Alias in app/config/app.php
