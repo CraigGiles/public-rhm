@@ -1,6 +1,5 @@
 <?php namespace redhotmayo\filters;
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use redhotmayo\facade\ApiAuthorizer;
@@ -16,10 +15,6 @@ class AuthApiFilter {
             return [
                 'status' => $authorized,
                 'message' => ApiAuthorizer::getMessage()];
-
-            return Response::json([
-                'status' => $authorized,
-                'message' => ApiAuthorizer::getMessage()], 403);
         }
     }
 } 

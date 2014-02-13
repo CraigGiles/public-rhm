@@ -24,7 +24,7 @@ class ApiAuthorizer {
                     ->first();
 
             //if session created_at is within the time limitations we set
-            // ...
+            // todo: token should expire
 
             $authorized = empty($session) ? false : true;
         }
@@ -40,7 +40,6 @@ class ApiAuthorizer {
     }
 
     public function login($input) {
-
         $attempt = Auth::attempt($input);
         if ($attempt) {
             $dao = DataAccessObject::GetUserDAO();
