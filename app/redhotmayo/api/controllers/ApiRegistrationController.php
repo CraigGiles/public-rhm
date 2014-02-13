@@ -30,12 +30,13 @@ class ApiRegistrationController extends BaseController {
         try {
             $status = Registration::mobileRegistration($input, $this->validator);
             $user = $this->userRepo->find(['username' => $input['username']]);
-            $results['status'] = $status;
             $results['api_key'] = $this->session->create($user);
         } catch (ValidationException $validationException) {
-            $results['message'] = "Validation Error:" . $validationException->getErrors();
+            $status = false;
+            $results['message'] = $validationException->getErrors()->toArray();
         }
 
+        $results['status'] = $status;
         return $results;
     }
 
