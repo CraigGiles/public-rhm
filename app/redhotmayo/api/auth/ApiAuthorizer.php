@@ -9,18 +9,13 @@ use redhotmayo\model\User;
 
 class ApiAuthorizer {
     public function login($input) {
-        $input = json_decode($input);
 
-        $attempt = Auth::attempt([
-            'username' => $input->username,
-            'password' => $input->password
-        ]);
-
+        $attempt = Auth::attempt($input);
         if ($attempt) {
             $dao = DataAccessObject::GetUserDAO();
 
             $credentials = [
-                'username' => $input->username,
+                'username' => $input['username'],
             ];
 
             $result = $dao->getUser($credentials);
