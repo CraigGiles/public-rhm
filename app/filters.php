@@ -11,6 +11,8 @@
 |
 */
 
+use redhotmayo\filters\AuthApiFilter;
+
 App::before(function($request)
 {
 	//
@@ -24,6 +26,18 @@ App::after(function($request, $response)
 
 /*
 |--------------------------------------------------------------------------
+| API Filters
+|--------------------------------------------------------------------------
+|
+| The following filters are used when going through the API layer of
+| the RedHotMAYO application
+|
+*/
+
+Route::filter('api.auth', AuthApiFilter::FILTER);
+
+/*
+|--------------------------------------------------------------------------
 | Authentication Filters
 |--------------------------------------------------------------------------
 |
@@ -32,6 +46,7 @@ App::after(function($request, $response)
 | integrates HTTP Basic authentication for quick, simple checking.
 |
 */
+
 
 Route::filter('auth', function()
 {

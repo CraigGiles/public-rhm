@@ -9,7 +9,6 @@ class ApiSessionController extends BaseController {
     const LOGIN = 'redhotmayo\api\controllers\ApiSessionController@login';
 
     public function login() {
-        $success = false;
         $array = array();
 
         try {

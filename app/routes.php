@@ -11,6 +11,9 @@ Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
 
+Route::get('/api/token_test', ['before' => 'api.auth', 'uses' => ApiAccountController::SEARCH]);
+Route::post('/api/token_test', ['before' => 'api.auth', 'uses' => ApiAccountController::SEARCH]);
+
 Route::post('/api/users/new', ApiRegistrationController::STORE);
 
 // Mobile API
