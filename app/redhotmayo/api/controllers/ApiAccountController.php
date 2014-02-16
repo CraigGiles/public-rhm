@@ -2,7 +2,9 @@
 
 use Exception;
 use Illuminate\Support\Facades\Input;
+use redhotmayo\api\auth\ApiSession;
 use redhotmayo\dataaccess\repository\AccountRepository;
+use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\model\Account;
 
 class ApiAccountController extends ApiController {
@@ -64,24 +66,49 @@ class ApiAccountController extends ApiController {
     }
 
     public function delete() {
-        $array = array();
+        $values = Input::json()->all();
+        $returnArray = [];
+        $delete = [];
+        $enable = [];
         $success = false;
 
         try {
-            $values = Input::get('account');
-            $accounts = explode(',', $values);
-            $this->accountRepo->markAccountsDeleted($accounts);
+            //get current user associated with the API token
+            $session = new ApiSession();
+            $id = $session->getIdOfAuthedUser($values['token']);
+
+            if (isset($id)) {
+                //get all accounts to be deleted from input json
+                foreach ($values as $key => $value) {
+                    if (is_numeric($key)) {
+                        if (!$value) {
+                            $enable[] = $key;
+                        } else {
+                            $delete[] = $key;
+                        }
+                    }
+                }
+
+                //get account belongs to user, mark it for deletion
+                $userDelete = $this->filterAccounts($id, $delete);
+                $userEnabled = $this->filterAccounts($id, $enable);
+
+                $this->accountRepo->markAccountsDeleted($userDelete);
+//                $this->accountRepo->restoreAccounts($userEnabled);
+            }
 
             $success = true;
         } catch (Exception $e) {
-            $array['message'] = $e->getMessage();
+            $returnArray['message'] = $e->getMessage();
         }
 
-        $array ['status'] = $success;
-        return $array;
+        $returnArray ['status'] = $success;
+        return $returnArray;
     }
 
     public function target() {
+        $input = Input::all();
+        dd($input);
         $array = array();
         $success = false;
 
@@ -101,5 +128,18 @@ class ApiAccountController extends ApiController {
 
     public function update() {
         dd(Input::all());
+    }
+
+    private function filterAccounts($id, $accountIds) {
+        $accounts = $this->accountRepo->getAllUsersAccountIds($id);
+        $valid = [];
+
+        foreach ($accountIds as $account) {
+            if (in_array($account, $accounts)) {
+                $valid[] = $account;
+            }
+        }
+
+        return $valid;
     }
 }

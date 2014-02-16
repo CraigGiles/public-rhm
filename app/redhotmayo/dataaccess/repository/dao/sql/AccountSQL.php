@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\dao\AccountDAO;
@@ -30,11 +31,11 @@ class AccountSQL implements AccountDAO {
     const C_IS_MASTER = 'isMaster';
     const C_CREATED_AT = 'created_at';
     const C_UPDATED_AT = 'updated_at';
+    const C_DELETED = 'deleted_at';
 
     //class constants
     const NOTES = 'notes';
     const ADDRESS = 'address';
-    const C_DELETED = 'deleted';
 
 
     public static function GetColumns() {
@@ -120,8 +121,8 @@ class AccountSQL implements AccountDAO {
                         self::C_WEBSITE => $account->getWebsite(),
                         self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
                         self::C_IS_MASTER => $master,
-                        self::C_CREATED_AT => date('Y-m-d H:i:s'),
-                        self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+                        self::C_CREATED_AT => Carbon::Now(),
+                        self::C_UPDATED_AT => Carbon::Now(),
                     )
                 );
             $account->setAccountId($id);
@@ -142,7 +143,7 @@ class AccountSQL implements AccountDAO {
         foreach ($accounts as $id) {
             DB::table('accounts')
               ->where(self::C_ID, $id)
-              ->update(array(self::C_DELETED => true));
+              ->update(array(self::C_DELETED => Carbon::Now()));
         }
     }
 
@@ -179,12 +180,12 @@ class AccountSQL implements AccountDAO {
             self::C_WEBSITE => $account->getWebsite(),
             self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
             self::C_IS_MASTER => $master,
-            self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+            self::C_UPDATED_AT => Carbon::Now(),
         ];
 
         if (!$updating) {
             $values[self::C_ADDRESS_ID] = $address->getAddressId();
-            $values[self::C_CREATED_AT] = date('Y-m-d H:i:s');
+            $values[self::C_CREATED_AT] = Carbon::Now();
         }
 
         return $values;

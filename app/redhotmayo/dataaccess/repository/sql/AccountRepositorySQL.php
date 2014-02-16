@@ -454,4 +454,23 @@ class AccountRepositorySQL implements AccountRepository {
         $accountDAO = DataAccessObject::GetAccountDAO();
         $accountDAO->target($accounts);
     }
+
+    /**
+     * Get all account IDs owned by user with the provided ID
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getAllUsersAccountIds($id) {
+        $accounts = DB::table('accounts')
+            ->select('id')
+            ->where('userId', '=', $id)
+            ->get();
+
+        $return = [];
+        foreach ($accounts as $account) {
+            $return[] = $account->id;
+        }
+        return $return;
+    }
 }

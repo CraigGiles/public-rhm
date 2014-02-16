@@ -65,4 +65,12 @@ interface AccountRepository extends Repository {
      * @param $accounts
      */
     public function markAccountsTargeted($accounts);
+
+    /**
+     * Get all account IDs owned by user with the provided ID
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getAllUsersAccountIds($id);
 }

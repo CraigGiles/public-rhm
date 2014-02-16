@@ -56,6 +56,7 @@ class ApiAuthorizer {
                     ->get();
 
             if (empty($id)) {
+                // TODO: Clean this up
                 $api = new ApiSession();
                 return $api->create($user);
             } else {
