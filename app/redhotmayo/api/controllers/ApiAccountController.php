@@ -68,8 +68,6 @@ class ApiAccountController extends ApiController {
     public function delete() {
         $values = Input::json()->all();
         $returnArray = [];
-        $delete = [];
-        $enable = [];
         $success = false;
 
         try {
@@ -79,19 +77,11 @@ class ApiAccountController extends ApiController {
 
             if (isset($id)) {
                 //get all accounts to be deleted from input json
-                foreach ($values as $key => $value) {
-                    if (is_numeric($key)) {
-                        if ($value === "false") {
-                            $enable[] = $key;
-                        } else {
-                            $delete[] = $key;
-                        }
-                    }
-                }
+                $accounts = $this->getAccountToggles($values);
 
                 //get account belongs to user, mark it for deletion
-                $userDelete = $this->filterAccounts($id, $delete);
-                $userEnabled = $this->filterAccounts($id, $enable);
+                $userDelete = $this->filterAccounts($id, $accounts['true']);
+                $userEnabled = $this->filterAccounts($id, $accounts['false']);
                 $this->accountRepo->markAccountsDeleted($userDelete);
                 $this->accountRepo->restoreAccounts($userEnabled);
             }
@@ -140,5 +130,22 @@ class ApiAccountController extends ApiController {
         }
 
         return $valid;
+    }
+
+    private function getAccountToggles($values) {
+        $false = [];
+        $true = [];
+
+        foreach ($values as $key => $value) {
+            if (is_numeric($key)) {
+                if ($value === "false") {
+                    $false[] = $key;
+                } else {
+                    $true[] = $key;
+                }
+            }
+        }
+
+        return ['true' => $true, 'false' => $false];
     }
 }
