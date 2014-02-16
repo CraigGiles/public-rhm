@@ -16,7 +16,7 @@ class CreateApiSessionsTable extends Migration {
             $table->increments('id');
 
             $table->unsignedInteger('userId')->index();
-            $table->string('token')->index();
+            $table->string('token', 40)->index();
 
             $table->timestamps();
         });
