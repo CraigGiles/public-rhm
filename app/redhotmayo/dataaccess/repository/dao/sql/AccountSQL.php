@@ -191,6 +191,11 @@ class AccountSQL implements AccountDAO {
         return $values;
     }
 
-
-
+    public function restore($accounts) {
+        foreach ($accounts as $id) {
+            DB::table('accounts')
+              ->where(self::C_ID, $id)
+              ->update(array(self::C_DELETED => null));
+        }
+    }
 }

@@ -60,6 +60,14 @@ interface AccountRepository extends Repository {
     public function markAccountsDeleted($accounts);
 
     /**
+     * Restore the given accounts from deleted status
+     *
+     * @param $accounts
+     * @return mixed
+     */
+    public function restoreAccounts($accounts);
+
+    /**
      * Mark the given accounts as target accounts
      *
      * @param $accounts

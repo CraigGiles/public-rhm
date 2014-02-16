@@ -81,7 +81,7 @@ class ApiAccountController extends ApiController {
                 //get all accounts to be deleted from input json
                 foreach ($values as $key => $value) {
                     if (is_numeric($key)) {
-                        if (!$value) {
+                        if ($value === "false") {
                             $enable[] = $key;
                         } else {
                             $delete[] = $key;
@@ -92,9 +92,8 @@ class ApiAccountController extends ApiController {
                 //get account belongs to user, mark it for deletion
                 $userDelete = $this->filterAccounts($id, $delete);
                 $userEnabled = $this->filterAccounts($id, $enable);
-
                 $this->accountRepo->markAccountsDeleted($userDelete);
-//                $this->accountRepo->restoreAccounts($userEnabled);
+                $this->accountRepo->restoreAccounts($userEnabled);
             }
 
             $success = true;
