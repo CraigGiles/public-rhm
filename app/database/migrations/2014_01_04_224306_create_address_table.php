@@ -18,15 +18,15 @@ class CreateAddressTable extends Migration {
 
             $table->integer('primaryNumber')->unsigned();
             $table->string('streetPredirection', 4)->nullable();
-            $table->string('streetName');
+            $table->string('streetName', 50);
             $table->string('streetSuffix', 4)->nullable();
-            $table->string('suiteType')->nullable();
-            $table->string('suiteNumber')->nullable();
-            $table->string('cityName');
-            $table->string('countyName')->nullable();
-            $table->string('stateAbbreviation');
-            $table->string('zipCode');
-            $table->string('plus4Code')->nullable();
+            $table->string('suiteType', 4)->nullable();
+            $table->string('suiteNumber', 8)->nullable();
+            $table->string('cityName', 30);
+            $table->string('countyName', 30)->nullable();
+            $table->string('stateAbbreviation', 2);
+            $table->string('zipCode', 5);
+            $table->string('plus4Code', 4)->nullable();
             $table->boolean('googleGeocoded')->default(false);
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();

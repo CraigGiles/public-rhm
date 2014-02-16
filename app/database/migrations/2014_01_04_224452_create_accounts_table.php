@@ -18,22 +18,22 @@ class CreateAccountsTable extends Migration {
 
             $table->string('accountName');
             $table->boolean('isMaster')->default(false);
-            $table->string('owner')->nullable();
-            $table->string('contactName')->nullable();
-            $table->string('emailAddress')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('mobilePhone')->nullable();
+            $table->string('owner', 30)->nullable();
+            $table->string('contactName', 30)->nullable();
+            $table->string('emailAddress', 40)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('mobilePhone', 20)->nullable();
             $table->unsignedInteger('addressId');
 
-            $table->string('cuisineType')->nullable();
-            $table->string('openDate')->nullable();
-            $table->string('operatorType')->nullable();
-            $table->string('seatCount')->nullable();
-            $table->string('serviceType')->nullable();
+            $table->string('cuisineType', 40)->nullable();
+            $table->string('openDate', 30)->nullable();
+            $table->string('operatorType', 40)->nullable();
+            $table->string('seatCount', 30)->nullable();
+            $table->string('serviceType', 30)->nullable();
             $table->unsignedInteger('weeklyOpportunity')->nullable();
             $table->unsignedInteger('estimatedAnnualSales')->nullable();
             $table->unsignedInteger('averageCheck')->nullable();
-            $table->string('website')->nullable();
+            $table->string('website', 50)->nullable();
             $table->boolean('isTargetAccount')->default(false);
 
             $table->unsignedInteger('userId')->nullable();
