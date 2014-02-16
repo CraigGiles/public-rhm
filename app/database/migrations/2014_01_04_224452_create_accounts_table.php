@@ -37,7 +37,6 @@ class CreateAccountsTable extends Migration {
             $table->boolean('isTargetAccount')->default(false);
 
             $table->unsignedInteger('userId')->nullable();
-            $table->boolean('deleted')->default(intval(false));
 
             // set up foreign key constraints
             $table->foreign('addressId')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
@@ -45,6 +44,7 @@ class CreateAccountsTable extends Migration {
             $table->index('addressId');
             $table->index('userId');
 
+            $table->softDeletes();
             $table->timestamps();
 		});
 	}

@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration {
             $table->boolean('emailVerified')->default(false);
             $table->text('permissions')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
 
             // We'll need to ensure that MySQL uses the InnoDB engine to
