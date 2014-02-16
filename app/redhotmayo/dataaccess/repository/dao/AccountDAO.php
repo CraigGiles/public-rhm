@@ -6,7 +6,8 @@ interface AccountDAO {
     /**
      * Save a record and return the objectId
      *
-     * @param Account $address
+     * @param \redhotmayo\model\Account $account
+     * @internal param \redhotmayo\model\Account $address
      * @return mixed
      */
     public function save(Account $account);

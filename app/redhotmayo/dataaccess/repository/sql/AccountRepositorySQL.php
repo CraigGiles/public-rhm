@@ -461,13 +461,13 @@ class AccountRepositorySQL implements AccountRepository {
      *
      * @param $accounts
      */
-    public function markAccountsTargeted($accounts) {
+    public function markAccountsTargeted($accounts, $targeted=true) {
         if (!is_array($accounts)) {
             $accounts = array($accounts);
         }
 
         $accountDAO = DataAccessObject::GetAccountDAO();
-        $accountDAO->target($accounts);
+        $accountDAO->target($accounts, $targeted);
     }
 
     /**

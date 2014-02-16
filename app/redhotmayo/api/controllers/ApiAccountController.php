@@ -96,15 +96,22 @@ class ApiAccountController extends ApiController {
     }
 
     public function target() {
-        $input = Input::all();
-        dd($input);
+        $values = Input::json()->all();
         $array = array();
         $success = false;
 
         try {
-            $values = Input::get('account');
-            $accounts = explode(',', $values);
-            $this->accountRepo->markAccountsTargeted($accounts);
+            //get current user associated with the API token
+            $session = new ApiSession();
+            $id = $session->getIdOfAuthedUser($values['token']);
+
+            if (isset($id)) {
+                $accounts = $this->getAccountToggles($values);
+                $target = $this->filterAccounts($id, $accounts['true']);
+                $untarget = $this->filterAccounts($id, $accounts['false']);
+                $this->accountRepo->markAccountsTargeted($target, true);
+                $this->accountRepo->markAccountsTargeted($untarget, false);
+            }
 
             $success = true;
         } catch (Exception $e) {

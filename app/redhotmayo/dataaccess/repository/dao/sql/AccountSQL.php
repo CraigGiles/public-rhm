@@ -131,11 +131,14 @@ class AccountSQL implements AccountDAO {
         return $id;
     }
 
-    public function target($accounts) {
+    public function target($accounts, $targeted=true) {
         foreach ($accounts as $id) {
             DB::table('accounts')
               ->where(self::C_ID, $id)
-              ->update(array(self::C_IS_TARGET_ACCOUNT => true));
+              ->update(array(
+                  self::C_UPDATED_AT => Carbon::Now(),
+                  self::C_IS_TARGET_ACCOUNT => $targeted
+              ));
         }
     }
 
@@ -143,7 +146,10 @@ class AccountSQL implements AccountDAO {
         foreach ($accounts as $id) {
             DB::table('accounts')
               ->where(self::C_ID, $id)
-              ->update(array(self::C_DELETED => Carbon::Now()));
+              ->update(array(
+                  self::C_UPDATED_AT => Carbon::Now(),
+                  self::C_DELETED => Carbon::Now()
+              ));
         }
     }
 
@@ -195,7 +201,10 @@ class AccountSQL implements AccountDAO {
         foreach ($accounts as $id) {
             DB::table('accounts')
               ->where(self::C_ID, $id)
-              ->update(array(self::C_DELETED => null));
+              ->update(array(
+                  self::C_UPDATED_AT => Carbon::Now(),
+                  self::C_DELETED => null)
+                );
         }
     }
 }

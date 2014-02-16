@@ -23,8 +23,8 @@ Route::post('/api/login/', ApiSessionController::LOGIN);
 // Accounts
 Route::get('/api/accounts/search', ApiAccountController::SEARCH);
 Route::get('/api/accounts/distance', ApiAccountController::DISTANCE);
-Route::post('/api/accounts/delete', ['before' => 'api.auth', 'uses' => ApiAccountController::DELETE]);//todo: change this to POST
-Route::post('/api/accounts/target', ApiAccountController::TARGET);//todo: change this to POST
+Route::post('/api/accounts/delete', ['before' => 'api.auth', 'uses' => ApiAccountController::DELETE]);
+Route::post('/api/accounts/target', ['before' => 'api.auth', 'uses' => ApiAccountController::TARGET]);
 Route::post('/api/accounts/update', ApiAccountController::UPDATE);
 
 
