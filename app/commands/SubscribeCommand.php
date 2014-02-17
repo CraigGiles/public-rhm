@@ -1,9 +1,12 @@
 <?php
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
+use redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL;
+use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\library\Timer;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
@@ -43,12 +46,17 @@ class SubscribeCommand extends Command {
     protected $description = 'Parse an XLSX spreadsheet that allows users to subscribe to cities or zipcodes';
 
     /**
+     * @var ZipcodeRepository $zipcodeRepo
+     */
+    protected $zipcodeRepo;
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct() {
         parent::__construct();
+        $this->zipcodeRepo = App::make('redhotmayo\dataaccess\repository\ZipcodeRepository');
     }
 
     /**
@@ -96,7 +104,7 @@ class SubscribeCommand extends Command {
 
                 foreach ($cities as $city) {
                     //get all zipcodes for the city and add them here
-                    $zips = array_merge($this->lookupCityZipCodes($city), $zips);
+                    $zips = array_merge($this->zipcodeRepo->getZipcodesFromCity($city), $zips);
                 }
 
                 $zips = array_unique($zips);
@@ -146,33 +154,6 @@ class SubscribeCommand extends Command {
 
 //        $excel = new LeadParser($filename);
 //        return $excel->parse();
-    }
-
-    private function lookupCityZipCodes($city) {
-        switch ($city) {
-            case 'Irvine':
-                return array(92606, 92612);
-            case 'Anaheim':
-                return array(92806, 92807);
-            case 'Hermosa Beach':
-                return array(90254);
-            case 'Long Beach':
-                return array(90802, 90803, 90810);
-            case 'Manhattan Beach':
-                return array(90266);
-            case 'Los Angeles':
-                return array(90020, 90048);
-            case 'San Francisco':
-                return array(94109, 94118, 94132, 94133);
-            case 'San Jose':
-                return array(95113, 95125, 95131);
-            case 'Alameda':
-                return array(94501);
-            case 'Brisbane':
-                return array(94005);
-            case 'Oakland':
-                return array(94607);
-        }
     }
 
     /**

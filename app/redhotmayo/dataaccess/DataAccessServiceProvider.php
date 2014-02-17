@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess;
 
 use Illuminate\Support\ServiceProvider;
+use redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL;
 
 class DataAccessServiceProvider extends ServiceProvider {
 
@@ -17,6 +18,7 @@ class DataAccessServiceProvider extends ServiceProvider {
         $this->app->bind('redhotmayo\dataaccess\repository\AddressRepository', 'AddressRepositorySQL');
         $this->app->bind('redhotmayo\dataaccess\repository\NoteRepository', 'NoteRepositorySQL');
         $this->app->bind('redhotmayo\dataaccess\repository\SubscriptionRepository', 'SubscriptionRepositorySQL');
+        $this->app->bind('redhotmayo\dataaccess\repository\ZipcodeRepository', ZipcodeRepositorySQL::SERVICE);
 
     }
 }
