@@ -3,6 +3,7 @@
 use BaseController;
 use Exception;
 use Illuminate\Support\Facades\Input;
+use redhotmayo\api\auth\ApiSession;
 use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\model\Note;
 
@@ -20,19 +21,26 @@ class ApiNoteController extends BaseController {
     }
 
     public function add() {
+        $values = Input::json()->all();
         $array = array();
         $success = false;
+        $notes = array();
         try {
-            $notes = array();
-            $notesAsJson = Input::all();
-            $notesAsJson = $notesAsJson[0];
-            $stdObjects = json_decode($notesAsJson);
-            $stdNotes = $stdObjects->notes;
-            foreach ($stdNotes as $obj) {
-                $notes[] = Note::FromStdClass($obj);
+            //get current user associated with the API token
+            $session = new ApiSession();
+            $id = $session->getIdOfAuthedUser($values['token']);
+
+            if (isset($id)) {
+                $notesArray = $values['notes'];
+
+                foreach ($notesArray as $obj) {
+                    $notes[] = Note::FromArray($obj);
+                }
+
+                $this->accountRepo->attachNotesToAccount($notes);
+                $success = true;
             }
-            $this->accountRepo->attachNotesToAccount($notes);
-            $success = true;
+
         } catch (Exception $e) {
             $array[self::R_MESSAGE] = $e->getMessage();
         }

@@ -23,6 +23,22 @@ class Note extends DataObject {
         return $note;
     }
 
+    public static function FromArray($note) {
+        $accountId = isset($note['accountId']) ? intval($note['accountId']) : null;
+        $contactId = isset($note['contactId']) ? intval($note['contactId']) : null;
+        $action = isset($note['action']) ? $note['action'] : null;
+        $text = $note['text'];
+        $author = $note['author'];
+
+        $obj = new Note();
+        $obj->setAccountId($accountId);
+        $obj->setContactId($contactId);
+        $obj->setText($text);
+        $obj->setAction($action);
+        $obj->setAuthor($author);
+        return $obj;
+    }
+
     public function getNoteId() {
         return $this->getId();
     }
