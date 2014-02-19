@@ -28,6 +28,15 @@ class Account extends DataObject {
     private $notes;
     private $isMaster;
 
+
+    public static function create($account) {
+        if ($account instanceof \stdClass) {
+            return Account::FromStdClass($account);
+        } else if (is_array($account)) {
+            return Account::FromArray($account);
+        }
+    }
+
     public static function FromStdClass($account) {
         $userId = isset($account->userId) ? $account->userId : null;
         $weeklyOpportunity = isset($account->weeklyOpportunity) ? $account->weeklyOpportunity : null;
@@ -38,7 +47,6 @@ class Account extends DataObject {
         $isTargetAccount = isset($account->isTargetAccount) ? $account->isTargetAccount : null;
         $accountName = isset($account->accountName) ? $account->accountName : null;
         $operatorType = isset($account->operatorType) ? $account->operatorType : null;
-        $address = isset($account->address) ? $account->address : null;
         $contactName = isset($account->contactName) ? $account->contactName : null;
         $phone = isset($account->phone) ? $account->phone : null;
         $serviceType = isset($account->serviceType) ? $account->serviceType : null;
@@ -47,9 +55,12 @@ class Account extends DataObject {
         $averageCheck = isset($account->averageCheck) ? $account->averageCheck : null;
         $emailAddress = isset($account->emailAddress) ? $account->emailAddress : null;
         $openDate = isset($account->openDate) ? $account->openDate : null;
-        $notes = isset($account->notes) ? $account->notes : null;
         $isMaster = isset($account->isMaster) ? $account->isMaster : null;
         $id = isset($account->id) ? $account->id : null;
+
+        $address = isset($account->address) ? $account->address : null;
+        $notes = isset($account->notes) ? $account->notes : null;
+
 
         $obj = new Account();
         $obj->setUserID($userId);
@@ -72,11 +83,22 @@ class Account extends DataObject {
         $obj->setOpenDate($openDate);
         $obj->setIsMaster($isMaster);
         $obj->setAccountId($id);
+        $obj->setAddress(Address::create($address));
 
-        //todo: notes are not in this list
-        //todo: address isn't in this list
+        if (isset($notes)) {
+            foreach ($notes as $note) {
+                $obj->addNote(Note::create($note));
+            }
+        }
+
         return $obj;
     }
+
+    private static function FromArray($account) {
+        // TODO: GHEEEETOOOOOOO
+        return Account::FromStdClass(json_decode(json_encode($account)));
+    }
+
 
     public function getAccountId() {
         return $this->getId();

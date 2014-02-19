@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\registration;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\mailers\UserMailer;
