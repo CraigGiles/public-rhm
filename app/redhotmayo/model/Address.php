@@ -24,56 +24,6 @@ class Address extends DataObject {
     private $googleGeocoded;
     private $deliveryLine;
 
-    public static function create($address) {
-        if ($address instanceof \stdClass) {
-            return Address::FromStdClass($address);
-        } else if (is_array($address)) {
-            return Address::FromArray($address);
-        }
-    }
-
-    private static function FromStdClass($address) {
-        $primaryNumber = isset($address->primaryNumber) ? $address->primaryNumber : null;
-        $streetName = isset($address->streetName) ? $address->streetName : null;
-        $streetSuffix = isset($address->streetSuffix) ? $address->streetSuffix : null;
-        $suiteType = isset($address->suiteType) ? $address->suiteType : null;
-        $suiteNumber = isset($address->suiteNumber) ? $address->suiteNumber : null;
-        $cityName = isset($address->cityName) ? $address->cityName : null;
-        $countyName = isset($address->countyName) ? $address->countyName : null;
-        $stateAbbreviation = isset($address->stateAbbreviation) ? $address->stateAbbreviation : null;
-        $zipcode = isset($address->zipcode) ? $address->zipcode : null;
-        $plus4Code = isset($address->plus4Code) ? $address->plus4Code : null;
-        $streetPredirection = isset($address->streetPredirection) ? $address->streetPredirection : null;
-        $latitude = isset($address->latitude) ? $address->latitude : null;
-        $longitude = isset($address->longitude) ? $address->longitude : null;
-        $cassVerified = isset($address->cassVerified) ? $address->cassVerified : null;
-        $googleGeocoded = isset($address->googleGeocoded) ? $address->googleGeocoded : null;
-        $deliveryLine = isset($address->deliveryLine) ? $address->deliveryLine : null;
-
-        $obj = new Address();
-        $obj->setPrimaryNumber($primaryNumber);
-        $obj->setStreetName($streetName);
-        $obj->setStreetSuffix($streetSuffix);
-        $obj->setSuiteType($suiteType);
-        $obj->setSuiteNumber($suiteNumber);
-        $obj->setCityName($cityName);
-        $obj->setCountyName($countyName);
-        $obj->setStateAbbreviation($stateAbbreviation);
-        $obj->setZipcode($zipcode);
-        $obj->setPlus4Code($plus4Code);
-        $obj->setStreetPredirection($streetPredirection);
-        $obj->setLatitude($latitude);
-        $obj->setLongitude($longitude);
-        $obj->setCassVerified($cassVerified);
-        $obj->setGoogleGeocoded($googleGeocoded);
-        $obj->setDeliveryLine($deliveryLine);
-        return $obj;
-    }
-
-    private static function FromArray($address) {
-        return Address::FromStdClass(json_decode(json_encode($address)));
-    }
-
     public function getAddressId() {
         return $this->getId();
     }

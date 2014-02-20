@@ -9,12 +9,4 @@ interface ZipcodeRepository {
      * @return array
      */
     public function getZipcodesFromCity($city);
-
-    /**
-     * Obtain a list of zipcodes for the given county
-     *
-     * @param $county
-     * @return array
-     */
-    public function getZipcodesFromCounty($county);
 }

@@ -39,14 +39,6 @@ class Note extends DataObject {
         return $obj;
     }
 
-    public static function create($note) {
-        if ($note instanceof \stdClass) {
-            return Note::FromStdClass($note);
-        } else if (is_array($note)) {
-            return Note::FromArray($note);
-        }
-    }
-
     public function getNoteId() {
         return $this->getId();
     }

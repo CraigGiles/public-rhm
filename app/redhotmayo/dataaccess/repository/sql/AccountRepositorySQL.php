@@ -68,13 +68,10 @@ class AccountRepositorySQL implements AccountRepository {
 
         $notes = $account->getNotes();
 
-        if (isset($notes)) {
-            /** @var Note $note */
-            foreach ($notes as $note) {
-                $note->setNoteId(null);
-            }
+        /** @var Note $note */
+        foreach ($notes as $note) {
+            $note->setNoteId(null);
         }
-
         return $this->save($account);
     }
 
@@ -193,10 +190,6 @@ class AccountRepositorySQL implements AccountRepository {
         $objects = array();
         $accountId = null;
         foreach ($records as $account) {
-            if ($account instanceof \stdClass) {
-                $account = json_decode(json_encode($account), true);
-            }
-
             $acct = array();
             $acct = $account;
             $accountId = $acct[AccountSQL::C_ID];
@@ -204,7 +197,7 @@ class AccountRepositorySQL implements AccountRepository {
             $acct[AccountSQL::ADDRESS] = $this->getAddressForAccount($accountId);
             $acct[AccountSQL::NOTES] = $this->getAllNotesForAccount($accountId);
 
-            $objects[] = Account::create($acct);
+            $objects[] = $acct;
         }
         return $objects;
     }
