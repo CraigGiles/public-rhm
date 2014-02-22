@@ -107,8 +107,8 @@ class ApiAccountController extends ApiController {
 
             if (isset($id)) {
                 $accounts = $this->getAccountToggles($values);
-                $target = $this->filterAccounts($id, $accounts['true']);
-                $untarget = $this->filterAccounts($id, $accounts['false']);
+                $target = isset($accounts['true']) ? $this->filterAccounts($id, $accounts['true']) : [];
+                $untarget = isset($accounts['false']) ? $this->filterAccounts($id, $accounts['false']) : [];
                 $this->accountRepo->markAccountsTargeted($target, true);
                 $this->accountRepo->markAccountsTargeted($untarget, false);
             }
@@ -145,7 +145,7 @@ class ApiAccountController extends ApiController {
 
         foreach ($values as $key => $value) {
             if (is_numeric($key)) {
-                if ($value === "false") {
+                if ($value === false) {
                     $false[] = $key;
                 } else {
                     $true[] = $key;
