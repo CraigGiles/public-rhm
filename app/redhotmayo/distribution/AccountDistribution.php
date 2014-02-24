@@ -6,11 +6,13 @@ use InvalidArgumentException;
 use redhotmayo\api\GoogleMapsAPI;
 use redhotmayo\api\SmartyStreetsAPI;
 use redhotmayo\api\TexasAMAPI;
+use redhotmayo\dataaccess\repository\CuisineRepository;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\library\CuisineMapper;
 use redhotmayo\library\ExcelParser;
 use redhotmayo\library\FoodMap;
 use redhotmayo\library\Timer;
+use redhotmayo\model\Account;
 use redhotmayo\parser\AccountParserS2;
 
 class AccountDistribution {
@@ -45,11 +47,15 @@ class AccountDistribution {
             return;
         }
 
-        $map = new FoodMap();
-        $cuisine = new CuisineMapper($map);
+        /** @var CuisineRepository $cuisineRepo */
+        $cuisineRepo = App::make('redhotmayo\dataaccess\repository\CuisineRepository');
+        $cuisine = $cuisineRepo->map('s2', 'CNT AM');
+
+        /** @var Account $account */
         foreach ($accounts as $account) {
-            $type = $cuisine->mapCuisine($account->getCuisineType());
-            $account->setCuisineType($type);
+            $type = $cuisineRepo->map('s2', $account->getCuisineType());
+            $account->setCuisineType($type->getCuisine());
+            $account->setCuisineId($type->getCuisineId());
         }
 
         $accountRepo = RepositoryFactory::GetAccountRepository();

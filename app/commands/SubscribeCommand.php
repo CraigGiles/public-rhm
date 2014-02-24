@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Console\Command;
+use illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
-use redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\library\Timer;
 use redhotmayo\model\Subscription;

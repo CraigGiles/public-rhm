@@ -1,13 +1,20 @@
 <?php namespace redhotmayo\model;
 
-
 class Cuisine extends DataObject {
     private $meta;
     private $cuisine;
 
-    function __construct($meta=null, $cuisine=null) {
+    function __construct($cuisine=null, $meta=null) {
         $this->meta = $meta;
         $this->cuisine = $cuisine;
+    }
+
+    public function getCuisineId() {
+        return $this->getId();
+    }
+
+    public function setCuisineId($id) {
+        $this->setId($id);
     }
 
     /**

@@ -27,6 +27,7 @@ class Account extends DataObject {
     private $openDate;
     private $notes;
     private $isMaster;
+    private $cuisineId;
 
     public static function FromStdClass($account) {
         $userId = isset($account->userId) ? $account->userId : null;
@@ -50,6 +51,7 @@ class Account extends DataObject {
         $notes = isset($account->notes) ? $account->notes : null;
         $isMaster = isset($account->isMaster) ? $account->isMaster : null;
         $id = isset($account->id) ? $account->id : null;
+        $cuisineId = isset($account->cuisineId) ? $account->cuisineId : null;
 
         $obj = new Account();
         $obj->setUserID($userId);
@@ -72,6 +74,7 @@ class Account extends DataObject {
         $obj->setOpenDate($openDate);
         $obj->setIsMaster($isMaster);
         $obj->setAccountId($id);
+        $obj->setCuisineId($cuisineId);
 
         //todo: notes are not in this list
         //todo: address isn't in this list
@@ -380,6 +383,20 @@ class Account extends DataObject {
         $this->isMaster = (bool)$isMaster;
     }
 
+    /**
+     * @param mixed $cuisineId
+     */
+    public function setCuisineId($cuisineId) {
+        $this->cuisineId = $cuisineId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCuisineId() {
+        return $this->cuisineId;
+    }
+
 
     public function toArray() {
         $json = (
@@ -408,4 +425,5 @@ class Account extends DataObject {
         );
         return $json;
     }
+
 }
