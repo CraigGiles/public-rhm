@@ -15,8 +15,6 @@ Route::get('/', ['as' => 'home', function() {
 Route::get('/api/token_test', ['before' => 'api.auth', 'uses' => ApiAccountController::SEARCH]);
 Route::post('/api/token_test', ['before' => 'api.auth', 'uses' => ApiAccountController::SEARCH]);
 
-Route::post('/api/users/new', ApiRegistrationController::STORE);
-
 // Mobile API
 // Authorization / Authentication
 Route::post('/api/login/', ApiSessionController::LOGIN);
@@ -35,13 +33,13 @@ Route::post('/api/notes/add', ApiNoteController::ADD);
 //TODO : ==================================================
 
 Route::post('/api/login/', ApiSessionController::LOGIN);
+Route::post('/api/users/new', ApiRegistrationController::STORE);
 
 // Mobile API
 //Route::group(array('before' => 'api.auth'), function() {
 //    Route::get('/api/accounts/search', ApiAccountController::SEARCH);
 //    Route::get('/api/accounts/distance', ApiAccountController::DISTANCE);
 //
-//    Route::post('/api/users/new', ApiRegistrationController::STORE);
 //    Route::post('/api/accounts/delete', ApiAccountController::DELETE);
 //    Route::post('/api/accounts/target', ApiAccountController::TARGET);
 //    Route::post('/api/accounts/update', ApiAccountController::UPDATE);
