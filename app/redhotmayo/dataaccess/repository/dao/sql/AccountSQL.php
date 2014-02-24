@@ -19,6 +19,7 @@ class AccountSQL implements AccountDAO {
     const C_PHONE = 'phone';
     const C_SERVICE_TYPE = 'serviceType';
     const C_CUISINE_TYPE = 'cuisineType';
+    const C_CUISINE_ID = 'cuisineId';
     const C_SEAT_COUNT = 'seatCount';
     const C_AVERAGE_CHECK = 'averageCheck';
     const C_EMAIL_ADDRESS = 'emailAddress';
@@ -50,6 +51,7 @@ class AccountSQL implements AccountDAO {
             self::TABLE_NAME . '.' . self::C_PHONE,
             self::TABLE_NAME . '.' . self::C_SERVICE_TYPE,
             self::TABLE_NAME . '.' . self::C_CUISINE_TYPE,
+            self::TABLE_NAME . '.' . self::C_CUISINE_ID,
             self::TABLE_NAME . '.' . self::C_SEAT_COUNT,
             self::TABLE_NAME . '.' . self::C_AVERAGE_CHECK,
             self::TABLE_NAME . '.' . self::C_EMAIL_ADDRESS,
@@ -111,6 +113,7 @@ class AccountSQL implements AccountDAO {
                         self::C_PHONE => $account->getPhone(),
                         self::C_SERVICE_TYPE => $account->getServiceType(),
                         self::C_CUISINE_TYPE => $account->getCuisineType(),
+                        self::C_CUISINE_ID => $account->getCuisineId(),
                         self::C_SEAT_COUNT => $account->getSeatCount(),
                         self::C_AVERAGE_CHECK => $account->getAverageCheck(),
                         self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
@@ -176,6 +179,7 @@ class AccountSQL implements AccountDAO {
             self::C_PHONE => $account->getPhone(),
             self::C_SERVICE_TYPE => $account->getServiceType(),
             self::C_CUISINE_TYPE => $account->getCuisineType(),
+            self::C_CUISINE_ID => $account->getCuisineId(),
             self::C_SEAT_COUNT => $account->getSeatCount(),
             self::C_AVERAGE_CHECK => $account->getAverageCheck(),
             self::C_EMAIL_ADDRESS => $account->getEmailAddress(),

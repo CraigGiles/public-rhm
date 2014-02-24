@@ -36,6 +36,7 @@ class CreateAccountsTable extends Migration {
             $table->string('website', 50)->nullable();
             $table->boolean('isTargetAccount')->default(false);
 
+            $table->unsignedInteger('cuisineId')->nullable();
             $table->unsignedInteger('userId')->nullable();
 
             // set up foreign key constraints

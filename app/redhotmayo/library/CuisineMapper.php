@@ -1,19 +1,17 @@
 <?php namespace redhotmayo\library;
 
+use redhotmayo\dataaccess\repository\CuisineRepository;
+
 class CuisineMapper {
     const DEFAULT_CUISINE = 'OTHER';
 
-    protected $map;
+    protected $cuisineRepo;
 
-    public function __construct(FoodMap $map) {
-        $this->map = $map->getMap();
+    public function __construct(CuisineRepository $cuisineRepo) {
+        $this->cuisineRepo = $cuisineRepo;
     }
 
-    public function mapCuisine($cuisine) {
-        $return = self::DEFAULT_CUISINE;
-        if (array_key_exists($cuisine, $this->map)) {
-            $return = strtoupper($this->map[$cuisine]);
-        }
-        return $return;
+    public function mapCuisine($source, $cuisine) {
+        return $this->cuisineRepo->map($source, $cuisine);
     }
 }
