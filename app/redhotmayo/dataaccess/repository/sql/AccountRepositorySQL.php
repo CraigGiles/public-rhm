@@ -245,7 +245,8 @@ class AccountRepositorySQL implements AccountRepository {
         /** @var Constraint $constraint */
         $db = DB::table('accounts')
           ->join('addresses', 'addresses.id', '=', 'accounts.addressId')
-          ->select($cols);
+          ->select($cols)
+          ->whereRaw('accounts.deleted_at IS NULL');
 
         foreach ($constraints as $constraint) {
             $db->where($constraint->getColumn(), $constraint->getOperator(), $constraint->getValue());
