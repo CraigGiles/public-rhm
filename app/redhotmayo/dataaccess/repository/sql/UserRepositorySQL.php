@@ -54,6 +54,7 @@ class UserRepositorySQL implements UserRepository {
             $mobileDAO = DataAccessObject::GetMobileDevicesDAO();
 
             $id = $userDAO->save($user);
+            $user->setUserId($id);
             $mobile = $user->getMobileDevice();
 
             if (isset($mobile)) {
