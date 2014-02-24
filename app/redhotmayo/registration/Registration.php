@@ -41,10 +41,10 @@ class Registration {
 
         }
 
-        //send user an email
-        if ($registered && isset($user)) {
-            $this->mailer->welcome($user);
-        }
+//        //send user an email
+//        if ($registered && isset($user)) {
+//            $this->mailer->welcome($user);
+//        }
 
         //user was not registered
         return $registered;
