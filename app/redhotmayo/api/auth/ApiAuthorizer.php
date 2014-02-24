@@ -40,7 +40,11 @@ class ApiAuthorizer {
     }
 
     public function login($input) {
-        $attempt = Auth::attempt($input);
+        $attempt = Auth::attempt([
+            'username' => $input['username'],
+            'password' => $input['password']
+        ]);
+
         if ($attempt) {
             $dao = DataAccessObject::GetUserDAO();
 
@@ -62,7 +66,8 @@ class ApiAuthorizer {
             } else {
                 return $id[0]->token;
             }
-
+        } else {
+            throw new Exception("Invalid username or password");
         }
     }
 }
