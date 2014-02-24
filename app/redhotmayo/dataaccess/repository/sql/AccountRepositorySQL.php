@@ -364,6 +364,7 @@ class AccountRepositorySQL implements AccountRepository {
     private function getAllNotesForAccount($accountId) {
         $records = DB::table('notes')
                    ->where(NoteSQL::C_ACCOUNT_ID, '=', $accountId)
+                   ->orderBy(NoteSQL::C_CREATED_AT, 'desc')
                    ->get();
 
         $notes = array();
