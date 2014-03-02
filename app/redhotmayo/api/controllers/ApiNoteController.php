@@ -28,9 +28,9 @@ class ApiNoteController extends BaseController {
         try {
             //get current user associated with the API token
             $session = new ApiSession();
-//            $id = $session->getIdOfAuthedUser($values['token']);
+            $id = $session->getIdOfAuthedUser($values['token']);
 
-//            if (isset($id)) {
+            if (isset($id)) {
                 $notesArray = $values['notes'];
 
                 foreach ($notesArray as $obj) {
@@ -39,7 +39,7 @@ class ApiNoteController extends BaseController {
 
                 $this->accountRepo->attachNotesToAccount($notes);
                 $success = true;
-//            }
+            }
 
         } catch (Exception $e) {
             $array[self::R_MESSAGE] = $e->getMessage();

@@ -50,7 +50,7 @@ class ApiAccountController extends ApiController {
     }
 
     public function distance() {
-        dd(Input::all());
+        return ['status' => false];
     }
 
     public function delete() {
