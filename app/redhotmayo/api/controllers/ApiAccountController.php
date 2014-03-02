@@ -2,6 +2,7 @@
 
 use Exception;
 use Illuminate\Support\Facades\Input;
+use redhotmayo\api\auth\AccountFilter;
 use redhotmayo\api\auth\ApiSession;
 use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
@@ -113,16 +114,9 @@ class ApiAccountController extends ApiController {
 
             $accounts = isset($input['accounts']) ? $input['accounts'] : [];
 
-            //todo:i dont like this solution, redo it
-//            $unfilteredIds = [];
-//
-//            foreach ($unfilteredAccounts as $acct) {
-//                $unfilteredIds[] = $acct['id'];
-//            }
-//
-//            $accounts = $this->filterAccountIds($id, $unfilteredIds);
-            //todo:end redo
-
+            //todo: add account filter here
+            //$accounts = $this->accountFilter->filterAccountCollection($accounts);
+            
             foreach ($accounts as $account) {
                 $save = Account::FromArray($account);
                 $unsaved[] = $this->accountRepo->save($save);
