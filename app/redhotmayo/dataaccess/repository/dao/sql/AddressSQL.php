@@ -1,6 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
-use DateTime;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\model\Address;
@@ -58,7 +58,9 @@ class AddressSQL {
      */
     public function save(Address $address) {
         $id = $address->getAddressId();
-        if (!isset($id)) {
+        if (isset($id)) {
+            $this->update($address);
+        } else {
             $id = DB::table('addresses')
                     ->insertGetId(array(
                         self::C_PRIMARY_NUMBER => $address->getPrimaryNumber(),
@@ -103,6 +105,56 @@ class AddressSQL {
         }
 
         return $unsaved;
+    }
+
+    private function update(Address $address) {
+        $update = $this->getUpdateArray($address);
+        $id = null;
+        
+        if (isset($update) && count($update) > 0) {
+            $id = DB::table('addresses')
+                    ->where(self::C_ID, '=', $address->getAddressId())
+                    ->update($update);
+        }
+
+        return $id;
+    }
+
+    private function getUpdateArray(Address $address) {
+        $array = [];
+        $primaryNumber = $address->getPrimaryNumber();
+        $streetPredirection = $address->getStreetPredirection();
+        $streetName = $address->getStreetName();
+        $streetSuffix = $address->getStreetSuffix();
+        $suiteType = $address->getSuiteType();
+        $suiteNumber = $address->getSuiteNumber();
+        $cityName = $address->getCityName();
+        $countyName = $address->getCountyName();
+        $state = $address->getStateAbbreviation();
+        $zipcode = $address->getZipcode();
+        $plus4 = $address->getPlus4Code();
+        $long = $address->getLongitude();
+        $lat = $address->getLatitude();
+        $cassVerified = $address->getCassVerified();
+        $googleGeocoded = $address->getGoogleGeocoded();
+
+        if (isset($primaryNumber)) $array[] = $primaryNumber;
+        if (isset($streetPredirection)) $array[] =  $streetPredirection;
+        if (isset($streetName)) $array[] = $streetName;
+        if (isset($streetSuffix)) $array[] = $streetSuffix;
+        if (isset($suiteType)) $array[] = $suiteType;
+        if (isset($suiteNumber)) $array[] = $suiteNumber;
+        if (isset($cityName)) $array[] = $cityName;
+        if (isset($countyName)) $array[] = $countyName;
+        if (isset($state)) $array[] = $state;
+        if (isset($zipcode)) $array[] = $zipcode;
+        if (isset($plus4)) $array[] = $plus4;
+        if (isset($long)) $array[] = $long;
+        if (isset($lat)) $array[] = $lat;
+        if (isset($cassVerified)) $array[] = $cassVerified;
+        if (isset($googleGeocoded)) $array[] = $googleGeocoded;
+
+        return $array;
     }
 
 }

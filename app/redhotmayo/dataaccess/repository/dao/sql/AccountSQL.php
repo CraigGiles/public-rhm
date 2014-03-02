@@ -1,7 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\dao\AccountDAO;
 use redhotmayo\model\Account;
@@ -134,7 +133,7 @@ class AccountSQL implements AccountDAO {
         return $id;
     }
 
-    public function target($accounts, $targeted=true) {
+    public function target($accounts, $targeted = true) {
         foreach ($accounts as $id) {
             DB::table('accounts')
               ->where(self::C_ID, $id)
@@ -160,42 +159,61 @@ class AccountSQL implements AccountDAO {
         $id = $account->getAccountId();
         $values = $this->getValues($account, isset($id));
         DB::table('accounts')
-            ->where(self::C_ID, $id)
-            ->update($values);
+          ->where(self::C_ID, $id)
+          ->update($values);
     }
 
-    private function getValues(Account $account, $updating=false) {
+    private function getValues(Account $account, $updating = false) {
         //save account
-        $userId = $account->getUserID();
-        $master = !isset($userId);
         $address = $account->getAddress();
 
+        $userId = $account->getUserID();
+        $master = !isset($userId);
+        $weeklyOpportunity = $account->getWeeklyOpportunity();
+        $accountName = $account->getAccountName();
+        $operatorType = $account->getOperatorType();
+        $contactName = $account->getContactName();
+        $phone = $account->getPhone();
+        $serviceType = $account->getServiceType();
+        $cuisineType = $account->getCuisineType();
+        $cuisineId = $account->getCuisineId();
+        $seatCount = $account->getSeatCount();
+        $averageCheck = $account->getAverageCheck();
+        $emailAddress = $account->getEmailAddress();
+        $openDate = $account->getOpenDate();
+        $estimatedAnnualSales = $account->getEstimatedAnnualSales();
+        $owner = $account->getOwner();
+        $mobilePhone = $account->getMobilePhone();
+        $website = $account->getWebsite();
+        $isTargetAccount = (bool)$account->getIsTargetAccount();
+
         $values = [
-            self::C_USER => $userId,
-            self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
-            self::C_ACCOUNT_NAME => $account->getAccountName(),
-            self::C_OPERATOR_TYPE => $account->getOperatorType(),
-            self::C_CONTACT_NAME => $account->getContactName(),
-            self::C_PHONE => $account->getPhone(),
-            self::C_SERVICE_TYPE => $account->getServiceType(),
-            self::C_CUISINE_TYPE => $account->getCuisineType(),
-            self::C_CUISINE_ID => $account->getCuisineId(),
-            self::C_SEAT_COUNT => $account->getSeatCount(),
-            self::C_AVERAGE_CHECK => $account->getAverageCheck(),
-            self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
-            self::C_OPEN_DATE => $account->getOpenDate(),
-            self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
-            self::C_OWNER => $account->getOwner(),
-            self::C_MOBILE_PHONE => $account->getMobilePhone(),
-            self::C_WEBSITE => $account->getWebsite(),
-            self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
-            self::C_IS_MASTER => $master,
             self::C_UPDATED_AT => Carbon::Now(),
         ];
+
+        if (isset($userId)) $values[self::C_USER] = $userId;
+        if (isset($weeklyOpportunity)) $values[self::C_WEEKLY_OPPORTUNITY] = $weeklyOpportunity;
+        if (isset($accountName)) $values[self::C_ACCOUNT_NAME] = $accountName;
+        if (isset($operatorType)) $values[self::C_OPERATOR_TYPE] = $operatorType;
+        if (isset($contactName)) $values[self::C_CONTACT_NAME] = $contactName;
+        if (isset($phone)) $values[self::C_PHONE] = $phone;
+        if (isset($serviceType)) $values[self::C_SERVICE_TYPE] = $serviceType;
+        if (isset($cuisineType)) $values[self::C_CUISINE_TYPE] = $cuisineType;
+        if (isset($cuisineId)) $values[self::C_CUISINE_ID] = $cuisineId;
+        if (isset($seatCount)) $values[self::C_SEAT_COUNT] = $seatCount;
+        if (isset($averageCheck)) $values[self::C_AVERAGE_CHECK] = $averageCheck;
+        if (isset($emailAddress)) $values[self::C_EMAIL_ADDRESS] = $emailAddress;
+        if (isset($openDate)) $values[self::C_OPEN_DATE] = $openDate;
+        if (isset($estimatedAnnualSales)) $values[self::C_ESTIMATED_ANNUAL_SALES] = $estimatedAnnualSales;
+        if (isset($owner)) $values[self::C_OWNER] = $owner;
+        if (isset($mobilePhone)) $values[self::C_MOBILE_PHONE] = $mobilePhone;
+        if (isset($website)) $values[self::C_WEBSITE] = $website;
+        if (isset($isTargetAccount)) $values[self::C_IS_TARGET_ACCOUNT] = $isTargetAccount;
 
         if (!$updating) {
             $values[self::C_ADDRESS_ID] = $address->getAddressId();
             $values[self::C_CREATED_AT] = Carbon::Now();
+            $values[self::C_IS_MASTER] = !isset($userId);
         }
 
         return $values;
@@ -206,8 +224,8 @@ class AccountSQL implements AccountDAO {
             DB::table('accounts')
               ->where(self::C_ID, $id)
               ->update(array(
-                  self::C_UPDATED_AT => Carbon::Now(),
-                  self::C_DELETED => null)
+                      self::C_UPDATED_AT => Carbon::Now(),
+                      self::C_DELETED => null)
                 );
         }
     }
