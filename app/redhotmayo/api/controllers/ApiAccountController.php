@@ -8,7 +8,7 @@ use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\model\Account;
 
 class ApiAccountController extends ApiController {
-    const UPDATE = 'redhotmayo\api\controllers\ApiAccountController@store';
+    const UPDATE = 'redhotmayo\api\controllers\ApiAccountController@update';
     const TARGET = 'redhotmayo\api\controllers\ApiAccountController@target';
     const DELETE = 'redhotmayo\api\controllers\ApiAccountController@delete';
     const DISTANCE = 'redhotmayo\api\controllers\ApiAccountController@distance';
@@ -21,28 +21,7 @@ class ApiAccountController extends ApiController {
     }
 
     public function store() {
-        $array = array();
-        $unsaved = array();
-        $success = false;
 
-        try {
-            $accountsAsJson = Input::all();
-            $accountsAsJson = $accountsAsJson[0];
-            $stdObjects = json_decode($accountsAsJson);
-            $stdAccounts = $stdObjects->accounts;
-            foreach ($stdAccounts as $account) {
-                $save = Account::FromStdClass($account);
-                $unsaved[] = $this->accountRepo->save($save);
-            }
-
-            $success = true;
-        } catch (Exception $e) {
-            $array['message'] = $e->getMessage();
-        }
-
-        $array['status'] = $success;
-
-        return $array;
     }
 
     public function search() {
@@ -123,7 +102,40 @@ class ApiAccountController extends ApiController {
     }
 
     public function update() {
-        dd(Input::all());
+        $array = array();
+        $unsaved = array();
+        $success = false;
+        try {
+            $input = Input::json()->all();
+            //get current user associated with the API token
+            $session = new ApiSession();
+            $id = $session->getIdOfAuthedUser($input['token']);
+
+            $accounts = isset($input['accounts']) ? $input['accounts'] : [];
+
+            //todo:i dont like this solution, redo it
+//            $unfilteredIds = [];
+//
+//            foreach ($unfilteredAccounts as $acct) {
+//                $unfilteredIds[] = $acct['id'];
+//            }
+//
+//            $accounts = $this->filterAccountIds($id, $unfilteredIds);
+            //todo:end redo
+
+            foreach ($accounts as $account) {
+                $save = Account::FromArray($account);
+                $unsaved[] = $this->accountRepo->save($save);
+            }
+
+            $success = true;
+        } catch (Exception $e) {
+            $array['message'] = $e->getMessage();
+        }
+
+        $array['status'] = $success;
+
+        return $array;
     }
 
     private function filterAccounts($id, $accountIds) {
