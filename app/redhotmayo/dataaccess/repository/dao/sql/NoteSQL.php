@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\model\Note;
@@ -30,21 +31,55 @@ class NoteSQL {
 
     /**
      * @param Note $note
+     * @return mixed
      */
     public function save(Note $note) {
         $id = $note->getNoteId();
-        if (!isset($id)) {
+        if (isset($id)) {
+            $this->update($note);
+        } else {
             $id = DB::table('notes')->insertGetId(array(
                 self::C_ACCOUNT_ID => $note->getAccountId(),
                 self::C_CONTACT_ID => $note->getContactId(),
                 self::C_ACTION => $note->getAction(),
                 self::C_AUTHOR => $note->getAuthor(),
                 self::C_TEXT => $note->getText(),
-                self::C_CREATED_AT => date('Y-m-d H:i:s'),
-                self::C_UPDATED_AT => date('Y-m-d H:i:s'),
+                self::C_CREATED_AT => Carbon::now(),
+                self::C_UPDATED_AT => Carbon::now(),
             ));
             $note->setNoteId($id);
         }
         return $id;
+    }
+
+    private function update(Note $note) {
+        $update = $this->getUpdateArray($note);
+        $id = null;
+
+        if (isset($update) && count($update) > 0) {
+            $id = DB::table('notes')
+                    ->where(self::C_ID, '=', $note->getNoteId())
+                    ->update($update);
+        }
+
+        return $id;
+
+    }
+
+    private function getUpdateArray(Note $note) {
+        $array = [];
+        $accountId = $note->getAccountId();
+        $contactId = $note->getContactId();
+        $action = $note->getAction();
+        $author = $note->getAuthor();
+        $text = $note->getText();
+
+        if (isset($accountId)) $array[] = $accountId;
+        if (isset($contactId)) $array[] =  $contactId;
+        if (isset($action)) $array[] = $action;
+        if (isset($author)) $array[] = $author;
+        if (isset($text)) $array[] = $text;
+
+        return $array;
     }
 }
