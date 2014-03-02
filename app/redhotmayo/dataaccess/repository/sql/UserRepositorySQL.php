@@ -61,7 +61,6 @@ class UserRepositorySQL implements UserRepository {
                 $mobile->setUserId($id);
                 $mobileDAO->save($mobile);
             }
-
             DB::commit();
         } catch (Exception $e) {
             Log::error($e);
