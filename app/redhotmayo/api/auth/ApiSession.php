@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use redhotmayo\api\auth\exceptions\InvalidSessionException;
 use redhotmayo\model\User;
 
 class ApiSession {
@@ -29,14 +30,21 @@ class ApiSession {
     }
 
     public function getIdOfAuthedUser($token) {
+        $id = null;
+
         if (isset($token)) {
             $userId = (array)DB::table('api_sessions')
                         ->select(self::C_USER)
                         ->where(self::C_TOKEN, '=', $token)
                         ->first();
-            return $userId[self::C_USER];
+
+            if (isset($userId[self::C_USER])) {
+                $id = $userId[self::C_USER];
+            } else {
+                throw new InvalidSessionException();
+            }
         }
 
-        return null;
+        return $id;
     }
 } 
