@@ -30,8 +30,16 @@ class ApiAccountController extends ApiController {
 
         try {
             $conditions = Input::all();
+
+            //get current user associated with the API token
+            $session = new ApiSession();
+            $userId = $session->getIdOfAuthedUser($conditions['token']);
+            unset($conditions['token']);
+
+            $conditions['userId'] = $userId;
             $success = true;
             $array['data'] = $this->accountRepo->find($conditions);
+
         } catch (Exception $e) {
             $success = false;
             $array['message'] = $e->getMessage();
@@ -116,7 +124,7 @@ class ApiAccountController extends ApiController {
 
             //todo: add account filter here
             //$accounts = $this->accountFilter->filterAccountCollection($accounts);
-            
+
             foreach ($accounts as $account) {
                 $save = Account::FromArray($account);
                 $unsaved[] = $this->accountRepo->save($save);
