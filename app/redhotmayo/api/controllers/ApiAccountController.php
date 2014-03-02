@@ -59,8 +59,8 @@ class ApiAccountController extends ApiController {
                 $accounts = $this->getAccountToggles($values);
 
                 //get account belongs to user, mark it for deletion
-                $userDelete = $this->filterAccounts($id, $accounts['true']);
-                $userEnabled = $this->filterAccounts($id, $accounts['false']);
+                $userDelete = $this->filterAccountIds($id, $accounts['true']);
+                $userEnabled = $this->filterAccountIds($id, $accounts['false']);
                 $this->accountRepo->markAccountsDeleted($userDelete);
                 $this->accountRepo->restoreAccounts($userEnabled);
             }
@@ -86,8 +86,8 @@ class ApiAccountController extends ApiController {
 
             if (isset($id)) {
                 $accounts = $this->getAccountToggles($values);
-                $target = isset($accounts['true']) ? $this->filterAccounts($id, $accounts['true']) : [];
-                $untarget = isset($accounts['false']) ? $this->filterAccounts($id, $accounts['false']) : [];
+                $target = isset($accounts['true']) ? $this->filterAccountIds($id, $accounts['true']) : [];
+                $untarget = isset($accounts['false']) ? $this->filterAccountIds($id, $accounts['false']) : [];
                 $this->accountRepo->markAccountsTargeted($target, true);
                 $this->accountRepo->markAccountsTargeted($untarget, false);
             }
@@ -138,16 +138,14 @@ class ApiAccountController extends ApiController {
         return $array;
     }
 
-    private function filterAccounts($id, $accountIds) {
+    private function filterAccountIds($id, $accountIds) {
         $accounts = $this->accountRepo->getAllUsersAccountIds($id);
         $valid = [];
-
         foreach ($accountIds as $account) {
             if (in_array($account, $accounts)) {
                 $valid[] = $account;
             }
         }
-
         return $valid;
     }
 
