@@ -29,6 +29,9 @@ class Account extends DataObject {
     private $isMaster;
     private $cuisineId;
 
+    public static function FromArray($account) {
+        return Account::FromStdClass(json_decode(json_encode($account)));
+    }
     public static function FromStdClass($account) {
         $userId = isset($account->userId) ? $account->userId : null;
         $weeklyOpportunity = isset($account->weeklyOpportunity) ? $account->weeklyOpportunity : null;
