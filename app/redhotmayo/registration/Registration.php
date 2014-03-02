@@ -38,7 +38,6 @@ class Registration {
         if ($validated) {
             $user = User::FromArray($input);
             $registered = $this->userRepository->save($user);
-
         }
 
 //        //send user an email
