@@ -226,11 +226,8 @@ class AccountRepositorySQL implements AccountRepository {
     }
 
     /**
-     * Return an array of all objects that match the given constraints
-     *
-     * @param $search
      * @param $parameters
-     * @return mixed
+     * @return array
      */
     public function find($parameters) {
         $searchParameters = $this->filterSearchParameters($parameters);
@@ -260,8 +257,8 @@ class AccountRepositorySQL implements AccountRepository {
         foreach ($records as $record) {
            $accounts[] = $this->removeNullValues($record);
         }
-        $json = $this->convertRecordsToJsonObjects($accounts);
-        return $json;
+
+        return $this->convertRecordsToJsonObjects($accounts);
     }
 
     /**
