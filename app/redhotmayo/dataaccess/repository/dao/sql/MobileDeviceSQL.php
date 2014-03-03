@@ -33,7 +33,6 @@ class MobileDeviceSQL {
      * @return int
      */
     public function save(MobileDevice $mobile) {
-        dd($mobile);
         $id = $mobile->getMobileId();
         if (isset($id)) {
             //update
