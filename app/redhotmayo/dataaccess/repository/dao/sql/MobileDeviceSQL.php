@@ -30,21 +30,23 @@ class MobileDeviceSQL {
 
     /**
      * @param MobileDevice $mobile
+     * @return int
      */
-    public function save($mobile) {
+    public function save(MobileDevice $mobile) {
+        dd($mobile);
         $id = $mobile->getMobileId();
         if (isset($id)) {
             //update
         } else {
-//            $id = DB::table('mobile_devices')->insertGetId([
-//                self::C_USER_ID => $mobile->getUserId(),
-//                self::C_DEVICE_TYPE => $mobile->getDeviceType(),
-//                self::C_INSTALLATION_ID => $mobile->getInstallationId(),
-//                self::C_APP_VERSION => $mobile->getAppVersion(),
-//                self::C_CREATED_AT => Carbon::now(),
-//                self::C_UPDATED_AT => Carbon::now(),
-//            ]);
-//            $mobile->setMobileId($id);
+            $id = DB::table('mobile_devices')->insertGetId([
+                self::C_USER_ID => $mobile->getUserId(),
+                self::C_DEVICE_TYPE => $mobile->getDeviceType(),
+                self::C_INSTALLATION_ID => $mobile->getInstallationId(),
+                self::C_APP_VERSION => $mobile->getAppVersion(),
+                self::C_CREATED_AT => Carbon::now(),
+                self::C_UPDATED_AT => Carbon::now(),
+            ]);
+            $mobile->setMobileId($id);
         }
         return $id;
     }
