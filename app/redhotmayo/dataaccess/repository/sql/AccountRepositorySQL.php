@@ -120,7 +120,6 @@ class AccountRepositorySQL implements AccountRepository {
                 $saved = true;
             }
         } catch (Exception $e) {
-            dd($e);
             DB::rollback();
             $id = null;
         }
@@ -239,7 +238,6 @@ class AccountRepositorySQL implements AccountRepository {
 
         $constraints = $this->setupSearchConstraints($searchParameters);
         $order = $this->setupOrderBy($sortParams);
-
         $cols = array_merge(AccountSQL::GetColumns());
 
         /** @var Constraint $constraint */
@@ -257,6 +255,7 @@ class AccountRepositorySQL implements AccountRepository {
         }
 
         $records = $db->get();
+
         $accounts = array();
         foreach ($records as $record) {
            $accounts[] = $this->removeNullValues($record);
@@ -308,6 +307,7 @@ class AccountRepositorySQL implements AccountRepository {
                     $return[] = new Constraint(AddressSQL::C_ZIP_CODE, '=', intval($value));
                     break;
 
+                case 'userId':
                 case 'user':
                     $return[] = new Constraint(AccountSQL::C_USER, '=', intval($value));
                     break;
@@ -400,6 +400,7 @@ class AccountRepositorySQL implements AccountRepository {
 
     private function getValidSearchParameters() {
         return array(
+            'userId',
             'account',
             'targeted',
             'zipcode',
