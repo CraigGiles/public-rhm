@@ -35,7 +35,7 @@ class MobileDeviceSQL {
     public function save(MobileDevice $mobile) {
         $id = $mobile->getMobileId();
         if (isset($id)) {
-            dd($id);
+            $this->update($mobile);
         } else {
             $id = DB::table('mobile_devices')->insertGetId([
                 self::C_USER_ID => $mobile->getUserId(),
@@ -49,4 +49,23 @@ class MobileDeviceSQL {
         }
         return $id;
     }
+
+    private function update(MobileDevice $mobile) {
+        $values = [
+            self::C_UPDATED_AT => Carbon::now(),
+        ];
+
+        $deviceType = $mobile->getDeviceType();
+        $installationId = $mobile->getInstallationId();
+        $appVersion = $mobile->getAppVersion();
+
+        if (isset($deviceType)) $values[self::C_DEVICE_TYPE] = $deviceType;
+        if (isset($installationId)) $values[self::C_INSTALLATION_ID] = $installationId;
+        if (isset($appVersion)) $values[self::C_APP_VERSION] = $appVersion;
+
+        DB::table(self::TABLE_NAME)
+            ->where(self::C_USER_ID, '=', $mobile->getUserId())
+            ->update($values);
+    }
+
 }
