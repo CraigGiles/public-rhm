@@ -35,7 +35,7 @@ class MobileDeviceSQL {
     public function save(MobileDevice $mobile) {
         $id = $mobile->getMobileId();
         if (isset($id)) {
-            //update
+            dd($id);
         } else {
             $id = DB::table('mobile_devices')->insertGetId([
                 self::C_USER_ID => $mobile->getUserId(),
