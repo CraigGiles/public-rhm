@@ -63,6 +63,7 @@ class AccountRepositorySQL implements AccountRepository {
      */
     public function subscribeAccountToUserId(Account $account, $userId) {
         $account->setUserID($userId);
+        $account->setAccountId(null);
         $address = $account->getAddress();
         $address->setAddressId(null);
 
@@ -172,9 +173,15 @@ class AccountRepositorySQL implements AccountRepository {
                       ->select($cols)
                       ->where('zipCode', '=', $zipcode)
                       ->where('accounts.updated_at', '>', $afterDate)
+//                      ->where('accounts.isMaster', '=', true)
                       ->get();
+        $convert = [];
+        foreach ($accounts as $acct) {
+            $convert[] = json_decode(json_encode($acct), true);
+        }
 
-        $objects = $this->convertRecordsToJsonObjects($accounts);
+
+        $objects = $this->convertRecordsToJsonObjects($convert);
 
         return $objects;
     }
