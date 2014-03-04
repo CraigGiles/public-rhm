@@ -42,7 +42,6 @@ class Account extends DataObject {
         $isTargetAccount = isset($account->isTargetAccount) ? $account->isTargetAccount : null;
         $accountName = isset($account->accountName) ? $account->accountName : null;
         $operatorType = isset($account->operatorType) ? $account->operatorType : null;
-        $address = isset($account->address) ? $account->address : null;
         $contactName = isset($account->contactName) ? $account->contactName : null;
         $phone = isset($account->phone) ? $account->phone : null;
         $serviceType = isset($account->serviceType) ? $account->serviceType : null;
@@ -51,10 +50,16 @@ class Account extends DataObject {
         $averageCheck = isset($account->averageCheck) ? $account->averageCheck : null;
         $emailAddress = isset($account->emailAddress) ? $account->emailAddress : null;
         $openDate = isset($account->openDate) ? $account->openDate : null;
-        $notes = isset($account->notes) ? $account->notes : null;
         $isMaster = isset($account->isMaster) ? $account->isMaster : null;
         $id = isset($account->id) ? $account->id : null;
         $cuisineId = isset($account->cuisineId) ? $account->cuisineId : null;
+
+        $address = isset($account->address) ? $account->address : null;
+        $notes = isset($account->notes) ? $account->notes : null;
+
+        if (isset($address) && $address instanceof \stdClass) {
+            $address = Address::create($address);
+        }
 
         $obj = new Account();
         $obj->setUserID($userId);
@@ -66,7 +71,6 @@ class Account extends DataObject {
         $obj->setIsTargetAccount($isTargetAccount);
         $obj->setAccountName($accountName);
         $obj->setOperatorType($operatorType);
-        $obj->setAddress($address);
         $obj->setContactName($contactName);
         $obj->setPhone($phone);
         $obj->setServiceType($serviceType);
@@ -79,6 +83,15 @@ class Account extends DataObject {
         $obj->setAccountId($id);
         $obj->setCuisineId($cuisineId);
 
+        $obj->setAddress($address);
+
+        if (isset($notes) && count($notes) > 0) {
+            foreach ($notes as $note) {
+                if ($note instanceof \stdClass) {
+                    $obj->addNote(Note::create($note));
+                }
+            }
+        }
         //todo: notes are not in this list
         //todo: address isn't in this list
         return $obj;

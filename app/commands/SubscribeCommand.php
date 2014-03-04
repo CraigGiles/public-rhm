@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
+use redhotmayo\distribution\SubscriptionDistribution;
 use redhotmayo\library\Timer;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
@@ -48,6 +49,7 @@ class SubscribeCommand extends Command {
      * @var ZipcodeRepository $zipcodeRepo
      */
     protected $zipcodeRepo;
+
     /**
      * Create a new command instance.
      *
@@ -64,6 +66,13 @@ class SubscribeCommand extends Command {
      * @return mixed
      */
     public function fire() {
+        $filename = $this->argument('filename');
+        $sub = new SubscriptionDistribution($this->zipcodeRepo);
+        $sub->loadFromFile($filename);
+
+        return;
+
+    // Below this is the old method
         $time = strtotime("-1 month");
         $timer = new Timer();
         $filename = $this->argument('filename');

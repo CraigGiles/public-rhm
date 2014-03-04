@@ -7,6 +7,14 @@ class Note extends DataObject {
     private $action;
     private $author;
 
+    public static function create($note) {
+        if ($note instanceof \stdClass) {
+            return Note::FromStdClass($note);
+        } else if (is_array($note)) {
+            return Note::FromArray($note);
+        }
+    }
+
     public static function FromStdClass($note) {
         $accountId = isset($note->accountId) ? intval($note->accountId) : null;
         $contactId = isset($note->contactId) ? intval($note->contactId) : null;

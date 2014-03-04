@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\distribution;
 
+use Exception;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -15,23 +16,26 @@ use redhotmayo\library\Timer;
 use redhotmayo\model\Account;
 use redhotmayo\parser\AccountParserS2;
 
-class AccountDistribution {
+class AccountDistribution extends Distribution {
+    private $timer;
+
+    public function __construct() {
+        $this->timer = new Timer();
+    }
 
     public function loadFromFile($filename) {
-        $this->leadDistribution($filename);
+        parent::loadFromFile($filename);
+
+        $this->leadDistribution();
     }
 
     /**
      * @param $filename
      * @throws InvalidArgumentException
      */
-    private function leadDistribution($filename) {
-        $timer = new Timer();
-
-        $timer->startTimer();
-        if (!file_exists($filename)) {
-            throw new InvalidArgumentException('Invalid file name');
-        }
+    private function leadDistribution() {
+        $filename = $this->getFileName();
+        $this->timer->startTimer();
 
         Log::info('Parsing XLSX file...');
         $smartyStreets = new SmartyStreetsAPI();
@@ -41,6 +45,10 @@ class AccountDistribution {
         $function = array($s2parser, AccountParserS2::EXCEL_PROCESSOR);
         $excelParser = new ExcelParser();
         $accounts = $excelParser->parse($filename, $function);
+
+        if (!isset($accounts) || !is_array($accounts)) {
+            throw new Exception("Error with excel parsing. Results not set or not an array");
+        }
 
         if (count($accounts) == 0) {
             App::info('No records found in XLSX file.');
@@ -66,7 +74,7 @@ class AccountDistribution {
         $undistributed = $accountRepo->distributeAccountsToUsers($accounts);
 
         // How much time did this operation take?
-        $time = $timer->stopTimer();
+        $time = $this->timer->stopTimer();
         $time = number_format((float)($time / 60), 2, '.', '');
 
         $accountsCount = count($accounts);
