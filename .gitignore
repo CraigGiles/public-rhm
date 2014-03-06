@@ -9,3 +9,4 @@ tags
 _ide-helper.php
 public/
 public/*
+.env.php
