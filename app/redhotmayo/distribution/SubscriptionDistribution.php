@@ -99,7 +99,6 @@ class SubscriptionDistribution extends Distribution {
                 }
             } else {
                 Log::info("{$username} not found in the users table.");
-                $this->info("{$username} not found in the users table.");
             }
         }
     }

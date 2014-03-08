@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository;
 
 use redhotmayo\model\Account;
+use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
 
 interface SubscriptionRepository extends Repository {
@@ -48,6 +49,15 @@ interface SubscriptionRepository extends Repository {
      * @return array
      */
     public function getAllUserIdsSubscribedToZipcode($zipcode);
+
+
+    /**
+     * Return true if the subscription is already recorded, false otherwise
+     *
+     * @param Subscription $subscription
+     * @return bool
+     */
+    function isSubscriptionRecorded(Subscription $subscription);
 }
 
 

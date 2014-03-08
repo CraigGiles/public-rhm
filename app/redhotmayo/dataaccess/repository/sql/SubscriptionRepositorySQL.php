@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\model\Account;
+use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
 
 class SubscriptionRepositorySQL implements SubscriptionRepository {
@@ -28,12 +29,14 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
-     * @param $object
+     * @param $subscription
      * @return bool
      */
     public function save($subscription) {
-        $dao = DataAccessObject::GetSubscriptionDAO();
-        $id = $dao->save($subscription);
+        if (isset($subscription) && $subscription instanceof Subscription) {
+            $dao = DataAccessObject::GetSubscriptionDAO();
+            $id = $this->isSubscriptionRecorded($subscription) ? true : $dao->save($subscription);
+        }
         return isset($id);
     }
 
@@ -101,5 +104,16 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      */
     function convertRecordsToJsonObjects($records) {
         // TODO: Implement convertRecordsToJsonObjects() method.
+    }
+
+    /**
+     * Return true if the subscription is already recorded, false otherwise
+     *
+     * @param Subscription $subscription
+     * @return bool
+     */
+    function isSubscriptionRecorded(Subscription $subscription) {
+        $users = $this->getAllUserIdsSubscribedToZipcode($subscription->getZipCode());
+        return in_array($subscription->getUserID(), $users);
     }
 }
