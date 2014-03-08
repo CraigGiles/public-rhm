@@ -7,7 +7,7 @@ use redhotmayo\dataaccess\repository\ZipcodeRepository;
 class ZipcodeRepositorySQL implements ZipcodeRepository {
     const SERVICE = 'redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL';
 
-    const TABLE_NAME = 'zipcodes';
+    const TABLE_NAME = 'ZIPCodes';
     const C_ZIPCODE = 'ZipCode';
     const C_CITY = 'city';
 

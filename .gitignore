@@ -9,4 +9,7 @@ tags
 _ide-helper.php
 public/
 public/*
-.env.php
+rackspace/
+rackspace/*
+local/
+local/*

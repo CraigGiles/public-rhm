@@ -27,6 +27,7 @@ $app = new Illuminate\Foundation\Application;
 $env = $app->detectEnvironment(array(
     'local' => array('local.*','*.local'),
     'fortrabbit' => array('*.frbit.net', '*frbit*'),
+    'rackspace' => ['162.242.240.53'],
 ));
 
 /*
