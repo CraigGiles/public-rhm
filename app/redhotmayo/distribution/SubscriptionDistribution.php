@@ -66,6 +66,11 @@ class SubscriptionDistribution extends Distribution {
 
             $zipcodes = isset($subscription['ZIPCODES']) ? $subscription['ZIPCODES'] : array();
 
+            if (!is_array($zipcodes)) {
+                $zipcodes = explode(',', $zipcodes);
+                $zipcodes = array_map('trim', $zipcodes);
+            }
+
             //goto the users table and find the userId corrisponding to the username $username
             $user = DB::table('users')
 //                       ->select('id')
