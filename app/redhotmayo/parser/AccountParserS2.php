@@ -74,10 +74,6 @@ class AccountParserS2 extends AccountParser {
             $acc->calculateWeeklyOpportunity();
 
             $return[] = $acc;
-//break;
-//            if (count($return) > 25) {
-//                break;
-//            }
         }
 
         return $return;
