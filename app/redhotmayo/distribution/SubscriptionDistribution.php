@@ -33,11 +33,7 @@ class SubscriptionDistribution extends Distribution {
 
         $function = array($this, 'process');
         $excelParser = new ExcelParser();
-        $records = $excelParser->parse($filename, $function);
-
-
-
-
+        $excelParser->parse($filename, $function);
     }
 
     public function process($records) {
@@ -51,7 +47,6 @@ class SubscriptionDistribution extends Distribution {
             return [];
         }
 
-        $time = strtotime("-1 month");
         $subRepo = RepositoryFactory::GetSubscriptionRepository();
         $sub = new Subscription();
         foreach ($records as $subscription) {
@@ -74,7 +69,6 @@ class SubscriptionDistribution extends Distribution {
 
             //goto the users table and find the userId corrisponding to the username $username
             $user = DB::table('users')
-//                       ->select('id')
                        ->where('username', '=', $username)
                        ->first();
 
@@ -95,7 +89,7 @@ class SubscriptionDistribution extends Distribution {
                     $sub->add($user, $zipcode);
                     $saved = $subRepo->save($sub);
                     if ($saved) {
-                        $this->backdateAccounts($sub, $time);
+                        $this->backdateAccounts($sub, self::BACKDATE_DAYS);
                     }
                 }
             } else {
@@ -104,22 +98,16 @@ class SubscriptionDistribution extends Distribution {
         }
     }
 
-    private function backdateAccounts(Subscription $sub, $time) {
+    private function backdateAccounts(Subscription $sub, $days) {
         //get all leads for $zipcode after $time, and assign a copy for $id
         $repo = RepositoryFactory::GetAccountRepository();
-        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), self::BACKDATE_DAYS);
-$total = 0;
+        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), $days);
+
         if (isset($accounts) && is_array($accounts) && count($accounts) > 0) {
             foreach ($accounts as $account) {
-                //TODO: Not sure we want to use this bool.. here if we need it tho
                 $acc = Account::FromArray($account);
-                $bool = $repo->subscribeAccountToUserId($acc, $sub->getUserID());
-                $total++;
+                $repo->subscribeAccountToUserId($acc, $sub->getUserID());
             }
         }
-        if ($total > 0) {
-            Log::info("TOTAL:");
-        }
     }
-
 }
