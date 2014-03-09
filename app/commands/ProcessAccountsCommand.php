@@ -49,8 +49,6 @@ class ProcessAccountsCommand extends Command {
         $filename = $this->argument('filename');
         $acct = new AccountDistribution();
         $acct->loadFromFile($filename);
-//
-
     }
 
 

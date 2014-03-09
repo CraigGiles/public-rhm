@@ -16,7 +16,10 @@ class Account extends DataObject {
     private $isTargetAccount;
     private $accountName;
     private $operatorType;
+    private $operatorSize;
+    private $operatorStatus;
     private $address;
+    private $contactTitle;
     private $contactName;
     private $phone;
     private $serviceType;
@@ -28,10 +31,13 @@ class Account extends DataObject {
     private $notes;
     private $isMaster;
     private $cuisineId;
+    private $alcoholService;
+    private $mealPeriod;
 
     public static function FromArray($account) {
         return Account::FromStdClass(json_decode(json_encode($account)));
     }
+
     public static function FromStdClass($account) {
         $userId = isset($account->userId) ? $account->userId : null;
         $weeklyOpportunity = isset($account->weeklyOpportunity) ? $account->weeklyOpportunity : null;
@@ -110,7 +116,7 @@ class Account extends DataObject {
      */
     public function calculateWeeklyOpportunity() {
         $val = rand(0, 10);
-        $this->weeklyOpportunity = $val ;
+        $this->weeklyOpportunity = $val;
     }
 
     public function addNotes(array $notes) {
@@ -413,33 +419,102 @@ class Account extends DataObject {
         return $this->cuisineId;
     }
 
+    /**
+     * @param mixed $alcoholService
+     */
+    public function setAlcoholService($alcoholService) {
+        $this->alcoholService = $alcoholService;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlcoholService() {
+        return $this->alcoholService;
+    }
+
+    /**
+     * @param mixed $contactTitle
+     */
+    public function setContactTitle($contactTitle) {
+        $this->contactTitle = $contactTitle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContactTitle() {
+        return $this->contactTitle;
+    }
+
+    /**
+     * @param mixed $mealPeriod
+     */
+    public function setMealPeriod($mealPeriod) {
+        $this->mealPeriod = $mealPeriod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMealPeriod() {
+        return $this->mealPeriod;
+    }
+
+    /**
+     * @param mixed $operatorSize
+     */
+    public function setOperatorSize($operatorSize) {
+        $this->operatorSize = $operatorSize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOperatorSize() {
+        return $this->operatorSize;
+    }
+
+    /**
+     * @param mixed $operatorStatus
+     */
+    public function setOperatorStatus($operatorStatus) {
+        $this->operatorStatus = $operatorStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOperatorStatus() {
+        return $this->operatorStatus;
+    }
+
 
     public function toArray() {
         $json = (
-            array(
-                'userId' => $this->userId,
-                'weeklyOpportunity' => $this->weeklyOpportunity,
-                'estimatedAnnualSales' => $this->estimatedAnnualSales,
-                'owner' => $this->owner,
-                'mobilePhone' => $this->mobilePhone,
-                'websiteAddress' => $this->websiteAddress,
-                'isTargetAccount' => $this->isTargetAccount,
-                'accountName' => $this->accountName,
-                'operatorType' => $this->operatorType,
-                'address' => $this->address->toArray(),
-                'contactName' => $this->contactName,
-                'phone' => $this->phone,
-                'serviceType' => $this->serviceType,
-                'cuisineType' => $this->cuisineType,
-                'seatCount' => $this->seatCount,
-                'averageCheck' => $this->averageCheck,
-                'emailAddress' => $this->emailAddress,
-                'openDate' => $this->openDate,
-                'notes' => $this->notes[0]->toArray(),
-                'isMaster' => $this->isMaster,
-            )
+        array(
+            'userId' => $this->userId,
+            'weeklyOpportunity' => $this->weeklyOpportunity,
+            'estimatedAnnualSales' => $this->estimatedAnnualSales,
+            'owner' => $this->owner,
+            'mobilePhone' => $this->mobilePhone,
+            'websiteAddress' => $this->websiteAddress,
+            'isTargetAccount' => $this->isTargetAccount,
+            'accountName' => $this->accountName,
+            'operatorType' => $this->operatorType,
+            'address' => $this->address->toArray(),
+            'contactName' => $this->contactName,
+            'phone' => $this->phone,
+            'serviceType' => $this->serviceType,
+            'cuisineType' => $this->cuisineType,
+            'seatCount' => $this->seatCount,
+            'averageCheck' => $this->averageCheck,
+            'emailAddress' => $this->emailAddress,
+            'openDate' => $this->openDate,
+            'notes' => $this->notes[0]->toArray(),
+            'isMaster' => $this->isMaster,
+        )
         );
         return $json;
     }
-
 }
