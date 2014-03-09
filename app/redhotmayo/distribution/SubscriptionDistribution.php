@@ -13,6 +13,7 @@ use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
 
 class SubscriptionDistribution extends Distribution {
+    const BACKDATE_DAYS = 30;
     private $zipcodeRepo;
     private $timer;
 
@@ -106,7 +107,7 @@ class SubscriptionDistribution extends Distribution {
     private function backdateAccounts(Subscription $sub, $time) {
         //get all leads for $zipcode after $time, and assign a copy for $id
         $repo = RepositoryFactory::GetAccountRepository();
-        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), $time);
+        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), self::BACKDATE_DAYS);
 $total = 0;
         if (isset($accounts) && is_array($accounts) && count($accounts) > 0) {
             foreach ($accounts as $account) {

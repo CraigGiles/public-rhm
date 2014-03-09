@@ -32,6 +32,8 @@ use Symfony\Component\Console\Input\InputOption;
  * testuser03 will be subscribed to all Sacramento zipcodes in addition to 53058
  */
 class SubscribeCommand extends Command {
+    const DAYS_AGO = 30;
+
     /**
      * The console command name.
      *
@@ -189,7 +191,7 @@ class SubscribeCommand extends Command {
     private function backdateAccounts(Subscription $sub, $time) {
         //get all leads for $zipcode after $time, and assign a copy for $id
         $repo = RepositoryFactory::GetAccountRepository();
-        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), $time);
+        $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), self::DAYS_AGO);
 
         if (count($accounts) > 0) {
             foreach ($accounts as $account) {

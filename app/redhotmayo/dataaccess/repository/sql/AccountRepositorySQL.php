@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -153,13 +154,13 @@ class AccountRepositorySQL implements AccountRepository {
 
     /**
      * Returns all master record account objects within the zipcode provided that has been updated
-     * after the date provided.
+     * after the $daysAgo.
      *
      * @param $zipcode
-     * @param $afterDate
+     * @param $daysAgo
      * @return array Account objects
      */
-    function findAllAccountsForZipcode($zipcode, $afterDate) {
+    function findAllAccountsForZipcode($zipcode, $daysAgo) {
         $zipcode = intval($zipcode);
         $addressCols = AddressSQL::GetColumns();
         $accountCols = AccountSQL::GetColumns();
@@ -167,15 +168,14 @@ class AccountRepositorySQL implements AccountRepository {
 
         $cols = array_merge($addressCols, $accountCols, $noteCols);
 
-        $accounts = DB::table('accounts')
-                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
-                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
-                      ->select($cols)
-                      ->where('zipCode', '=', $zipcode)
-                      ->where('accounts.updated_at', '>', $afterDate)
-//                      ->where('accounts.isMaster', '=', true)
-                      ->get();
+        $query = "SELECT " . implode(',', $cols) . " FROM accounts " .
+            "JOIN addresses ON accounts.addressId=addresses.id " .
+            "JOIN notes ON notes.accountId=accounts.id " .
+            "WHERE zipCode=? AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
+
+        $accounts = DB::select($query, [$zipcode, $daysAgo]);
         $convert = [];
+
         foreach ($accounts as $acct) {
             $convert[] = json_decode(json_encode($acct), true);
         }
