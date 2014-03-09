@@ -122,6 +122,7 @@ class AccountRepositorySQL implements AccountRepository {
                 $saved = true;
             }
         } catch (Exception $e) {
+            Log::error('AccountRepositorySQL.save - '. $e->getMessage());
             DB::rollback();
             $id = null;
         }
