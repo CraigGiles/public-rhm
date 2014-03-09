@@ -57,7 +57,6 @@ class AccountDistribution extends Distribution {
 
         /** @var CuisineRepository $cuisineRepo */
         $cuisineRepo = App::make('redhotmayo\dataaccess\repository\CuisineRepository');
-        $cuisine = $cuisineRepo->map('s2', 'CNT AM');
 
         /** @var Account $account */
         foreach ($accounts as $account) {
