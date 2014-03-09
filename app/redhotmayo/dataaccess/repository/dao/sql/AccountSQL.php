@@ -30,6 +30,11 @@ class AccountSQL implements AccountDAO {
     const C_IS_TARGET_ACCOUNT = 'isTargetAccount';
     const C_IS_MASTER = 'isMaster';
     const C_CREATED_AT = 'created_at';
+    const C_OPERATOR_SIZE = 'operatorSize';
+    const C_OPERATOR_STATUS = 'operatorStatus';
+    const C_ALCOHOL_SERVICE = 'alcoholService';
+    const C_CONTACT_TITLE = 'contactTitle';
+    const C_MEAL_PERIOD = 'mealPeriod';
     const C_UPDATED_AT = 'updated_at';
     const C_DELETED = 'deleted_at';
 
@@ -53,6 +58,12 @@ class AccountSQL implements AccountDAO {
             self::TABLE_NAME . '.' . self::C_CUISINE_ID,
             self::TABLE_NAME . '.' . self::C_SEAT_COUNT,
             self::TABLE_NAME . '.' . self::C_AVERAGE_CHECK,
+            self::TABLE_NAME . '.' . self::C_OPERATOR_SIZE,
+            self::TABLE_NAME . '.' . self::C_OPERATOR_SIZE,
+            self::TABLE_NAME . '.' . self::C_OPERATOR_STATUS,
+            self::TABLE_NAME . '.' . self::C_ALCOHOL_SERVICE,
+            self::TABLE_NAME . '.' . self::C_CONTACT_TITLE,
+            self::TABLE_NAME . '.' . self::C_MEAL_PERIOD,
             self::TABLE_NAME . '.' . self::C_EMAIL_ADDRESS,
             self::TABLE_NAME . '.' . self::C_OPEN_DATE,
             self::TABLE_NAME . '.' . self::C_ESTIMATED_ANNUAL_SALES,
@@ -123,6 +134,13 @@ class AccountSQL implements AccountDAO {
                         self::C_WEBSITE => $account->getWebsite(),
                         self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
                         self::C_IS_MASTER => $master,
+
+                        self::C_OPERATOR_SIZE => $account->getOperatorSize(),
+                        self::C_OPERATOR_STATUS => $account->getOperatorStatus(),
+                        self::C_ALCOHOL_SERVICE => $account->getAlcoholService(),
+                        self::C_CONTACT_TITLE => $account->getContactTitle(),
+                        self::C_MEAL_PERIOD => $account->getMealPeriod(),
+
                         self::C_CREATED_AT => Carbon::Now(),
                         self::C_UPDATED_AT => Carbon::Now(),
                     )

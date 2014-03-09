@@ -18,6 +18,14 @@ class AccountParserS2 extends AccountParser {
     const C_DESCRIBE = 'DESCRIBE';
     const C_AUTHOR = 'redhotMAYO';
     const C_ACTION = 'RHM Import';
+    const C_OPERATOR_SIZE = 'CATEGORY2';
+    const C_ALCOHOL_SERVICE = 'ALCOHOL';
+    const C_OPERATOR_STATUS = 'STATUS';
+    const C_CONTACT_TITLE = 'CONTACT';
+    const C_MEAL_PERIOD = 'SERVICE';
+    const C_WEBSITE = 'SOURCE';
+    const C_CHECK_AVERAGE = 'CHECKAVERAGE';
+
 
     public function processAccounts($accounts) {
         $return = array();
@@ -34,6 +42,22 @@ class AccountParserS2 extends AccountParser {
             $acc->setCuisineType($account[self::C_MENU]);
             $acc->setOperatorType($account[self::C_CATEGORY]);
             $acc->setOpenDate($account[self::C_OPENDATE]);
+
+            $operatorSize = isset($account[self::C_OPERATOR_SIZE]) ? $account[self::C_OPERATOR_SIZE] : null;
+            $alcoholService = isset($account[self::C_ALCOHOL_SERVICE]) ? $account[self::C_ALCOHOL_SERVICE] : null;
+            $operatorStatus = isset($account[self::C_OPERATOR_STATUS]) ? $account[self::C_OPERATOR_STATUS] : null;
+            $contactTitle = isset($account[self::C_CONTACT_TITLE]) ? $account[self::C_CONTACT_TITLE] : null;
+            $mealPeriod = isset($account[self::C_MEAL_PERIOD]) ? $account[self::C_MEAL_PERIOD] : null;
+            $website = isset($account[self::C_WEBSITE]) ? $account[self::C_WEBSITE] : null;
+            $checkAverage = isset($account[self::C_CHECK_AVERAGE]) ? $account[self::C_CHECK_AVERAGE] : null;
+
+            $acc->setOperatorSize($operatorSize);
+            $acc->setAlcoholService($alcoholService);
+            $acc->setOperatorStatus($operatorStatus);
+            $acc->setContactTitle($contactTitle);
+            $acc->setMealPeriod($mealPeriod);
+            $acc->setWebsite($website);
+            $acc->setAverageCheck($checkAverage);
 
             $note = new Note();
             $note->setText($account[self::C_DESCRIBE]);
