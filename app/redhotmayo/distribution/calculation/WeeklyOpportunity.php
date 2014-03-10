@@ -63,4 +63,6 @@ abstract class WeeklyOpportunity {
             throw new NullArgumentException();
         }
     }
+
+    abstract function calculate();
 }
