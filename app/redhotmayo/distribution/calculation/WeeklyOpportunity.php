@@ -1,16 +1,47 @@
 <?php namespace redhotmayo\distribution\calculation;
 
 use redhotmayo\exception\NullArgumentException;
+use redhotmayo\parser\AverageCheck;
 
 abstract class WeeklyOpportunity {
-    private $seats;
-    private $averageCheck;
-    private $percent;
+    /** @var  AverageCheck $averageCheckParser */
+    private $averageCheckParser;
 
-    public function __construct() {
-        $this->seats = 0;
-        $this->averageCheck = 0;
-        $this->percent = 0;
+    /** @var int $seats */
+    private $seats;
+
+    /** @var double $averageCheck */
+    private $averageCheck;
+
+    public function __construct($seats, $averageCheck) {
+        //do conversion here
+        $parser = $this->getAverageCheckParser();
+
+        //set seats and average check
+        $this->setSeats($seats);
+        $this->setAverageCheck($parser->parse($averageCheck));
+    }
+
+    abstract function getModifier1();
+    abstract function getModifier2();
+    abstract function getPercent();
+
+    /**
+     * @param AverageCheck $averageCheckParser
+     */
+    public function setAverageCheckParser(AverageCheck $averageCheckParser) {
+        $this->averageCheckParser = $averageCheckParser;
+    }
+
+    /**
+     * @return AverageCheck
+     */
+    public function getAverageCheckParser() {
+        if (!isset($this->averageCheckParser)) {
+            $this->averageCheckParser = new AverageCheck();
+        }
+
+        return $this->averageCheckParser;
     }
 
     /**
@@ -29,21 +60,6 @@ abstract class WeeklyOpportunity {
     }
 
     /**
-     * @param double $percent
-     */
-    public function setPercent($percent) {
-        $this->checkIfSet($percent);
-        $this->percent = (double)$percent;
-    }
-
-    /**
-     * @return double
-     */
-    public function getPercent() {
-        return $this->percent;
-    }
-
-    /**
      * @param int $seats
      */
     public function setSeats($seats) {
@@ -58,11 +74,17 @@ abstract class WeeklyOpportunity {
         return $this->seats;
     }
 
+
+    public function calculate() {
+        $seats = $this->getSeats();
+        $ave = $this->getAverageCheck();
+
+        return $seats * $ave * $this->getModifier1() * $this->getModifier2() * $this->getPercent();
+    }
+
     protected function checkIfSet($value) {
         if (!isset($value)) {
             throw new NullArgumentException();
         }
     }
-
-    abstract function calculate();
 }
