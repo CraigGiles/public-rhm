@@ -10,8 +10,11 @@ class FastCasualOpportunity extends WeeklyOpportunity {
     /**
      * (Seats X Check Avg. X 3 X 364 / 52) X 32%
      *
-     * @return int
      */
+    public function construct($seats, $checkAverage) {
+        parent::__construct($seats, $checkAverage);
+    }
+
     /**
      * @return double
      */

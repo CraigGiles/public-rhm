@@ -14,7 +14,6 @@ class TakeOutOpportunity extends WeeklyOpportunity {
      */
     public function construct($seats, $checkAverage) {
         parent::__construct($seats, $checkAverage);
-
     }
 
     /**
