@@ -23,8 +23,20 @@ class AverageCheck {
      * @returns null|double
      */
     public function parse($value) {
-        //todo: do checks on $value
-        
-        return null;
+        $result = null;
+
+        if (isset($value) && is_string($value)) {
+            $values = explode('-', $value);
+            if (count($values) == 1) {
+                $result = $values[0][0] === '$' ? (float)substr($values[0], 1) : (float)$values[0];
+            } else if (count($values) > 1) {
+                $first = $values[0][0] === '$' ? (float)substr($values[0], 1) : (float)$values[0];
+                $second = $values[0][0] === '$' ? (float)substr($values[1], 1) : (float)$values[1];
+
+                $result = abs($second + $first) / 2;
+            }
+        }
+
+        return $result;
     }
 } 
