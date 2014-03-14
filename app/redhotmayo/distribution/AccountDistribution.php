@@ -30,8 +30,8 @@ class AccountDistribution extends Distribution {
     }
 
     /**
-     * @param $filename
-     * @throws InvalidArgumentException
+     * @throws \Exception
+     * @internal param $filename
      */
     private function leadDistribution() {
         $filename = $this->getFileName();
@@ -72,25 +72,16 @@ class AccountDistribution extends Distribution {
         Log::info('Distributing leads to users...');
         $undistributed = $accountRepo->distributeAccountsToUsers($accounts);
 
-        // How much time did this operation take?
-        $time = $this->timer->stopTimer();
-        $time = number_format((float)($time / 60), 2, '.', '');
+        /** @var Account $error */
+        foreach ($unsaved as $error) {
+            //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
+            Log::error('Unsaved account to accounts table: ' . $error->getAccountName());
+        }
 
-        $accountsCount = count($accounts);
-        $unsavedCount = count($unsaved);
-        $undistributedCount = count($undistributed);
-//        $this->info("Lead processing completed... Runtime: {$time} minutes.");
-//        $this->info("{$accountsCount} processed.");
-//        $this->info("{$unsavedCount} were unable to be saved into the master database.");
-//        $this->info("{$undistributedCount} were unable to be distributed.");
-
-        //$this->info("All unsaved accounts have been appended to error.txt");
-
-        $outputFile = array();
-//         foreach ($unsavedMaster as $error) {
-//             //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
-//             $outputFile[] = $error->getAccountName();
-//             file_put_contents("../error.txt", $outputFile);
-//         }
+        /** @var Account $error */
+        foreach ($undistributed as $error) {
+            //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
+            Log::error('Undistributed accounts to users: ' . $error->getAccountName());
+        }
     }
 }
