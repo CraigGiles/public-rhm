@@ -1,4 +1,5 @@
 <?php namespace redhotmayo\model;
+use redhotmayo\distribution\calculation\WeeklyOpportunity;
 
 /**
  * Class Account
@@ -115,8 +116,8 @@ class Account extends DataObject {
      * Calculates the weighted opportunity of this lead
      */
     public function calculateWeeklyOpportunity() {
-        $val = rand(0, 10);
-        $this->weeklyOpportunity = $val;
+        $opportunity = WeeklyOpportunity::make($this->getServiceType(), $this->getSeatCount(), $this->getAverageCheck());
+        $this->weeklyOpportunity = isset($opportunity) ? $opportunity->calculate() : 0;
     }
 
     public function addNotes(array $notes) {
