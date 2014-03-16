@@ -1,5 +1,8 @@
 <?php namespace redhotmayo\parser;
 
+use Illuminate\Support\Facades\App;
+use redhotmayo\dataaccess\repository\CuisineRepository;
+use redhotmayo\dataaccess\repository\FoodServicesRepository;
 use redhotmayo\model\Account;
 use redhotmayo\model\Note;
 
@@ -69,6 +72,20 @@ class AccountParserS2 extends AccountParser {
             $addressParser = new AddressParserS2();
             $address = $addressParser->processAddressInformation($this->addrStandardization, $this->cassVerification, $this->geocoder, $account);
             $acc->setAddress($address);
+
+            /** @var CuisineRepository $cuisineRepo */
+            $cuisineRepo = App::make('redhotmayo\dataaccess\repository\CuisineRepository');
+
+            /** @var FoodServicesRepository $serviceRepo */
+            $serviceRepo = App::make('redhotmayo\dataaccess\repository\FoodServicesRepository');
+
+            $type = $cuisineRepo->map('s2', $acc->getCuisineType());
+            $acc->setCuisineType($type->getCuisine());
+            $acc->setCuisineId($type->getCuisineId());
+
+            $type = $serviceRepo->map('s2', $acc->getServiceType());
+            $acc->setServiceType($type->getService());
+            $acc->setServiceId($type->getServiceId());
 
             // calculate the weekly opportunity
             $acc->calculateWeeklyOpportunity();

@@ -35,7 +35,7 @@ class CreateAccountsTable extends Migration {
             $table->string('serviceType', 30)->nullable();
             $table->string('alcoholService', 20)->nullable();
             $table->string('mealPeriod', 20)->nullable();
-            $table->unsignedInteger('weeklyOpportunity')->nullable();
+            $table->double('weeklyOpportunity')->nullable();
             $table->unsignedInteger('estimatedAnnualSales')->nullable();
             $table->string('averageCheck', 20)->nullable();
             $table->string('website', 50)->nullable();

@@ -45,11 +45,11 @@ abstract class WeeklyOpportunity {
 
     public function __construct($seats, $averageCheck) {
         //do conversion here
-        $parser = $this->getAverageCheckParser();
+        $checkParser = $this->getAverageCheckParser();
 
         //set seats and average check
         $this->setSeats($seats);
-        $this->setAverageCheck($parser->parse($averageCheck));
+        $this->setAverageCheck($checkParser->parse($averageCheck));
     }
 
     abstract function getModifier1();

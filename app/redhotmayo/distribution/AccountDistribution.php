@@ -56,25 +56,7 @@ class AccountDistribution extends Distribution {
             return;
         }
 
-        /** @var CuisineRepository $cuisineRepo */
-        $cuisineRepo = App::make('redhotmayo\dataaccess\repository\CuisineRepository');
 
-        /** @var FoodServicesRepository $serviceRepo */
-        $serviceRepo = App::make('redhotmayo\dataaccess\repository\FoodServicesRepository');
-
-        /** @var Account $account */
-        foreach ($accounts as $account) {
-            $type = $cuisineRepo->map('s2', $account->getCuisineType());
-            $account->setCuisineType($type->getCuisine());
-            $account->setCuisineId($type->getCuisineId());
-        }
-
-        /** @var Account $account */
-        foreach ($accounts as $account) {
-            $type = $serviceRepo->map('s2', $account->getServiceType());
-            $account->setServiceType($type->getService());
-            $account->setServiceId($type->getServiceId());
-        }
 
 
         $accountRepo = RepositoryFactory::GetAccountRepository();
