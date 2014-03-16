@@ -26,7 +26,7 @@ class Note extends DataObject {
         $note->setAccountId($accountId);
         $note->setContactId($contactId);
         $note->setText($text);
-        $note->setAccountId($action);
+        $note->setAction($action);
         $note->setAuthor($author);
         return $note;
     }
