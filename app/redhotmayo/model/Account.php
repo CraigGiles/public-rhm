@@ -90,7 +90,7 @@ class Account extends DataObject {
         $obj->setIsMaster($isMaster);
         $obj->setAccountId($id);
         $obj->setCuisineId($cuisineId);
-        $obj->serviceId($serviceId);
+        $obj->setServiceId($serviceId);
 
         $obj->setAddress($address);
 
