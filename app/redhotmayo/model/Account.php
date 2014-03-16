@@ -34,6 +34,7 @@ class Account extends DataObject {
     private $cuisineId;
     private $alcoholService;
     private $mealPeriod;
+    private $serviceId;
 
     public static function FromArray($account) {
         return Account::FromStdClass(json_decode(json_encode($account)));
@@ -60,7 +61,7 @@ class Account extends DataObject {
         $isMaster = isset($account->isMaster) ? $account->isMaster : null;
         $id = isset($account->id) ? $account->id : null;
         $cuisineId = isset($account->cuisineId) ? $account->cuisineId : null;
-
+        $serviceId = isset($account->serviceId) ? $account->serviceId : null;
         $address = isset($account->address) ? $account->address : null;
         $notes = isset($account->notes) ? $account->notes : null;
 
@@ -89,6 +90,7 @@ class Account extends DataObject {
         $obj->setIsMaster($isMaster);
         $obj->setAccountId($id);
         $obj->setCuisineId($cuisineId);
+        $obj->serviceId($serviceId);
 
         $obj->setAddress($address);
 
@@ -99,8 +101,7 @@ class Account extends DataObject {
                 }
             }
         }
-        //todo: notes are not in this list
-        //todo: address isn't in this list
+
         return $obj;
     }
 
@@ -489,6 +490,21 @@ class Account extends DataObject {
     public function getOperatorStatus() {
         return $this->operatorStatus;
     }
+
+    /**
+     * @param int $serviceId
+     */
+    public function setServiceId($serviceId) {
+        $this->serviceId = (int)$serviceId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServiceId() {
+        return $this->serviceId;
+    }
+
 
 
     public function toArray() {
