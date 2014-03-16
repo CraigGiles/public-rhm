@@ -44,6 +44,4 @@ class Cuisine extends DataObject {
     public function getMeta() {
         return $this->meta;
     }
-
-
 }
