@@ -9,6 +9,7 @@ use redhotmayo\api\SmartyStreetsAPI;
 use redhotmayo\api\TexasAMAPI;
 use redhotmayo\dataaccess\repository\CuisineRepository;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
+use redhotmayo\dataaccess\repository\FoodServicesRepository;
 use redhotmayo\library\CuisineMapper;
 use redhotmayo\library\ExcelParser;
 use redhotmayo\library\FoodMap;
@@ -58,8 +59,8 @@ class AccountDistribution extends Distribution {
         /** @var CuisineRepository $cuisineRepo */
         $cuisineRepo = App::make('redhotmayo\dataaccess\repository\CuisineRepository');
 
-        /** @var ServiceRepository $serviceRepo */
-        $serviceRepo = App::make('redhotmayo\dataaccess\repository\ServiceRepository');
+        /** @var FoodServicesRepository $serviceRepo */
+        $serviceRepo = App::make('redhotmayo\dataaccess\repository\FoodServicesRepository');
 
         /** @var Account $account */
         foreach ($accounts as $account) {
