@@ -7,9 +7,9 @@ class MobileRegistrationValidator extends RegistrationValidator {
     public function getCreationRules() {
         $rules = parent::getCreationRules();
 
-        $rules['deviceType'] = "required";
-        $rules['installationId'] = "required";
-        $rules['appVersion'] = "required";
+//        $rules['deviceType'] = "required";
+//        $rules['installationId'] = "required|unique";
+//        $rules['appVersion'] = "required";
 
         return $rules;
     }
