@@ -7,7 +7,6 @@ class GooglePushNotification {
     public function send(User $user, $data) {
         $installationId = $user->getMobileDeviceInstallationId();
 
-        $installationId = 'APA91bEvbEXrb54VN4kdOeDLWOlCQ-3hdqdBdEqwePrYFeffa6tabL_Ez3dka149UuY4COBqs7HJUIYlS3T0ONjaLsM6bmhlkCrfVX63dwQj0YDldYHAVYmJLNesbdUxekSw00tTe9rrbrsLs-k7fvxGzjCuIcJcdw';
         if (isset($installationId)) {
             $fields = [
                 'data' => $data,
