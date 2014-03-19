@@ -34,6 +34,7 @@ class MobileDeviceSQL {
      */
     public function save(MobileDevice $mobile) {
         $id = $mobile->getMobileId();
+
         if (isset($id)) {
             $this->update($mobile);
         } else {

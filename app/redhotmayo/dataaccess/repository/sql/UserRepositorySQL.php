@@ -64,12 +64,16 @@ class UserRepositorySQL implements UserRepository {
             $mobile = $user->getMobileDevice();
 
             if (isset($mobile)) {
-                $mobile->setUserId($id);
-                $mobileDAO->save($mobile);
+                if ($mobile->getDeviceType() != null) {
+                    $mobile->setUserId($id);
+                    $mobileDAO->save($mobile);
+                }
             }
+
             DB::commit();
         } catch (Exception $e) {
             Log::error($e);
+            throw new Exception('Unable to register user', 500, $e);
             DB::rollback();
         }
 

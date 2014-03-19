@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\api\controllers;
 
 use BaseController;
+use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\api\auth\ApiSession;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
@@ -34,6 +35,9 @@ class ApiRegistrationController extends BaseController {
         } catch (ValidationException $validationException) {
             $status = false;
             $results['message'] = $validationException->getErrors()->toArray();
+        } catch (Exception $e) {
+            $status = false;
+            $results['message'] = $e->getMessage();
         }
 
         $results['status'] = $status;
