@@ -145,6 +145,8 @@ class User extends DataObject implements RemindableInterface {
     public function setMobileDevice($mobileDevice) {
         if ($mobileDevice instanceof MobileDevice) {
             $this->mobileDevice = $mobileDevice;
+        } else if ($mobileDevice instanceof stdClass) {
+            $this->mobileDevice = MobileDevice::FromArray(json_decode(json_encode($mobileDevice), true));
         }
     }
 
@@ -153,6 +155,14 @@ class User extends DataObject implements RemindableInterface {
      */
     public function getMobileDevice() {
         return $this->mobileDevice;
+    }
+
+    public function getMobileDeviceInstallationId() {
+        if (isset($this->mobileDevice)) {
+            return $this->mobileDevice->getInstallationId();
+        }
+
+        return null;
     }
 
 

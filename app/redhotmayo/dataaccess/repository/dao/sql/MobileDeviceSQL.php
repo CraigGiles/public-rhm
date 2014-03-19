@@ -68,4 +68,10 @@ class MobileDeviceSQL {
             ->update($values);
     }
 
+    public function findByUserId($id) {
+        return DB::table(self::TABLE_NAME)
+            ->where(self::C_USER_ID, '=', $id)
+            ->first();
+    }
+
 }

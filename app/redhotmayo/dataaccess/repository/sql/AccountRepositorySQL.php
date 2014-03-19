@@ -1,6 +1,5 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -38,9 +37,11 @@ class AccountRepositorySQL implements AccountRepository {
                                    ->getZipcode();
                 $subRepo = RepositoryFactory::GetSubscriptionRepository();
                 $subscribedUsers = $subRepo->getAllUserIdsSubscribedToZipcode($zipcode);
+
                 // if the user is already subscribed to this lead, don't re-sub them
                 foreach ($subscribedUsers as $userId) {
                     $subscribed = $this->subscribeAccountToUserId($account, $userId);
+
                     if (!$subscribed) {
                         Log::info("User is already subscribed to this lead");
                     }
@@ -186,6 +187,30 @@ class AccountRepositorySQL implements AccountRepository {
 
         return $objects;
     }
+
+    public function allAccountsDistributedToday() {
+//        $addressCols = AddressSQL::GetColumns();
+        $accountCols = AccountSQL::GetColumns();
+//        $noteCols = NoteSQL::GetColumns();
+
+//        $cols = array_merge($addressCols, $accountCols, $noteCols);
+
+        $query = "SELECT " . implode(',', $accountCols) . " FROM accounts " .
+            "WHERE userId IS NOT NULL AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+
+        $accounts = DB::select($query);
+        $convert = [];
+
+        foreach ($accounts as $acct) {
+            $convert[] = json_decode(json_encode($acct), true);
+        }
+
+
+        $objects = $this->convertRecordsToJsonObjects($convert);
+
+        return $objects;
+    }
+
 
     /**
      * Take an array of database records and convert them to the appropriate objects

@@ -83,15 +83,19 @@ class UserSQL implements UserDAO {
         if (isset($credentials['email'])) {
             $user = DB::table('users')
                       ->where('email', '=', $credentials['email'])
-                      ->get();
+                      ->first();
+        } else if (isset($credentials['id'])) {
+            $user = DB::table('users')
+                      ->where('id', '=', $credentials['id'])
+                      ->first();
+
         } else {
             $user = DB::table('users')
-                ->where('username', '=', $credentials['username'])
-                ->get();
+                      ->where('username', '=', $credentials['username'])
+                      ->first();
         }
 
-        if (isset($user) && count($user) === 1) return $user[0];
-        else return null;
+        return $user;
     }
 
     private function update(User $user) {

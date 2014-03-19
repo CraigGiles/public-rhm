@@ -11,6 +11,7 @@ use redhotmayo\library\Timer;
 use redhotmayo\model\Account;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
+use redhotmayo\notifications\GooglePushNotification;
 
 class SubscriptionDistribution extends Distribution {
     const BACKDATE_DAYS = 30;
@@ -89,7 +90,10 @@ class SubscriptionDistribution extends Distribution {
                     $sub->add($user, $zipcode);
                     $saved = $subRepo->save($sub);
                     if ($saved) {
-                        $this->backdateAccounts($sub, self::BACKDATE_DAYS);
+                        $newLeads = $this->backdateAccounts($sub, self::BACKDATE_DAYS);
+                        if ($newLeads) {
+                            $return = (new GooglePushNotification())->send($user, ["notificationType" => 'newLeads']);
+                        }
                     }
                 }
             } else {
@@ -99,6 +103,7 @@ class SubscriptionDistribution extends Distribution {
     }
 
     private function backdateAccounts(Subscription $sub, $days) {
+        $newSub = false;
         //get all leads for $zipcode after $time, and assign a copy for $id
         $repo = RepositoryFactory::GetAccountRepository();
         $accounts = $repo->findAllAccountsForZipcode($sub->getZipCode(), $days);
@@ -106,8 +111,12 @@ class SubscriptionDistribution extends Distribution {
         if (isset($accounts) && is_array($accounts) && count($accounts) > 0) {
             foreach ($accounts as $account) {
                 $acc = Account::FromArray($account);
-                $repo->subscribeAccountToUserId($acc, $sub->getUserID());
+                if (!$newSub && $repo->subscribeAccountToUserId($acc, $sub->getUserID())) {
+                    $newSub = true;
+                }
             }
         }
+
+        return $newSub;
     }
 }

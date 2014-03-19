@@ -28,6 +28,12 @@ class UserRepositorySQL implements UserRepository {
     public function find($parameters) {
         $userDAO = DataAccessObject::GetUserDAO();
         $user = $userDAO->getUser($parameters);
+
+        if (isset($user->id)) {
+            $mobileDAO = DataAccessObject::GetMobileDevicesDAO();
+            $user->mobileDevice = $mobileDAO->findByUserId($user->id);
+        }
+
         return User::FromStdClass($user);
     }
 

@@ -10,11 +10,13 @@ use redhotmayo\api\TexasAMAPI;
 use redhotmayo\dataaccess\repository\CuisineRepository;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\dataaccess\repository\FoodServicesRepository;
+use redhotmayo\dataaccess\repository\sql\UserRepositorySQL;
 use redhotmayo\library\CuisineMapper;
 use redhotmayo\library\ExcelParser;
 use redhotmayo\library\FoodMap;
 use redhotmayo\library\Timer;
 use redhotmayo\model\Account;
+use redhotmayo\notifications\GooglePushNotification;
 use redhotmayo\parser\AccountParserS2;
 
 class AccountDistribution extends Distribution {
@@ -65,6 +67,27 @@ class AccountDistribution extends Distribution {
 
         Log::info('Distributing leads to users...');
         $undistributed = $accountRepo->distributeAccountsToUsers($accounts);
+
+        $newAccounts = $accountRepo->allAccountsDistributedToday();
+
+        $userIds = [];
+
+        foreach ($newAccounts as $acct) {
+            $userIds[] = $acct['userId'];
+        }
+
+        $userIds = array_unique($userIds);
+        $userRepo = new UserRepositorySQL();
+        $users = [];
+        foreach ($userIds as $uid) {
+            $users[] = $userRepo->find(['id' => $uid]);
+        }
+
+        $data = ['notificationType' => 'newLeads'];
+
+        foreach ($users as $user) {
+            (new GooglePushNotification())->send($user, $data);
+        }
 
         /** @var Account $error */
         foreach ($unsaved as $error) {
