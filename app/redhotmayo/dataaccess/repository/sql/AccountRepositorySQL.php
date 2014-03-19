@@ -68,7 +68,6 @@ class AccountRepositorySQL implements AccountRepository {
         $account->setAccountId(null);
         $address = $account->getAddress();
         $address->setAddressId(null);
-
         $notes = $account->getNotes();
 
         /** @var Note $note */

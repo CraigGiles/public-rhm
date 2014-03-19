@@ -41,7 +41,7 @@ class Address extends DataObject {
         $cityName = isset($address->cityName) ? $address->cityName : null;
         $countyName = isset($address->countyName) ? $address->countyName : null;
         $stateAbbreviation = isset($address->stateAbbreviation) ? $address->stateAbbreviation : null;
-        $zipcode = isset($address->zipcode) ? $address->zipcode : null;
+        $zipcode = isset($address->zipCode) ? $address->zipCode : null;
         $plus4Code = isset($address->plus4Code) ? $address->plus4Code : null;
         $streetPredirection = isset($address->streetPredirection) ? $address->streetPredirection : null;
         $latitude = isset($address->latitude) ? $address->latitude : null;
