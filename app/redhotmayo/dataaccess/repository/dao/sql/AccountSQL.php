@@ -17,6 +17,7 @@ class AccountSQL implements AccountDAO {
     const C_CONTACT_NAME = 'contactName';
     const C_PHONE = 'phone';
     const C_SERVICE_TYPE = 'serviceType';
+    const C_SERVICE_ID = 'serviceId';
     const C_CUISINE_TYPE = 'cuisineType';
     const C_CUISINE_ID = 'cuisineId';
     const C_SEAT_COUNT = 'seatCount';
@@ -54,6 +55,7 @@ class AccountSQL implements AccountDAO {
             self::TABLE_NAME . '.' . self::C_CONTACT_NAME,
             self::TABLE_NAME . '.' . self::C_PHONE,
             self::TABLE_NAME . '.' . self::C_SERVICE_TYPE,
+            self::TABLE_NAME . '.' . self::C_SERVICE_ID,
             self::TABLE_NAME . '.' . self::C_CUISINE_TYPE,
             self::TABLE_NAME . '.' . self::C_CUISINE_ID,
             self::TABLE_NAME . '.' . self::C_SEAT_COUNT,
@@ -122,6 +124,7 @@ class AccountSQL implements AccountDAO {
                         self::C_CONTACT_NAME => $account->getContactName(),
                         self::C_PHONE => $account->getPhone(),
                         self::C_SERVICE_TYPE => $account->getServiceType(),
+                        self::C_SERVICE_ID => $account->getServiceId(),
                         self::C_CUISINE_TYPE => $account->getCuisineType(),
                         self::C_CUISINE_ID => $account->getCuisineId(),
                         self::C_SEAT_COUNT => $account->getSeatCount(),
@@ -193,6 +196,7 @@ class AccountSQL implements AccountDAO {
         $contactName = $account->getContactName();
         $phone = $account->getPhone();
         $serviceType = $account->getServiceType();
+        $serviceId = $account->getServiceId();
         $cuisineType = $account->getCuisineType();
         $cuisineId = $account->getCuisineId();
         $seatCount = $account->getSeatCount();
@@ -216,6 +220,7 @@ class AccountSQL implements AccountDAO {
         if (isset($contactName)) $values[self::C_CONTACT_NAME] = $contactName;
         if (isset($phone)) $values[self::C_PHONE] = $phone;
         if (isset($serviceType)) $values[self::C_SERVICE_TYPE] = $serviceType;
+        if (isset($serviceId)) $values[self::C_SERVICE_ID] = $serviceId;
         if (isset($cuisineType)) $values[self::C_CUISINE_TYPE] = $cuisineType;
         if (isset($cuisineId)) $values[self::C_CUISINE_ID] = $cuisineId;
         if (isset($seatCount)) $values[self::C_SEAT_COUNT] = $seatCount;
