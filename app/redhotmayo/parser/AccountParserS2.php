@@ -95,7 +95,6 @@ class AccountParserS2 extends AccountParser {
             $acc->calculateWeeklyOpportunity();
 
             $return[] = $acc;
-            break;
         }
         return $return;
     }
