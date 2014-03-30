@@ -15,10 +15,11 @@ Route::get('/', ['as' => 'home', function() {
 Route::post('/api/login/', ApiSessionController::LOGIN);
 Route::post('/api/users/new', ApiRegistrationController::STORE);
 
-//Route::resource('/api/mobiledevice', '\redhotmayo\api\controllers\MobileDeviceController', ['only' => ['update', 'create', 'destroy']]);
 Route::post('/api/mobiledevice/create', MobileDeviceController::CREATE);
 
+//--------------------------------------------------
 // Mobile API
+//--------------------------------------------------
 Route::group(array('before' => 'api.auth'), function() {
 
     Route::get('/api/accounts/search', ApiAccountController::SEARCH);
@@ -30,8 +31,22 @@ Route::group(array('before' => 'api.auth'), function() {
     Route::post('/api/notes/add', ApiNoteController::ADD);
 });
 
-
+//--------------------------------------------------
 // Web System
+//--------------------------------------------------
+
+// Registration
+Route::get('registration', 'RegistrationController@index');
+
+Route::group(['before' => 'csrf'], function(){
+    Route::post('registration', 'RegistrationController@store');
+});
+
+
+//Route::group(['before' => 'csrf'], function(){
+//    Route::post('registration', 'RegistrationController@store', ['as' => 'registration.store']);
+//});
+
 Route::get('profile', function() {
     return "Welcome ". Auth::user()->username;
 })->before('auth');
