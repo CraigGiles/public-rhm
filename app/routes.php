@@ -42,11 +42,20 @@ Route::group(['before' => 'csrf'], function(){
     Route::post('registration', 'RegistrationController@store');
 });
 
+Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@create']);
+Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@destroy']);
+Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
-//Route::group(['before' => 'csrf'], function(){
-//    Route::post('registration', 'RegistrationController@store', ['as' => 'registration.store']);
-//});
+Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
+Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
+Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 
+
+
+
+/**
+ * Remove the folowing once done testing
+ */
 Route::get('profile', function() {
     return "Welcome ". Auth::user()->username;
 })->before('auth');
@@ -54,11 +63,4 @@ Route::get('profile', function() {
 Route::resource('accounts', 'AccountsController');
 Route::post('/accounts/create', 'AccountsController@upload');
 
-Route::get('login', array('as' => 'login', 'uses' => 'SessionsController@create'));
-Route::get('logout', array('as' => 'logout', 'uses' => 'SessionsController@destroy'));
-Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
-
-Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
-Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
-Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 
