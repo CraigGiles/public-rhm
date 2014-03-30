@@ -37,7 +37,7 @@ class CreateAccountsTable extends Migration {
             $table->string('mealPeriod', 20)->nullable();
             $table->double('weeklyOpportunity')->nullable();
             $table->unsignedInteger('estimatedAnnualSales')->nullable();
-            $table->string('averageCheck', 20)->nullable();
+            $table->double('averageCheck', 20)->nullable();
             $table->string('website', 50)->nullable();
             $table->boolean('isTargetAccount')->default(false);
 
