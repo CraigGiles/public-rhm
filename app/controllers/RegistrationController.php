@@ -46,8 +46,8 @@ class RegistrationController extends  BaseController {
             // Login the user
             Auth::attempt(['username' => $input['username'], 'password' => $input['password']]);
 
-            //todo: Redirect to payment page here instead of just returning "registered"
-            return "user has been registered. Please proceed to download the application from the Google Play Store.";
+            //todo: Redirect to payment page here instead of profile page
+            return Redirect::to('profile');
 
         } catch (ValidationException $validationException) {
             Log::info("Registration Failure with Validation Exception");
