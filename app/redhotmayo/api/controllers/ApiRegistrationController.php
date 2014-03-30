@@ -4,12 +4,9 @@ use BaseController;
 use Exception;
 use Illuminate\Support\Facades\Input;
 use redhotmayo\api\auth\ApiSession;
-use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\dataaccess\repository\UserRepository;
-use redhotmayo\facade\Registration;
-use redhotmayo\model\User;
-use redhotmayo\registration\exceptions\UserExistsException;
 use redhotmayo\registration\MobileRegistrationValidator;
+use redhotmayo\registration\Registration;
 use redhotmayo\validation\ValidationException;
 
 class ApiRegistrationController extends BaseController {
@@ -18,7 +15,12 @@ class ApiRegistrationController extends BaseController {
     /**  @var ApiSession $session  */
     private $session;
 
-    public function __construct(UserRepository $userRepo, MobileRegistrationValidator $validator, ApiSession $session) {
+    /** @var Registration $registrationService */
+    private $registrationService;
+
+    public function __construct(
+        Registration $registration, UserRepository $userRepo, MobileRegistrationValidator $validator, ApiSession $session) {
+        $this->registrationService = $registration;
         $this->userRepo = $userRepo;
         $this->validator = $validator;
         $this->session = $session;
@@ -27,11 +29,8 @@ class ApiRegistrationController extends BaseController {
     public function store() {
         $results = [];
         $input = Input::json()->all();
-
         try {
-            $status = Registration::mobileRegistration($input, $this->validator);
-            $user = $this->userRepo->find(['username' => $input['username']]);
-//            $results['token'] = $this->session->create($user);
+            $status = $this->registrationService->register($input, $this->validator);
         } catch (ValidationException $validationException) {
             $status = false;
             $results['message'] = $validationException->getErrors()->toArray();
