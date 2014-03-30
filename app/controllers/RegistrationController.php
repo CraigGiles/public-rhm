@@ -36,7 +36,8 @@ class RegistrationController extends  BaseController {
             }
 
             $user = $this->userRepo->find(['username' => $input['username']]);
-            //todo: do something here?
+            //todo: Redirect to payment page here instead of just returning "registered"
+            return "user has been registered. Please proceed to download the application from the Google Play Store.";
 
         } catch (ValidationException $validationException) {
             return Redirect::back()->withErrors($validationException->getErrors());
