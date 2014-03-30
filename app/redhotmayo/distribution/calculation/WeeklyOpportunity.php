@@ -57,24 +57,6 @@ abstract class WeeklyOpportunity {
     abstract function getPercent();
 
     /**
-     * @param AverageCheck $averageCheckParser
-     */
-    public function setAverageCheckParser(AverageCheck $averageCheckParser) {
-        $this->averageCheckParser = $averageCheckParser;
-    }
-
-    /**
-     * @return AverageCheck
-     */
-    public function getAverageCheckParser() {
-        if (!isset($this->averageCheckParser)) {
-            $this->averageCheckParser = new AverageCheck();
-        }
-
-        return $this->averageCheckParser;
-    }
-
-    /**
      * @param double $averageCheck
      */
     public function setAverageCheck($averageCheck) {
