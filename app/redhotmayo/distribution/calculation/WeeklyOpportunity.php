@@ -44,12 +44,9 @@ abstract class WeeklyOpportunity {
     private $averageCheck;
 
     public function __construct($seats, $averageCheck) {
-        //do conversion here
-        $checkParser = $this->getAverageCheckParser();
-
         //set seats and average check
         $this->setSeats($seats);
-        $this->setAverageCheck($checkParser->parse($averageCheck));
+        $this->setAverageCheck($averageCheck);
     }
 
     abstract function getModifier1();
