@@ -37,7 +37,7 @@ class RegistrationController extends  BaseController {
 
             $user = $this->userRepo->find(['username' => $input['username']]);
             //todo: do something here?
-            
+
         } catch (ValidationException $validationException) {
             return Redirect::back()->withErrors($validationException->getErrors());
         } catch (Exception $e) {
