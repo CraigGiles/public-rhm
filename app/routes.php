@@ -30,7 +30,7 @@ Route::group(array('before' => 'api.auth'), function() {
     Route::post('/api/notes/add', ApiNoteController::ADD);
 });
 
-
+Route::get('geography/search', 'GeographyController@search');
 // Web System
 Route::get('profile', function() {
     return "Welcome ". Auth::user()->username;
