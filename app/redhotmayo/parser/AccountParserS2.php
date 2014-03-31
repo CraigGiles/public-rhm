@@ -29,6 +29,7 @@ class AccountParserS2 extends AccountParser {
     const C_WEBSITE = 'SOURCE';
     const C_CHECK_AVERAGE = 'CHECKAVERAGE';
 
+    private $averageCheckParser;
 
     public function processAccounts($accounts) {
         $return = array();
@@ -60,7 +61,10 @@ class AccountParserS2 extends AccountParser {
             $acc->setContactTitle($contactTitle);
             $acc->setMealPeriod($mealPeriod);
             $acc->setWebsite($website);
-            $acc->setAverageCheck($checkAverage);
+
+            $aveCheckParser = $this->getAverageCheckParser();
+            $average = $aveCheckParser->parse($checkAverage);
+            $acc->setAverageCheck($average);
 
             $note = new Note();
             $note->setText($account[self::C_DESCRIBE]);
@@ -92,7 +96,21 @@ class AccountParserS2 extends AccountParser {
 
             $return[] = $acc;
         }
-
         return $return;
+    }
+
+    /**
+     * @return AverageCheck
+     */
+    public function getAverageCheckParser() {
+        if (!isset($this->averageCheckParser)) {
+            $this->averageCheckParser = new AverageCheck();
+        }
+
+        return $this->averageCheckParser;
+    }
+
+    public function setAverageCheckParser(AverageCheck $parser) {
+        $this->averageCheckParser = $parser;
     }
 }
