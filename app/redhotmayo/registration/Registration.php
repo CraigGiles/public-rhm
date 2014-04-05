@@ -8,6 +8,7 @@ use redhotmayo\model\User;
 use redhotmayo\validation\Validator;
 
 class Registration {
+
     /**
      * @var \redhotmayo\dataaccess\repository\UserRepository
      */
@@ -28,7 +29,7 @@ class Registration {
      * @param RegistrationValidator $validator
      * @return bool
      */
-    public function mobileRegistration(array $input, RegistrationValidator $validator) {
+    public function register(array $input, RegistrationValidator $validator) {
         $registered = false;
 
         //validate input

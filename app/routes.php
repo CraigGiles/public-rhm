@@ -15,10 +15,11 @@ Route::get('/', ['as' => 'home', function() {
 Route::post('/api/login/', ApiSessionController::LOGIN);
 Route::post('/api/users/new', ApiRegistrationController::STORE);
 
-//Route::resource('/api/mobiledevice', '\redhotmayo\api\controllers\MobileDeviceController', ['only' => ['update', 'create', 'destroy']]);
 Route::post('/api/mobiledevice/create', MobileDeviceController::CREATE);
 
+//--------------------------------------------------
 // Mobile API
+//--------------------------------------------------
 Route::group(array('before' => 'api.auth'), function() {
 
     Route::get('/api/accounts/search', ApiAccountController::SEARCH);
@@ -30,8 +31,34 @@ Route::group(array('before' => 'api.auth'), function() {
     Route::post('/api/notes/add', ApiNoteController::ADD);
 });
 
-Route::get('geography/search', 'GeographyController@search');
+//--------------------------------------------------
 // Web System
+//--------------------------------------------------
+
+// Subscription
+Route::get('geography/search', 'GeographyController@search');
+
+// Registration
+Route::get('registration', 'RegistrationController@index');
+
+Route::group(['before' => 'csrf'], function(){
+    Route::post('registration', 'RegistrationController@store');
+});
+
+Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@create']);
+Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@destroy']);
+Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
+
+Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
+Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
+Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
+
+
+
+
+/**
+ * Remove the folowing once done testing
+ */
 Route::get('profile', function() {
     return "Welcome ". Auth::user()->username;
 })->before('auth');
@@ -39,11 +66,4 @@ Route::get('profile', function() {
 Route::resource('accounts', 'AccountsController');
 Route::post('/accounts/create', 'AccountsController@upload');
 
-Route::get('login', array('as' => 'login', 'uses' => 'SessionsController@create'));
-Route::get('logout', array('as' => 'logout', 'uses' => 'SessionsController@destroy'));
-Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
-
-Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPasswordForm');
-Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
-Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 
