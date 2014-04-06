@@ -13,3 +13,5 @@ rackspace/
 rackspace/*
 local/
 local/*
+*.ipr
+*.iws
