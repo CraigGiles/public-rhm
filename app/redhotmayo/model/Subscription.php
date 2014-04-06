@@ -6,6 +6,10 @@ class Subscription {
     private $user;
     private $zipCode;
 
+    public function __construct(User $user, $zipCode) {
+        $this->add($user, $zipCode);
+    }
+
     /**
      * @return mixed
      */
@@ -21,8 +25,14 @@ class Subscription {
     }
 
     /**
+     * Add a single user and zipcode
+     *
      * @param User $user
      * @param $zipCode
+     *
+     * @deprecated
+     * Once the subscription page is live than the XLSX subscription script will be deprecated and
+     * this object will be converted to a different object model.
      */
     public function add($user, $zipCode) {
         $this->user = $user;
