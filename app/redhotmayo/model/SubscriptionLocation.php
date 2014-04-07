@@ -2,6 +2,7 @@
 
 
 class SubscriptionLocation {
+    private $userId;
     private $city;
     private $county;
     private $state;
@@ -9,6 +10,7 @@ class SubscriptionLocation {
     private $population;
 
     public static function FromStdClass($stdClass) {
+        $userId = isset($stdClass->userId) ? $stdClass->userId : null;
         $city = isset($stdClass->city) ? $stdClass->city : null;
         $county = isset($stdClass->county) ? $stdClass->county : null;
         $state = isset($stdClass->state) ? $stdClass->state : null;
@@ -16,6 +18,7 @@ class SubscriptionLocation {
         $population = isset($stdClass->population) ? $stdClass->population : null;
 
         $loc = new self;
+        $loc->setUserId($userId);
         $loc->setCity($city);
         $loc->setCounty($county);
         $loc->setState($state);
@@ -26,6 +29,27 @@ class SubscriptionLocation {
 
     public function __construct() {
     }
+
+    public static function FromArray($data) {
+        return self::FromStdClass(json_decode(json_encode($data)));
+    }
+
+    /**
+     * @param int $userId
+     */
+    public function setUserId($userId) {
+        if (isset($userId)) {
+            $this->userId = (int)$userId;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
 
     /**
      * @param mixed $city
@@ -59,7 +83,9 @@ class SubscriptionLocation {
      * @param int $population
      */
     public function setPopulation($population) {
-        $this->population = (int)$population;
+        if (isset($population)) {
+            $this->population = (int)$population;
+        }
     }
 
     /**
@@ -87,7 +113,9 @@ class SubscriptionLocation {
      * @param int $zipcode
      */
     public function setZipcode($zipcode) {
-        $this->zipcode = (int)$zipcode;
+        if (isset($zipcode)) {
+            $this->zipcode = (int)$zipcode;
+        }
     }
 
     /**
