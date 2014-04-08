@@ -35,6 +35,11 @@ Route::group(array('before' => 'api.auth'), function() {
 // Web System
 //--------------------------------------------------
 
+// Subscription
+Route::get('geography/search', 'GeographyController@search');
+Route::get('subscribe', 'SubscriptionController@index');
+Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'store']]);
+
 // Registration
 Route::get('registration', 'RegistrationController@index');
 

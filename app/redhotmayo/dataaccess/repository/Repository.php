@@ -39,12 +39,4 @@ interface Repository {
      * @return array
      */
     public function saveAll($objects);
-
-    /**
-     * Take an array of database records and convert them to the appropriate objects
-     *
-     * @param $records
-     * @return array
-     */
-    function convertRecordsToJsonObjects($records);
 }
