@@ -1,6 +1,7 @@
 <?php
 
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder {
@@ -8,49 +9,15 @@ class UsersTableSeeder extends Seeder {
         DB::table('users')->delete();
         DB::statement('ALTER TABLE users AUTO_INCREMENT = 0;');
 
-//        DB::table('users')->truncate();
-
         $users = [
             [
-                'username' => 'testuser01',
+                'username' => 'demouser01',
                 'password' => Hash::make('$Test123'),
-                'email' => 'testuser01@somewhere.com',
+                'email' => 'demouser01@somewhere.com',
                 'emailVerified' => intval(true),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'username' => 'testuser02',
-                'password' => Hash::make('$Test123'),
-                'email' => 'testuser02@somewhere.com',
-                'emailVerified' => intval(true),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'username' => 'testuser03',
-                'password' => Hash::make('$Test123'),
-                'email' => 'testuser03@somewhere.com',
-                'emailVerified' => intval(true),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'username' => 'testuser04',
-                'password' => Hash::make('$Test123'),
-                'email' => 'testuser04@somewhere.com',
-                'emailVerified' => intval(true),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'username' => 'testuser05',
-                'password' => Hash::make('$Test123'),
-                'email' => 'testuser05@somewhere.com',
-                'emailVerified' => intval(true),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
         ];
 
         DB::table('users')->insert($users);
@@ -58,7 +25,7 @@ class UsersTableSeeder extends Seeder {
     }
 
     public function down() {
-        DB::table('roles')
+        DB::table('users')
           ->delete();
     }
 } 
