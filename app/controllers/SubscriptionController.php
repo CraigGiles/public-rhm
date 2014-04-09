@@ -86,7 +86,12 @@ class SubscriptionController extends BaseController {
         //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
 
         //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
-//        $this->subscriptionRepository->saveAll($subs);
+        $subs = [];
+        foreach ($data as $sub) {
+            $subs[] = SubscriptionLocation::FromArray($sub);
+        }
+
+        $this->subscriptionRepository->saveAll($subs);
         Redirect::to('profile');
     }
 }

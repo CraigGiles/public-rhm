@@ -53,6 +53,11 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
      * @return bool
      */
     public function save($subscription) {
+
+        if (isset($subscription) && $subscription instanceof SubscriptionLocation) {
+            //extract all zipcodes from sub location here, and convert to an array of subscription's to save
+        }
+
         if (isset($subscription) && $subscription instanceof Subscription) {
             $dao = DataAccessObject::GetSubscriptionDAO();
             $id = $this->isSubscriptionRecorded($subscription) ? true : $dao->save($subscription);
