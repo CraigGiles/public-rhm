@@ -38,7 +38,7 @@ class Registration {
         //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
         $throttle = App::make('ThrottleRegistrationRepository');
-        if (!$throttle->canUserRegister($input['key'])) {
+        if (!isset($input['key']) || !$throttle->canUserRegister($input['key'])) {
             throw new Exception("Registration limited to invited guests. Please try back at a later date.");
         }
 
