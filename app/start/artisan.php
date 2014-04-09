@@ -13,3 +13,4 @@
 
 Artisan::add(new ProcessAccountsCommand);
 Artisan::add(new SubscribeCommand);
+Artisan::add(new RegistrationThrottleCommand);
