@@ -5,6 +5,7 @@ use redhotmayo\dataaccess\repository\sql\CuisineRepositorySQL;
 use redhotmayo\dataaccess\repository\sql\FoodServicesRepositorySQL;
 use redhotmayo\dataaccess\repository\sql\MobileDeviceRepositorySQL;
 use redhotmayo\dataaccess\repository\sql\SubscriptionRepositorySQL;
+use redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL;
 use redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL;
 
 class DataAccessServiceProvider extends ServiceProvider {
@@ -26,6 +27,9 @@ class DataAccessServiceProvider extends ServiceProvider {
         $this->app->bind('redhotmayo\dataaccess\repository\CuisineRepository', CuisineRepositorySQL::SERVICE);
         $this->app->bind('redhotmayo\dataaccess\repository\FoodServicesRepository', FoodServicesRepositorySQL::SERVICE);
         $this->app->bind('redhotmayo\dataaccess\repository\MobileDeviceRepository', MobileDeviceRepositorySQL::SERVICE);
+
+        $this->app->bind('ThrottleRegistrationRepository', ThrottleRegistrationRepositorySQL::SERVICE);
+        $this->app->bind('redhotmayo\dataaccess\repository\ThrottleRegistrationRepository', ThrottleRegistrationRepositorySQL::SERVICE);
 
         $this->app->bind('SubscriptionRepository', SubscriptionRepositorySQL::SERVICE);
     }

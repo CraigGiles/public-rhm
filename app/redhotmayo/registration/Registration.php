@@ -1,7 +1,12 @@
 <?php namespace redhotmayo\registration;
 
+use Exception;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use InvalidArgumentException;
+use redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL;
+use redhotmayo\dataaccess\repository\ThrottleRegistrationRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
@@ -30,6 +35,13 @@ class Registration {
      * @return bool
      */
     public function register(array $input, RegistrationValidator $validator) {
+        //TODO: WS-43 REMOVE when not needed anymore
+        /** @var ThrottleRegistrationRepository $throttle */
+        $throttle = App::make('ThrottleRegistrationRepository');
+        if (!$throttle->canUserRegister($input['key'])) {
+            throw new Exception("Registration limited to invited guests. Please try back at a later date.");
+        }
+
         $registered = false;
 
         //validate input
@@ -46,7 +58,10 @@ class Registration {
 //            $this->mailer->welcome($user);
 //        }
 
-        //user was not registered
+        if ($registered) {
+           $throttle->decrementMax($input['key']);
+        }
+
         return $registered;
     }
 }
