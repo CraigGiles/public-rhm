@@ -1,9 +1,8 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use redhotmayo\dataaccess\EncryptedTrait;
+use redhotmayo\dataaccess\encryption\EncryptedTrait;
 use redhotmayo\dataaccess\repository\dao\BillingDAO;
 use redhotmayo\model\Billing;
 
@@ -49,15 +48,15 @@ class BillingSQL implements BillingDAO {
     public function update(Billing $billing) {
         $id = $billing->getBillingId();
         $values = $this->getValues($billing, isset($id));
-        DB::table('billing')
+        DB::table(self::TABLE_NAME)
           ->where(self::C_ID, $id)
           ->update($values);
     }
 
     private function getValues(Billing $billing, $updating=false) {
         $values = [
-            self::C_STRIPE_ID => Crypt::encrypt($billing->getStripeId()),
-            self::C_LAST_FOUR => Crypt::encrypt($billing->getLastFourCardDigits()),
+            self::C_STRIPE_ID => $billing->getStripeId(),
+            self::C_LAST_FOUR => $billing->getLastFourCardDigits(),
             self::C_STRIPE_PLAN => $billing->getStripePlan(),
             self::C_STRIPE_ACTIVE => $billing->subscribed(),
             self::C_SUBSCRIPTION_ENDS_AT => $billing->getSubscriptionEndDate(),
