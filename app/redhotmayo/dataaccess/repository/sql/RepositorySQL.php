@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\Repository;
 
@@ -10,51 +11,53 @@ abstract class RepositorySQL implements Repository {
     abstract protected function getConstraints($parameters);
 
     /**
-     * Return an array of all objects
-     *
-     * @return array
-     */
-    public function all() {
-        // TODO: Implement all() method.
-    }
-
-    /**
      * Return an array of all objects that match the given constraints
      *
      * @param $parameters
-     * @return mixed
+     *
+     * @return array
+     *
+     * @throws Exception
      */
     public function find($parameters) {
-        $constraints = $this->getConstraints($parameters);
+        try {
+            $constraints = $this->getConstraints($parameters);
 
-        $builder = DB::table($this->getTableName())
-                     ->select($this->getColumns());
+            $builder = DB::table($this->getTableName())
+                         ->select($this->getColumns());
 
-        foreach($constraints as $constraint => $value) {
-            $builder->where($constraint, '=', $value);
+            foreach($constraints as $constraint => $value) {
+                $builder->where($constraint, '=', $value);
+            }
+
+            return $builder->get();
+        } catch (Exception $e) {
+            Log::error($e);
+            throw $e;
         }
-
-        return $builder->get();
-    }
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
     }
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
      * @param $object
+     *
      * @return bool
+     *
+     * @throws Exception
      */
     public function save($object) {
-        // TODO: Implement save() method.
+        try {
+            $id = DB::table($this->getTableName())
+                    ->insertGetId($this->getValues());
+
+            $object->setId($id);
+
+            return isset($id) && is_numeric($id) && $id > 0;
+        } catch (Exception $e) {
+            Log::error($e);
+            throw $e;
+        }
     }
 
     /**
@@ -63,7 +66,9 @@ abstract class RepositorySQL implements Repository {
      * @param $objects
      * @return array
      */
-    public function saveAll($objects) {
-        // TODO: Implement saveAll() method.
+    public function saveAll(array $objects) {
+        foreach ($objects as $object) {
+            $this->save($object);
+        }
     }
 }

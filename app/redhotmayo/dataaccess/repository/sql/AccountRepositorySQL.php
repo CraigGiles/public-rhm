@@ -309,7 +309,7 @@ class AccountRepositorySQL implements AccountRepository {
      * @param $accounts
      * @return array
      */
-    public function saveAll($accounts) {
+    public function saveAll(array $accounts) {
         Log::info("Saving all accounts");
         $unsaved = array();
         foreach ($accounts as $account) {
