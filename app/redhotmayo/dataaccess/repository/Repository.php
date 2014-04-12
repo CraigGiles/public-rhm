@@ -2,27 +2,12 @@
 
 interface Repository {
     /**
-     * Return an array of all objects
-     *
-     * @return array
-     */
-    public function all();
-
-    /**
      * Return an array of all objects that match the given constraints
      *
      * @param $parameters
      * @return mixed
      */
     public function find($parameters);
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input);
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
@@ -38,5 +23,5 @@ interface Repository {
      * @param $objects
      * @return array
      */
-    public function saveAll($objects);
+    public function saveAll(array $objects);
 }
