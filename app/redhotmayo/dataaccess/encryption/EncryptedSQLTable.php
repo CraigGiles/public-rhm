@@ -4,7 +4,7 @@ namespace redhotmayo\dataaccess\encryption;
 
 use Illuminate\Support\Facades\Crypt;
 
-abstract class EncryptedMySQLTable {
+abstract class EncryptedSQLTable {
     /**
      * Obtain a list of encrypted columns
      */
