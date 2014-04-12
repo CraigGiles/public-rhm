@@ -10,10 +10,9 @@ use redhotmayo\dataaccess\repository\ThrottleRegistrationRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
-use redhotmayo\validation\Validator;
+use redhotmayo\registration\exceptions\ThrottleException;
 
 class Registration {
-
     /**
      * @var \redhotmayo\dataaccess\repository\UserRepository
      */
@@ -32,18 +31,18 @@ class Registration {
     /**
      * @param array $input
      * @param RegistrationValidator $validator
-     * @throws \Exception
+     * @param \redhotmayo\dataaccess\repository\ThrottleRegistrationRepository $throttle
      * @return bool
+     *
+     * @throws ThrottleException
      */
     public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
         //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
-        if (!isset($throttle)) {
-            $throttle = App::make('ThrottleRegistrationRepository');
-        }
+        $throttle = $this->getThrottleRepository($throttle);
 
         if (!$throttle->canUserRegister($input)) {
-            throw new Exception("Registration limited to invited guests. Please try back at a later date.");
+            throw new ThrottleException;
         }
         //TODO: END WS-43 REMOVE
 
@@ -58,6 +57,7 @@ class Registration {
             $registered = $this->userRepository->save($user);
         }
 
+        //TODO: once we have mailgun support, add mail
 //        //send user an email
 //        if ($registered && isset($user)) {
 //            $this->mailer->welcome($user);
@@ -68,5 +68,15 @@ class Registration {
         }
 
         return $registered;
+    }
+
+    private function getThrottleRepository($throttle) {
+        $result = $throttle;
+
+        if (!isset($throttle)) {
+            $result = App::make('ThrottleRegistrationRepository');
+        }
+
+        return $result;
     }
 }

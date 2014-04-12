@@ -11,6 +11,7 @@ class RegistrationTest extends TestCase {
     const VALIDATION_EXCEPTION = 'redhotmayo\validation\ValidationException';
     const USER_MAILER = 'redhotmayo\mailers\UserMailer';
     const THROTTLE_REPOSITORY = 'redhotmayo\dataaccess\repository\ThrottleRegistrationRepository';
+    const THROTTLE_EXCEPTION = 'redhotmayo\registration\exceptions\ThrottleException';
 
     /** @var MockInterface $userMailer */
     private $userRepo;
@@ -63,6 +64,17 @@ class RegistrationTest extends TestCase {
         $this->validator->shouldReceive('getCreationRules')->once();
         $this->validator->shouldReceive('validate')->once()->andThrow(self::VALIDATION_EXCEPTION);
         $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(true);
+
+        $registered = $r->register($input, $this->validator, $this->throttle);
+        $this->assertTrue($registered);
+    }
+
+    public function test_throttle_doesnt_let_new_users_register() {
+        $r = new Registration($this->userRepo, $this->userMailer);
+
+        $input = $this->getRegistrationInput();
+        $this->setExpectedException(self::THROTTLE_EXCEPTION);
+        $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(false);
 
         $registered = $r->register($input, $this->validator, $this->throttle);
         $this->assertTrue($registered);
