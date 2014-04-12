@@ -5,7 +5,7 @@ use Mockery as m;
 use redhotmayo\dataaccess\repository\dao\sql\BillingSQL;
 use TestCase;
 
-class EncryptedMySQLTableTest extends TestCase {
+class EncryptedSQLTableTest extends TestCase {
 
     /**
      * @test
@@ -37,6 +37,9 @@ class EncryptedMySQLTableTest extends TestCase {
         $this->assertEquals($result, $expected);
     }
 
+    /**
+     * @test
+     */
     public function it_should_decrypt_only_stripe_id_and_last_four_rows() {
         $columns = [
             'stripe_plan' => 'stripe_plan_decrypted',
@@ -60,7 +63,7 @@ class EncryptedMySQLTableTest extends TestCase {
         ];
 
         $billing = new BillingSQL();
-        $result = $billing->encrypt($columns);
+        $result = $billing->decrypt($columns);
         $this->assertEquals($result, $expected);
     }
 }
