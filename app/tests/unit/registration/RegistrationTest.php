@@ -39,11 +39,12 @@ class RegistrationTest extends TestCase {
         m::close();
     }
 
-    public function test_it_should_verify_valid_api_json() {
+    public function test_it_should_let_a_user_register() {
         $this->userRepo->shouldReceive('save')->once()->andReturn(true);
         $this->validator->shouldReceive('validate')->once()->andReturn(true);
         $this->validator->shouldReceive('getCreationRules')->once();
         $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(true);
+        $this->throttle->shouldReceive('decrementMax')->once()->withAnyArgs();
 
         $r = new Registration($this->userRepo, $this->userMailer);
 
