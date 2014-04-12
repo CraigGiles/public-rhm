@@ -1,11 +1,6 @@
 <?php namespace redhotmayo\registration;
 
-use Exception;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Input;
-use InvalidArgumentException;
-use redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL;
 use redhotmayo\dataaccess\repository\ThrottleRegistrationRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;

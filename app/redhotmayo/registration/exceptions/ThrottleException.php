@@ -1,11 +1,13 @@
 <?php  namespace redhotmayo\registration\exceptions; 
 
-use Exception;
+use Illuminate\Support\MessageBag;
+use redhotmayo\exception\Exception;
 
 class ThrottleException extends Exception {
     const MESSAGE = 'Registration limited to invited guests. Please try back at a later date.';
 
     public function __construct() {
-        parent::__construct(self::MESSAGE);
+        $messageBag = new MessageBag(['registration' => self::MESSAGE]);
+        parent::__construct($messageBag, self::MESSAGE);
     }
 }
