@@ -1,14 +1,12 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use redhotmayo\dataaccess\encryption\EncryptedTrait;
+use Illuminate\Database\Query\Builder as DB;
+use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\dataaccess\repository\dao\BillingDAO;
 use redhotmayo\model\Billing;
 
-class BillingSQL implements BillingDAO {
-    use EncryptedTrait;
-
+class BillingSQL extends EncryptedSQLTable implements BillingDAO {
     const TABLE_NAME = 'billing';
 
     const C_ID = 'id';
@@ -23,37 +21,57 @@ class BillingSQL implements BillingDAO {
     const C_UPDATED_AT = 'updated_at';
 
     /**
-     * Save a record and return the objectId
+     * Saves the object to the database returning the id of the object
      *
      * @param \redhotmayo\model\Billing $billing
      * @return int
      */
     public function save(Billing $billing) {
-        $billingId = $billing->getBillingId();
-
-        if (isset($billingId)) {
-            $this->update($billing);
-            return $billingId;
-        } else {
-            $values = $this->getValues($billing, false);
-
-            $id = DB::table(self::TABLE_NAME)
-                    ->insertGetId($values);
-
-            $billing->setUserId($id);
-            return $id;
-        }
+        $id = $billing->getId();
+        return isset($id) ? $this->update($billing) : $this->create($billing);
     }
 
-    public function update(Billing $billing) {
-        $id = $billing->getBillingId();
-        $values = $this->getValues($billing, isset($id));
+    /**
+     * Creates a new instance of the object
+     *
+     * @param \redhotmayo\model\Billing $billing
+     * @return int
+     */
+    private function create(Billing $billing) {
+        $values = $this->getValues($billing, false);
+
+        $id = DB::table(self::TABLE_NAME)
+                ->insertGetId($values);
+
+        $billing->setId($id);
+        return $id;
+    }
+
+    /**
+     * Updates an existing instance of the object
+     *
+     * @param \redhotmayo\model\Billing $billing
+     * @return int
+     */
+    private function update(Billing $billing) {
+        $id = $billing->getId();
+        $values = $this->getValues($billing, true);
+
         DB::table(self::TABLE_NAME)
           ->where(self::C_ID, $id)
           ->update($values);
+
+        return $id;
     }
 
-    private function getValues(Billing $billing, $updating=false) {
+    /**
+     * Gets the values used for storing this object
+     *
+     * @param \redhotmayo\model\Billing $billing
+     * @param bool
+     * @return array
+     */
+    private function getValues(Billing $billing, $updating = false) {
         $values = [
             self::C_STRIPE_ID => $billing->getStripeId(),
             self::C_LAST_FOUR => $billing->getLastFourCardDigits(),
@@ -72,6 +90,8 @@ class BillingSQL implements BillingDAO {
 
     /**
      * Obtain a list of encrypted columns
+     *
+     * @return array
      */
     public function getEncryptedColumns() {
         return [
