@@ -1,6 +1,6 @@
-<?php  namespace redhotmayo\dataaccess; 
+<?php  namespace redhotmayo\dataaccess\encryption;
 
-trait EncryptedTrait {
+trait EncryptedMySQLTrait {
     /**
      * Obtain a list of encrypted columns
      */
@@ -53,4 +53,4 @@ trait EncryptedTrait {
 
         return $encrypted;
     }
-} 
+}
