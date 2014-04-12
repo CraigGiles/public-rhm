@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8a6ad9665604f3ad1d0de69e00f578d9",
+    "hash": "da849ca2dc675bb880aed9ef2c26f940",
     "packages": [
         {
             "name": "bogardo/mailgun",
@@ -358,6 +358,57 @@
                 "tokenizer"
             ],
             "time": "2013-10-09 04:20:00"
+        },
+        {
+            "name": "laravel/cashier",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/cashier.git",
+                "reference": "3a21d30ce2110d2f909eaa0a1ef4e4d43b41d9bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/cashier/zipball/3a21d30ce2110d2f909eaa0a1ef4e4d43b41d9bb",
+                "reference": "3a21d30ce2110d2f909eaa0a1ef4e4d43b41d9bb",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/filesystem": "~4.1",
+                "illuminate/support": "~4.1",
+                "nesbot/carbon": "~1.0",
+                "php": ">=5.4.0",
+                "stripe/stripe-php": "~1.0",
+                "symfony/http-kernel": "~2.4"
+            },
+            "require-dev": {
+                "illuminate/view": "~4.1",
+                "mockery/mockery": "0.9.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Laravel\\Cashier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com",
+                    "homepage": "https://github.com/taylorotwell",
+                    "role": "Developer"
+                }
+            ],
+            "keywords": [
+                "billing",
+                "laravel",
+                "stripe"
+            ],
+            "time": "2014-03-04 03:17:25"
         },
         {
             "name": "laravel/framework",
@@ -789,18 +840,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "367c8566053d8f9f56e34e88591d5b5faf28349b"
+                "reference": "1a7e3746d540fa32df0f414852e7b0597de47291"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/367c8566053d8f9f56e34e88591d5b5faf28349b",
-                "reference": "367c8566053d8f9f56e34e88591d5b5faf28349b",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/1a7e3746d540fa32df0f414852e7b0597de47291",
+                "reference": "1a7e3746d540fa32df0f414852e7b0597de47291",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.0.0"
             },
             "require-dev": {
+                "phing/phing": "2.7.*",
                 "phpunit/phpunit": "4.0.*",
                 "squizlabs/php_codesniffer": "1.*"
             },
@@ -877,7 +929,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2014-04-12 05:23:23"
+            "time": "2014-04-12 17:30:37"
         },
         {
             "name": "predis/predis",
@@ -1018,6 +1070,54 @@
                 "stack"
             ],
             "time": "2014-01-28 19:42:24"
+        },
+        {
+            "name": "stripe/stripe-php",
+            "version": "v1.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "1506a8eedb31b523a3b4a38a3b0df60fd5fde69b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/1506a8eedb31b523a3b4a38a3b0df60fd5fde69b",
+                "reference": "1506a8eedb31b523a3b4a38a3b0df60fd5fde69b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/Stripe/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "time": "2014-04-10 07:01:37"
         },
         {
             "name": "swiftmailer/swiftmailer",
