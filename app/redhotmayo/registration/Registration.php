@@ -1,19 +1,13 @@
 <?php namespace redhotmayo\registration;
 
-use Exception;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Input;
-use InvalidArgumentException;
-use redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL;
 use redhotmayo\dataaccess\repository\ThrottleRegistrationRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
-use redhotmayo\validation\Validator;
+use redhotmayo\registration\exceptions\ThrottleException;
 
 class Registration {
-
     /**
      * @var \redhotmayo\dataaccess\repository\UserRepository
      */
@@ -32,15 +26,20 @@ class Registration {
     /**
      * @param array $input
      * @param RegistrationValidator $validator
+     * @param \redhotmayo\dataaccess\repository\ThrottleRegistrationRepository $throttle
      * @return bool
+     *
+     * @throws ThrottleException
      */
-    public function register(array $input, RegistrationValidator $validator) {
+    public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
         //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
-        $throttle = App::make('ThrottleRegistrationRepository');
-        if (!isset($input['key']) || !$throttle->canUserRegister($input['key'])) {
-            throw new Exception("Registration limited to invited guests. Please try back at a later date.");
+        $throttle = $this->getThrottleRepository($throttle);
+
+        if (!$throttle->canUserRegister($input)) {
+            throw new ThrottleException;
         }
+        //TODO: END WS-43 REMOVE
 
         $registered = false;
 
@@ -53,15 +52,29 @@ class Registration {
             $registered = $this->userRepository->save($user);
         }
 
+        //TODO: once we have mailgun support, add mail
 //        //send user an email
 //        if ($registered && isset($user)) {
 //            $this->mailer->welcome($user);
 //        }
 
         if ($registered) {
-           $throttle->decrementMax($input['key']);
+           $throttle->decrementMax($input);
         }
 
         return $registered;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    private function getThrottleRepository($throttle) {
+        $result = $throttle;
+
+        if (!isset($throttle)) {
+            $result = App::make('ThrottleRegistrationRepository');
+        }
+
+        return $result;
     }
 }

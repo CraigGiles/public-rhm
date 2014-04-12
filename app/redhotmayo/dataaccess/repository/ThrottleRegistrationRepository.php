@@ -13,15 +13,15 @@ interface ThrottleRegistrationRepository {
     /**
      * Determines if a key is valid and the current number of registrations is under the max
      *
-     * @param $key
+     * @param array $input
      * @return mixed
      */
-    public function canUserRegister($key);
+    public function canUserRegister(array $input);
 
     /**
      * Decrements the max number of people who can register by one for the given key
      *
-     * @param $key
+     * @param array $input
      */
-    public function decrementMax($key);
+    public function decrementMax(array $input);
 } 

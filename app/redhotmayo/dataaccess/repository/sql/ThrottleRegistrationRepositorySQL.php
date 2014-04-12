@@ -37,15 +37,24 @@ class ThrottleRegistrationRepositorySQL implements ThrottleRegistrationRepositor
     /**
      * Determines if a key is valid and the current number of registrations is under the max
      *
-     * @param $key
+     * @param array $input
      * @return mixed
      */
-    public function canUserRegister($key) {
+    public function canUserRegister(array $input) {
+        $key = $this->getKeyFromInput($input);
         $result = $this->getMax($key);
+
         return $this->isValid($result);
     }
 
-    public function decrementMax($key) {
+    /**
+     * Decrements the max number of people who can register by one for the given key
+     *
+     * @param array $input
+     */
+    public function decrementMax(array $input) {
+        $key = $this->getKeyFromInput($input);
+
         $max = $this->getMax($key);
         if ($this->isValid($max)) {
             $max--;
@@ -66,5 +75,13 @@ class ThrottleRegistrationRepositorySQL implements ThrottleRegistrationRepositor
 
     private function isValid($result) {
         return isset($result) && intval($result) > 0;
+    }
+
+    private function getKeyFromInput($input) {
+        if (!isset($input[self::C_KEY])) {
+            throw new \InvalidArgumentException('key attribute not found');
+        }
+
+        return $input[self::C_KEY];
     }
 }
