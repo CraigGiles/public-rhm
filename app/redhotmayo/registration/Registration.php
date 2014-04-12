@@ -32,15 +32,20 @@ class Registration {
     /**
      * @param array $input
      * @param RegistrationValidator $validator
+     * @throws \Exception
      * @return bool
      */
-    public function register(array $input, RegistrationValidator $validator) {
+    public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
         //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
-        $throttle = App::make('ThrottleRegistrationRepository');
-        if (!isset($input['key']) || !$throttle->canUserRegister($input['key'])) {
+        if (!isset($throttle)) {
+            $throttle = App::make('ThrottleRegistrationRepository');
+        }
+
+        if (!$throttle->canUserRegister($input)) {
             throw new Exception("Registration limited to invited guests. Please try back at a later date.");
         }
+        //TODO: END WS-43 REMOVE
 
         $registered = false;
 
@@ -59,7 +64,7 @@ class Registration {
 //        }
 
         if ($registered) {
-           $throttle->decrementMax($input['key']);
+           $throttle->decrementMax($input);
         }
 
         return $registered;
