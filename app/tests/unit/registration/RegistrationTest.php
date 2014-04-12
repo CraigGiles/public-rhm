@@ -40,36 +40,37 @@ class RegistrationTest extends TestCase {
     }
 
     public function test_it_should_let_a_user_register() {
+        $r = new Registration($this->userRepo, $this->userMailer);
+        $input = $this->getRegistrationInput();
+
         $this->userRepo->shouldReceive('save')->once()->andReturn(true);
         $this->validator->shouldReceive('validate')->once()->andReturn(true);
         $this->validator->shouldReceive('getCreationRules')->once();
         $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(true);
         $this->throttle->shouldReceive('decrementMax')->once()->withAnyArgs();
 
-        $r = new Registration($this->userRepo, $this->userMailer);
-
-        $json = Config::get('registration.testuser01');
-        $input = json_decode($json, true);
 
         $registered = $r->register($input, $this->validator, $this->throttle);
         $this->assertTrue($registered);
     }
 
     public function test_if_validation_fails() {
-//        $this->setExpectedException(self::VALIDATION_EXCEPTION);
-//
-//        $userRepo = m::mock(self::USER_REPOSITORY);
-//
-//        $validator = m::mock(self::REGISTRATION_VALIDATOR);
-//        $validator->shouldReceive('getCreationRules')->once();
-//        $validator->shouldReceive('validate')->once()->andThrow(self::VALIDATION_EXCEPTION);
-//
-//        $json = Config::get('testdata.register_user');
-//        $input = json_decode($json, true);
-//
-//        $r = new Registration($userRepo);
-//        $registered = $r->register($input, $validator);
-//        $this->assertTrue($registered);
+        $r = new Registration($this->userRepo, $this->userMailer);
+
+        $input = $this->getRegistrationInput();
+        $this->setExpectedException(self::VALIDATION_EXCEPTION);
+
+        $this->validator->shouldReceive('getCreationRules')->once();
+        $this->validator->shouldReceive('validate')->once()->andThrow(self::VALIDATION_EXCEPTION);
+        $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(true);
+
+        $registered = $r->register($input, $this->validator, $this->throttle);
+        $this->assertTrue($registered);
+    }
+
+    private function getRegistrationInput() {
+        $json = Config::get('registration.testuser01');
+        return json_decode($json, true);
     }
 
 }
