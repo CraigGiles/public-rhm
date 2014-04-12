@@ -14,17 +14,27 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
         return require __DIR__ . '/../../bootstrap/start.php';
     }
 
-    /**
-     * @param $method
-     * @param $args
-     * @return \Illuminate\Http\Response
-     * @throws BadMethodCallException
-     */
-    public function __call($method, $args) {
-        if (in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
-            return $this->call($method, $args[0]);
-        }
+    public function mock($class) {
+        $mock = Mockery::mock($class);
+        $this->app->instance($class, $mock);
 
-        throw new BadMethodCallException;
+        return $mock;
     }
+
+    public function postWithJson($route, $config) {
+        $this->call('POST', $route, [], [], [], Config::get($config));
+    }
+
+    public function postWithArray($route, $config) {
+        $this->call('POST', $route, $this->getTestDataAsArray($config));
+    }
+
+    private function getTestDataAsArray($config) {
+        $rawData = Config::get($config);
+        $data = json_decode($rawData, true);
+        Input::replace($input = $data);
+
+        return $input;
+    }
+
 }
