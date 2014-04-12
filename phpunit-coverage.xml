@@ -16,6 +16,7 @@
             <directory suffix=".php">./app/redhotmayo</directory>
             <exclude>
                 <directory suffix=".php">./app/tests</directory>
+                <directory suffix="ServiceProvider.php">./app</directory>
             </exclude>
         </whitelist>
     </filter>
