@@ -1,0 +1,42 @@
+.state-selection {
+    padding-bottom: 8px;
+}
+
+.region-list, .selected-regions {
+    margin-top: 8px;
+    height: 542px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.region-list-filter {
+    padding: 4px;
+}
+.region-filtered {
+    height: 500px;
+    overflow-y: scroll;
+}
+.region-list-filter {
+    background: #F7F7F9;
+    height: 42px;
+    border-bottom: 1px solid #cccccc;
+}
+.region, .selected-region {
+    line-height: 3em;
+    border-bottom: 1px solid #cccccc;
+    margin: 0;
+    padding-left: 12px;
+}
+.region:hover {
+    background: #d9edf7;
+    cursor: pointer;
+}
+.selected {
+    background: #d9edf7;
+}
+.selected-region:hover {
+    background: #d9edf7;
+}
+.type {
+    padding-left: 8px;
+}

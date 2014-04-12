@@ -1,8 +1,6 @@
 @extends('layouts.master')
 
 @section('css')
-<link rel="stylesheet" href="../css/registration.css">
-<link rel="stylesheet" href="../css/bootstrap-select.min.css">
 @endsection
 
 @section('content')
@@ -41,10 +39,35 @@
     <option value="@{{this.short}}">@{{this.name}}</option>
   @{{/each}}
 </script>
-<script src="../js/lib/fuse.js" type="application/javascript"></script>
-<script src="../js/lib/handlebars-v1.3.0.js" type="application/javascript"></script>
-<script src="../js/lib/bootstrap-select.min.js" type="application/javascript"></script>
-<!--<script src="../js/lib/ember.min.js" type="application/javascript"></script>-->
+
+<script id="selected_regions_template" type="text/x-handlebars-template">
+  <div>
+    @{{#each regions}}
+    <p class="selected-region">
+      <button type="button" class="btn btn-danger" onclick="removeSelectedRegion(@{{@index}})">Unsubscribe</button>
+      @{{this.search_by}}
+      <small class="type text-muted">@{{this.type}}</small>
+    </p>
+    @{{/each}}
+  </div>
+</script>
+
+<script id="regions_template" type="text/x-handlebars-template">
+  <div>
+    @{{#each regions}}
+    <p onclick="selectRegion(@{{this.id}})" class="region @{{#if this.selected}}selected@{{/if}}">
+      @{{#if this.selected}}
+      <button type="button" class="btn btn-danger active">Unsubscribe</button>
+      @{{else}}
+      <button type="button" class="btn btn-primary">Subscribe</button>
+      @{{/if}}
+      @{{this.search_by}}
+      <small class="type text-muted">@{{this.type}}</small>
+    </p>
+    @{{/each}}
+  </div>
+</script>
+
 <script type="application/javascript">
 
   /**
@@ -109,15 +132,15 @@
   var regions = [];
   var selected_regions = [];
   var result = [];
-  var regions_template;
-  var selected_regions_template;
+//  var regions_template;
+//  var selected_regions_template;
 
   /**
    * fill out the states template
    */
   var state_template = Handlebars.compile($('#states_template').html());
   $('#states').html(state_template(states));
-  $('.selectpicker').selectpicker();
+  $('.selectpicker').selectpicker({title:"Select a State..."});
   $('#states').on('change', function(){
     console.log($(this).val());
 
@@ -136,43 +159,10 @@
   });
 
   /**
-   * Grab templates from the server
+   * Setup the templates for the regions.
    */
-  (function() {
-    $.ajax({
-      url: '../js/templates/region.hbs',
-      cache: true,
-      success: function(data) {
-        regions_template = Handlebars.compile(data);
-      }
-    });
-    $.ajax({
-      url: '../js/templates/selected_region.hbs',
-      cache: true,
-      success: function(data) {
-        selected_regions_template = Handlebars.compile(data);
-      }
-    })
-  })();
-
-
-  /**
-   * Grab the json from the API/server
-   */
-//  (function() {
-//    $.ajax({
-//      url: '../js/CA.json',
-//      cache: true,
-//      success: function(data) {
-//        //set regions to the JSON from the API
-//        regions = JSON.parse(data);
-//
-//        //instantiate a new Fuse searching thing
-//        f = new Fuse(regions, options);
-//        updateRegionsTemplate();
-//      }
-//    });
-//  })();
+  var regions_template = Handlebars.compile($('#regions_template').html());
+  var selected_regions_template = Handlebars.compile($('#selected_regions_template').html());
 
   /**
    * Every time the input changes update the regions_template with the search results
@@ -202,6 +192,7 @@
       $('button').button('subscribed');
       updateRegionsTemplate();
       updateSelectedRegionTemplate();
+
     } else {
       regions[index].selected = undefined;
       removeSelectedRegion(index, true);
@@ -225,15 +216,24 @@
   function updateSelectedRegionTemplate(){
     $('#selected-regions').html(selected_regions_template({regions:selected_regions}));
   }
-  function isInSelectedRegionList(obj) {
-    for (var i=0 ; i<selected_regions.length ; i++) {
-      if (obj.search_by === selected_regions[i].search_by &&
-          obj.type      === selected_regions[i].type) {
-        return true
+
+
+  /**
+   * Form submission
+   */
+  function submitRegions() {
+    $.ajax({
+      url: 'api',
+      type: 'POST',
+      dataType: 'json',
+      data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
+      cache: true,
+      success: function(data) {
+        selected_regions_template = Handlebars.compile(data);
       }
-    }
-    return false;
+    });
   }
+
 
 </script>
 @endsection
