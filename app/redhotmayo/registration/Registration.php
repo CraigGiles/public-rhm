@@ -66,7 +66,7 @@ class Registration {
     }
 
     /**
-     * @odeCoverageIgnore
+     * @codeCoverageIgnore
      */
     private function getThrottleRepository($throttle) {
         $result = $throttle;
