@@ -2,11 +2,11 @@
 
 class RedHotMayoControllerTestCase extends RedHotMayoTestCase {
     public function callPostWithJson($route, $config) {
-        return $this->call('POST', $route, [], [], [], Config::get($config));
+        return $this->call('POST', $route, [], [], ['HTTP_REFERER' => $route], Config::get($config));
     }
 
     public function callPostWithArray($route, $config) {
-        return $this->call('POST', $route, $this->getTestDataAsArray($config));
+        return $this->call('POST', $route, $this->getTestDataAsArray($config),[], ['HTTP_REFERER' => $route]);
     }
 
     private function getTestDataAsArray($config) {
