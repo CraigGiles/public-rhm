@@ -9,6 +9,12 @@ class RedHotMayoTestCase extends TestCase {
         $this->setupTestUser();
     }
 
+    public function tearDown() {
+        parent::tearDown();
+
+        Mockery::close();
+    }
+
     public function getAuthUser() {
         return $this->user;
     }
