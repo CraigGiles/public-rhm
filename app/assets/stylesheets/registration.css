@@ -40,3 +40,14 @@
 .type {
     padding-left: 8px;
 }
+.shadow-wrapper {
+    position: relative;
+}
+.shadow-top {
+    background: url(shadow-top.png);
+    background-repeat: no-repeat;
+    background-size: 100% 42px;
+    height: 42px;
+    position: absolute;
+    top: 0;
+}

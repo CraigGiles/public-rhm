@@ -1,9 +1,27 @@
 @extends('layouts.master')
 
+
+
+
+
 @section('css')
 @endsection
 
+
+
+
+
 @section('content')
+<div class="page-header">
+  <h1>Registration <small>Region Selection</small></h1>
+  <ol class="breadcrumb">
+    <li class="active" style="color: #333333;">Region Selection</li>
+    <li class="text-muted">Account Creation</a></li>
+    <li class="text-muted">Confirmation</a></li>
+  </ol>
+</div>
+
+
 <div class="row">
   <div class="col-md-6 state-selection">
     <select id="states" class="selectpicker" data-live-search="true"></select>
@@ -29,9 +47,20 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12" style="margin-top:8px;">
+    <button id="submit" type="button" class="btn btn-primary btn-lg pull-right" onclick="submitRegions();">Continue</button>
+  </div>
+</div>
 {{ Form::open() }}
 {{ Form::close() }}
 @endsection
+
+
+
+
+
+<!--JAVASCRIPT-->
 
 @section('javascript')
 <script id="states_template" type="text/x-handlebars-template">
@@ -189,6 +218,7 @@
     if (regions[index].selected === undefined){
       selected_regions.push(regions[index]);
       regions[index].selected = true;
+      regions[index].state = $('#states').val();
       $('button').button('subscribed');
       updateRegionsTemplate();
       updateSelectedRegionTemplate();
@@ -221,7 +251,12 @@
   /**
    * Form submission
    */
+  //setup failure popover
+
+  //submit the form with ajax then redirect
   function submitRegions() {
+    console.log("hide error");
+    $('#submit').popover('destroy');
     $.ajax({
       url: 'api',
       type: 'POST',
@@ -229,7 +264,17 @@
       data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
       cache: true,
       success: function(data) {
-        selected_regions_template = Handlebars.compile(data);
+        //go to next page
+        window.location.href = 'registration'
+      },
+      error: function() {
+        console.log("show error");
+        $('#submit').popover({
+          title:'Uh oh...',
+          content:"Something didn't work quite right. Try clicking Continue again.",
+          placement:'left'
+        });
+        $('#submit').popover('show');
       }
     });
   }

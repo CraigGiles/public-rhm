@@ -13,5 +13,6 @@
 //= require jquery-1.11.0.min.js
 //= require bootstrap.min.js
 //= require bootstrap-select.min.js
+//= require bootstrapValidator.min.js
 //= require fuse.min.js
 //= require handlebars-v1.3.0.js
