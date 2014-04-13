@@ -1,6 +1,7 @@
 <?php 
 
 class RedHotMayoTestCase extends TestCase {
+    const TEST_USER = false;
     private $user;
 
     public function setUp() {
