@@ -1,4 +1,4 @@
-<?php  namespace redhotmayo\distribution; 
+<?php  namespace redhotmayo\distribution;
 
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
@@ -14,9 +14,10 @@ class RegionalSubscriptionManager {
     private $subscriptionRepository;
     private $zipcodeRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository,
-        ZipcodeRepository $zipcodeRepository)
-    {
+    public function __construct(
+        SubscriptionRepository $subscriptionRepository,
+        ZipcodeRepository $zipcodeRepository
+    ) {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->zipcodeRepository = $zipcodeRepository;
     }
@@ -25,10 +26,28 @@ class RegionalSubscriptionManager {
         //get all zipcodes for 'type' in state 'state'
         $zipcodes = $this->getZipcodesForRegions($dataset);
 
+        /**
+         * Does this stuff need to go here?
+         */
+//        //todo: calculate subscription value here (newSub - currentSub)
+//        //$subDifference = Billing->Calculate(userId, newSubs) ?
+//
+//        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
+//        //todo: save in session and redirect to billing
+//        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
+//
+//        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
+//        $subs = [];
+//        foreach ($data as $sub) {
+//            $subLocation = SubscriptionLocation::FromArray($sub);
+//            $subs[] = SubscriptionLocation::FromArray($sub);
+//        }
+
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);
         }
+
     }
 
     private function getZipcodesForRegions(array $dataset) {

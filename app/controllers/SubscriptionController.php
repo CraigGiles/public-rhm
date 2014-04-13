@@ -1,6 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
@@ -11,6 +16,7 @@ use redhotmayo\model\SubscriptionLocation;
 class SubscriptionController extends BaseController {
     const TEMP_ID = 'temp_id';
     const DATA = 'regions';
+    const ONE_DAY = 1440;
 
     /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subscriptionRepository */
     private $subscriptionRepository;
@@ -47,17 +53,6 @@ class SubscriptionController extends BaseController {
             $data = Session::get(self::TEMP_ID);
         }
 
-        //TODO: not sure how to pass the subscription location object to the front end. The basic data will look like the following:
-        /**
-         * array (size=1)
-            0 =>
-                object(redhotmayo\model\SubscriptionLocation)[253]
-                private 'city' => string 'SAN FRANCISCO' (length=13)
-                private 'county' => string 'SAN FRANCISCO' (length=13)
-                private 'state' => string 'CA' (length=2)
-                private 'zipcode' => int 94132
-                private 'population' => int 28129
-         */
         return View::make('subscriptions.index', ['subscriptions' => $data] );
     }
 
@@ -69,47 +64,33 @@ class SubscriptionController extends BaseController {
     public function store() {
         $userId = null;
         $data = Input::get(self::DATA);
-        $data = Input::json(self::DATA);
-
-        if (Auth::user()) {
-            $userId = Auth::user()->id;
-        }
-
-//        foreach ($data as $subscription) {
-//            $tmp = SubscriptionLocation::FromArray($subscription);
-//            $tmp->setUserId($userId);
-//        }
-
-        // If user is not registered, store their subscriptions and register them.
-        if (!Auth::user()) {
-            $tempId = str_random(255);
-            Cookie::put(self::TEMP_ID, $tempId);
-            Session::put($tempId, $data);
-            Redirect::to('registration');
-        }
 
         try {
-            $user = $this->userRepository->find(['username' => Auth::user()->username]);
+            $user = $this->getAuthedUser($data);
             $this->regSubManager->subscribeRegionsToUser($user, $data);
+            Redirect::to('profile');
         } catch (RegionalSubscriptionException $ex) {
-
+            Log::error("RegionalSubscriptionException: {$ex->getMessage()}");
+            $this->redirectWithErrors($ex->getErrors());
         }
+    }
 
-//        //todo: calculate subscription value here (newSub - currentSub)
-//        //$subDifference = Billing->Calculate(userId, newSubs) ?
-//
-//        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
-//        //todo: save in session and redirect to billing
-//        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
-//
-//        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
-//        $subs = [];
-//        foreach ($data as $sub) {
-//            $subLocation = SubscriptionLocation::FromArray($sub);
-//            $subs[] = SubscriptionLocation::FromArray($sub);
-//        }
-//
-//        $this->subscriptionRepository->saveAll($subs);
-        Redirect::to('profile');
+    private function redirectWithErrors($messages, $input=[]) {
+        Redirect::action('SubscriptionController@index')
+                ->withInput($input)
+                ->withErrors($messages);
+    }
+
+    private function getAuthedUser($data) {
+        // If user is not registered, store their subscriptions and register them.
+        if (Auth::user()) {
+            return $this->userRepository->find(['username' => Auth::user()->username]);
+        } else {
+            $tempId = str_random(255);
+            Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
+            Session::put($tempId, $data);
+
+            Redirect::to('registration');
+        }
     }
 }
