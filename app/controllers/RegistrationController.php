@@ -89,7 +89,17 @@ class RegistrationController extends  BaseController {
     }
 
     private function redirectThrottled() {
-        return $this->redirectWithErrors('Registration is currently closed at this moment');
+        $contents = [
+            'message' => 'Registration is currently closed at this moment',
+            'redirect' => 'reigstration'
+        ];
+        $status = Response::HTTP_LOCKED;
+
+        $response = new Response();
+        $response->setStatusCode($status);
+        $response->setContent($contents);
+
+        return $response;
     }
 
     private function redirectWithErrors($messages) {
@@ -98,7 +108,7 @@ class RegistrationController extends  BaseController {
             'redirect' => 'reigstration'
         ];
 
-        $status = Response::HTTP_LOCKED;
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
 
         $response = new Response();
         $response->setStatusCode($status);
