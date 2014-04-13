@@ -263,27 +263,20 @@
       dataType: 'json',
       data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
       cache: true,
-      success: function(data) {
-        //go to next page
-        if (data.redirect) {
-          window.location.href = data.redirect;
-        }
-      },
-      statusCode: {
-        401: function(data) {
-          if (data.redirect){
-            window.location.href = data.redirect;
+      complete: function(data) {
+        if (data.status === 401 || data.status === 200) {
+          if (data.responseJSON.redirect){
+            window.location.href = data.responseJSON.redirect;
           }
+        } else {
+          console.log("show error");
+          $('#submit').popover({
+            title:'Uh oh...',
+            content:"Something didn't work quite right. Try clicking Continue again.",
+            placement:'left'
+          });
+          $('#submit').popover('show');
         }
-      },
-      error: function(data) {
-        console.log("show error");
-        $('#submit').popover({
-          title:'Uh oh...',
-          content:"Something didn't work quite right. Try clicking Continue again.",
-          placement:'left'
-        });
-        $('#submit').popover('show');
       }
     });
   }
