@@ -11,7 +11,6 @@ use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\exception\RegionalSubscriptionException;
 use redhotmayo\distribution\RegionalSubscriptionManager;
-use redhotmayo\model\SubscriptionLocation;
 
 class SubscriptionController extends BaseController {
     const TEMP_ID = 'temp_id';
