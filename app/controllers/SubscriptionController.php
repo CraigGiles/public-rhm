@@ -73,7 +73,7 @@ class SubscriptionController extends BaseController {
      */
     public function store() {
         try {
-            $data = Input::get(self::DATA);
+            $data = Input::json(self::DATA);
             $user = $this->getAuthedUser($data);
 
             if (!isset($user)) {
@@ -153,7 +153,7 @@ class SubscriptionController extends BaseController {
      */
     private function storeInfoAndRedirect($data) {
         $tempId = str_random(255);
-        Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
+        $cookie = Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
         Session::put($tempId, $data);
 
        $contents = [
@@ -166,6 +166,7 @@ class SubscriptionController extends BaseController {
         $response = new Response();
         $response->setStatusCode($status);
         $response->setContent($contents);
+        $response->withCookie($cookie);
 
         return $response;
     }
