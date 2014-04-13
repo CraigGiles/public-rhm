@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\MessageBag;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
+use redhotmayo\model\User;
 
 class SubscriptionController extends BaseController {
     const TEMP_ID = 'temp_id';
@@ -36,9 +38,14 @@ class SubscriptionController extends BaseController {
     }
 
     /**
-     * Display a listing of the resource.
+     * If the user is currently logged in, grab a list of zipcodes already subscribed by
+     * the user and send it to the view. If the user has not registered but they've gone
+     * through the subscription process, use the data in session to populate the view.
+     * If there is no data for the user just send them to the view
      *
      * @return Response
+     *
+     * @author Craig Giles < craig@gilesc.com >
      */
     public function index() {
         $data = [];
@@ -56,17 +63,24 @@ class SubscriptionController extends BaseController {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Grab the subscription data filled out by the user and determine where to go from here.
+     * If the user is not registered then store the subscription information in session and
+     * redirect back to the registration page. Otherwise, pass the subscription information
+     * to the subscription manager.
      *
-     * @return Response
+     * @author Craig Giles < craig@gilesc.com >
      */
     public function store() {
-        $userId = null;
-        $data = Input::get(self::DATA);
-
         try {
+            $data = Input::get(self::DATA);
             $user = $this->getAuthedUser($data);
+
+            if (!isset($user)) {
+                $this->storeInfoAndRedirect($data);
+            }
+
             $this->subscriptionManager->process($user, $data);
+
             Redirect::to('profile');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
@@ -79,31 +93,46 @@ class SubscriptionController extends BaseController {
      *
      * @param MessageBag $messages
      * @param array $input
+     *
+     * @author Craig Giles < craig@gilesc.com >
      */
-    private function redirectWithErrors($messages, $input=[]) {
+    private function redirectWithErrors(MessageBag $messages, $input=[]) {
         Redirect::action('SubscriptionController@index')
                 ->withInput($input)
                 ->withErrors($messages);
     }
 
     /**
-     * Get the authenticated user. If there is no currently authenticated user, store
-     * the users subscription data in session with a tie back to their cookie, and
-     * redirect them to registration.
+     * Get the authenticated user. If there is no currently authenticated user, null is returned.
+     *
+     * @return User|null
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function getAuthedUser() {
+        $user = null;
+
+        if (Auth::user()) {
+            $user = $this->userRepository->find(['username' => Auth::user()->username]);
+        }
+
+        return $user;
+    }
+
+    /**
+     * Store a unique ID in the users cookie and use that ID as an index in the session to
+     * store the users subscription data. Once the subscription data is stored in session,
+     * redirect the user to registration.
      *
      * @param array $data
-     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
      */
-    private function getAuthedUser($data) {
-        // If user is not registered, store their subscriptions and register them.
-        if (Auth::user()) {
-            return $this->userRepository->find(['username' => Auth::user()->username]);
-        } else {
-            $tempId = str_random(255);
-            Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
-            Session::put($tempId, $data);
+    private function storeInfoAndRedirect($data) {
+        $tempId = str_random(255);
+        Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
+        Session::put($tempId, $data);
 
-            Redirect::to('registration');
-        }
+        Redirect::to('registration');
     }
 }
