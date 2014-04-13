@@ -1,9 +1,10 @@
 <?php namespace redhotmayo\distribution;
 
 use Illuminate\Support\Facades\Config;
-use Mockery\MockInterface;
-use RedHotMayoTestCase;
 use Mockery as m;
+use Mockery\MockInterface;
+use redhotmayo\model\Subscription;
+use RedHotMayoTestCase;
 
 class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
     const TEST_USER = 'testusers.testuser01';
@@ -35,9 +36,15 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
     public function test_it_should_let_a_user_subscribe_to_a_city() {
         $data = Config::get(self::VALID_INPUT);
         $data = json_decode($data, true);
-        $data = $data['regions'];
 
-        $this->zipcodeRepo->shouldIgnoreMissing([]);
+        $this->zipcodeRepo->shouldReceive('getZipcodesFromCity')
+                          ->with('SIMI VALLEY', 'CA')
+                          ->andReturn([93063, 93064, 93065]);
+        $this->zipcodeRepo->shouldReceive('getZipcodesFromCity')
+                          ->with('SACRAMENTO', 'CA')
+                          ->andReturn([95132]);
+
+        $this->subRepo->shouldReceive('save')->times(4);
 
         $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
         $manager->subscribeRegionsToUser($this->getRedHotMayoUser(), $data);
