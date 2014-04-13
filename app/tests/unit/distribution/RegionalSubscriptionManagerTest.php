@@ -48,7 +48,7 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
         $this->subRepo->shouldReceive('save')->times(4);
 
         $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
-        $manager->subscribeRegionsToUser($this->getRedHotMayoUser(), $data);
+        $manager->process($this->getRedHotMayoUser(), $data);
     }
 
     public function test_it_should_let_a_user_subscribe_to_county() {
@@ -65,6 +65,6 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
         $this->subRepo->shouldReceive('save')->times(4);
 
         $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
-        $manager->subscribeRegionsToUser($this->getRedHotMayoUser(), $data);
+        $manager->process($this->getRedHotMayoUser(), $data);
     }
 }

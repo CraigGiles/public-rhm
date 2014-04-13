@@ -20,13 +20,16 @@ class RegionalSubscriptionManager {
     }
 
     /**
+     * Process the subscription data for the authed user given.
+     * In a future version the billing process will get involved here as well.. currently the only action is to
+     * subscribe the zipcodes of the given dataset to the user and hold it into the subscriptions table.
      *
      * @param User $user
      * @param array $dataset
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function subscribeRegionsToUser(User $user, array $dataset) {
+    public function process(User $user, array $dataset) {
         //get all zipcodes for 'type' in state 'state'
         $zipcodes = $this->getZipcodesForRegions($dataset);
 

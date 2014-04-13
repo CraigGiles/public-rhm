@@ -66,7 +66,7 @@ class SubscriptionController extends BaseController {
 
         try {
             $user = $this->getAuthedUser($data);
-            $this->regSubManager->subscribeRegionsToUser($user, $data);
+            $this->regSubManager->process($user, $data);
             Redirect::to('profile');
         } catch (RegionalSubscriptionException $ex) {
             Log::error("RegionalSubscriptionException: {$ex->getMessage()}");
