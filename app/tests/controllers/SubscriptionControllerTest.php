@@ -24,7 +24,7 @@ class SubscriptionControllerTest extends RedHotMayoControllerTestCase {
 
         $this->subRepo = $this->mock('redhotmayo\dataaccess\repository\SubscriptionRepository');
         $this->userRepo = $this->mock('redhotmayo\dataaccess\repository\UserRepository');
-        $this->subManager = $this->mock('redhotmayo\distribution\RegionalSubscriptionManager');
+        $this->subManager = $this->mock('redhotmayo\distribution\AccountSubscriptionManager');
     }
 
     public function tearDown() {

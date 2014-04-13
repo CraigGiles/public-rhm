@@ -5,7 +5,7 @@ use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
 
-class RegionalSubscriptionManager {
+class AccountSubscriptionManager {
     const DATA_TYPE = 'type';
     const CITY = 'city';
     const STATE = 'state';

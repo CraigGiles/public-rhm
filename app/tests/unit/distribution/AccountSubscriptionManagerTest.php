@@ -3,10 +3,9 @@
 use Illuminate\Support\Facades\Config;
 use Mockery as m;
 use Mockery\MockInterface;
-use redhotmayo\model\Subscription;
 use RedHotMayoTestCase;
 
-class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
+class AccountSubscriptionManagerTest extends RedHotMayoTestCase {
     const TEST_USER = 'testusers.testuser01';
 
     const ROUTE = 'subscribe';
@@ -18,9 +17,6 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
 
     /** @var MockInterface $userRepo */
     private $zipcodeRepo;
-
-    /** @var RegionalSubscriptionManager $manager */
-    private $manager;
 
     public function setUp() {
         parent::setUp();
@@ -47,7 +43,7 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
 
         $this->subRepo->shouldReceive('save')->times(4);
 
-        $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
+        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo);
         $manager->process($this->getRedHotMayoUser(), $data);
     }
 
@@ -64,7 +60,7 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
 
         $this->subRepo->shouldReceive('save')->times(4);
 
-        $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
+        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo);
         $manager->process($this->getRedHotMayoUser(), $data);
     }
 }

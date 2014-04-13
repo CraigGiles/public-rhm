@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
-use redhotmayo\distribution\exception\RegionalSubscriptionException;
-use redhotmayo\distribution\RegionalSubscriptionManager;
+use redhotmayo\distribution\exception\AccountSubscriptionException;
+use redhotmayo\distribution\AccountSubscriptionManager;
 
 class SubscriptionController extends BaseController {
     const TEMP_ID = 'temp_id';
@@ -23,14 +23,14 @@ class SubscriptionController extends BaseController {
     /** @var \redhotmayo\dataaccess\repository\UserRepository $userRepository */
     private $userRepository;
 
-    /** @var \redhotmayo\distribution\RegionalSubscriptionManager $regSubManager */
-    private $regSubManager;
+    /** @var \redhotmayo\distribution\AccountSubscriptionManager $subscriptionManager */
+    private $subscriptionManager;
 
     public function __construct(SubscriptionRepository $subscriptionRepository,
                                 UserRepository $userRepository,
-                                RegionalSubscriptionManager $regionalSubscriptionManager
+                                AccountSubscriptionManager $subscriptionManager
     ) {
-        $this->regSubManager = $regionalSubscriptionManager;
+        $this->subscriptionManager = $subscriptionManager;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
     }
@@ -66,10 +66,10 @@ class SubscriptionController extends BaseController {
 
         try {
             $user = $this->getAuthedUser($data);
-            $this->regSubManager->process($user, $data);
+            $this->subscriptionManager->process($user, $data);
             Redirect::to('profile');
-        } catch (RegionalSubscriptionException $ex) {
-            Log::error("RegionalSubscriptionException: {$ex->getMessage()}");
+        } catch (AccountSubscriptionException $ex) {
+            Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             $this->redirectWithErrors($ex->getErrors());
         }
     }
