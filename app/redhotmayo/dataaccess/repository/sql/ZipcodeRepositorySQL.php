@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\DB;
+use redhotmayo\dataaccess\exceptions\NotSupportedException;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 
 class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
@@ -16,68 +17,54 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
 
-
-    /**
-     * Return an array of all objects
-     *
-     * @return array
-     */
-    public function all() {
-        // TODO: Implement all() method.
-    }
-
-    /**
-     * Return an array of all objects that match the given constraints
-     *
-     * @param $parameters
-     * @return mixed
-     */
-    public function find($parameters) {
-//        $result = parent::find();
-//        dd($result);
-    }
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
-    }
-
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
      * @param $object
+     * @throws \redhotmayo\dataaccess\exceptions\NotSupportedException
      * @return bool
      */
     public function save($object) {
-        // TODO: Implement save() method.
+        throw new NotSupportedException("Unable to save to the zipcode database");
     }
 
     /**
      * Save all objects to the database returning any objects that were unsuccessful.
      *
-     * @param $objects
+     * @param array $objects
+     * @throws NotSupportedException
      * @return array
      */
-    public function saveAll($objects) {
-        // TODO: Implement saveAll() method.
+    public function saveAll(array $objects) {
+        throw new NotSupportedException("Unable to save to the zipcode database");
     }
 
     /**
-     * Take an array of database records and convert them to the appropriate objects
+     * Obtain the City, State, County, Zipcode and Population information for the
+     * given constraints.
      *
-     * @param $records
-     * @return array
+     * NOTE: this function is separate from find() due to the fact that it needs to be
+     * a distinct city. With the zipcode database, zipcodes are not unique, however all
+     * zipcodes point to a distinct city.
+     *
+     * @param $parameters
+     * @return mixed
      */
-    function convertRecordsToJsonObjects($records) {
-        // TODO: Implement convertRecordsToJsonObjects() method.
+    public function getLocationInformation($parameters) {
+        $constraints = $this->getConstraints($parameters);
+
+        $builder = DB::table($this->getTableName())
+                     ->select($this->getColumns())
+                     ->distinct();
+
+        foreach($constraints as $constraint => $value) {
+            $builder->where($constraint, '=', $value);
+        }
+
+        return $builder->first();
     }
 
-        /**
+    /**
      * Obtain a list of all cities for the given state
      *
      * @param $conditions
@@ -171,30 +158,5 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
         }
 
         return $constraints;
-    }
-
-    /**
-     * Obtain the City, State, County, Zipcode and Population information for the
-     * given constraints.
-     *
-     * NOTE: this function is separate from find() due to the fact that it needs to be
-     * a distinct city. With the zipcode database, zipcodes are not unique, however all
-     * zipcodes point to a distinct city.
-     *
-     * @param $parameters
-     * @return mixed
-     */
-    public function getLocationInformation($parameters) {
-        $constraints = $this->getConstraints($parameters);
-
-        $builder = DB::table($this->getTableName())
-                     ->select($this->getColumns())
-                     ->distinct();
-
-        foreach($constraints as $constraint => $value) {
-            $builder->where($constraint, '=', $value);
-        }
-
-        return $builder->first();
     }
 }

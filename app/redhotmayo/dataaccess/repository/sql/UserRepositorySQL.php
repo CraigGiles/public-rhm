@@ -86,7 +86,7 @@ class UserRepositorySQL implements UserRepository {
      * @param $objects
      * @return array
      */
-    public function saveAll($objects) {
+    public function saveAll(array $objects) {
         // TODO: Implement saveAll() method.
     }
 
