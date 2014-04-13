@@ -75,12 +75,26 @@ class SubscriptionController extends BaseController {
         }
     }
 
+    /**
+     * Redirect the user to the SubscriptionController index function with errors
+     *
+     * @param MessageBag $messages
+     * @param array $input
+     */
     private function redirectWithErrors($messages, $input=[]) {
         Redirect::action('SubscriptionController@index')
                 ->withInput($input)
                 ->withErrors($messages);
     }
 
+    /**
+     * Get the authenticated user. If there is no currently authenticated user, store
+     * the users subscription data in session with a tie back to their cookie, and
+     * redirect them to registration.
+     *
+     * @param array $data
+     * @return mixed
+     */
     private function getAuthedUser($data) {
         // If user is not registered, store their subscriptions and register them.
         if (Auth::user()) {
