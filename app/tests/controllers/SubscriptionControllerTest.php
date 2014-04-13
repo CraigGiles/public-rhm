@@ -16,11 +16,15 @@ class SubscriptionControllerTest extends RedHotMayoControllerTestCase {
     /** @var MockInterface $userRepo */
     private $userRepo;
 
+    /** @var MockInterface $subManager */
+    private $subManager;
+
     public function setUp() {
         parent::setUp();
 
         $this->subRepo = $this->mock('redhotmayo\dataaccess\repository\SubscriptionRepository');
         $this->userRepo = $this->mock('redhotmayo\dataaccess\repository\UserRepository');
+        $this->subManager = $this->mock('redhotmayo\distribution\RegionalSubscriptionManager');
     }
 
     public function tearDown() {
@@ -30,6 +34,8 @@ class SubscriptionControllerTest extends RedHotMayoControllerTestCase {
     }
 
     public function test_store_with_valid_input_and_valid_user() {
+        $this->userRepo->shouldReceive('find')->andReturn($this->getRedHotMayoUser());
+        $this->subManager->shouldIgnoreMissing();
 
         $this->callPostWithArray(self::ROUTE, self::VALID_INPUT);
     }

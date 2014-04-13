@@ -37,7 +37,9 @@ class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
         $data = json_decode($data, true);
         $data = $data['regions'];
 
+        $this->zipcodeRepo->shouldIgnoreMissing([]);
+
         $manager = new RegionalSubscriptionManager($this->subRepo, $this->zipcodeRepo);
-        $manager->subscribeRegionsToUser($this->getAuthUser(), $data);
+        $manager->subscribeRegionsToUser($this->getRedHotMayoUser(), $data);
     }
 }
