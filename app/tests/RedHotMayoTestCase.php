@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use redhotmayo\model\User;
 
 class RedHotMayoTestCase extends TestCase {
@@ -22,11 +23,14 @@ class RedHotMayoTestCase extends TestCase {
         return $this->user;
     }
 
+    public function getRedHotMayoUser() {
+        return User::FromGenericUser($this->getAuthUser());
+    }
+
     private function setupTestUser() {
         if (static::TEST_USER) {
             $config = json_decode(Config::get(static::TEST_USER), true);
-            $genericUser = new \Illuminate\Auth\GenericUser($config);
-            $this->user = User::FromGenericUser($genericUser);
+            $this->user = new \Illuminate\Auth\GenericUser($config);
             $this->be($this->user);
         }
     }
