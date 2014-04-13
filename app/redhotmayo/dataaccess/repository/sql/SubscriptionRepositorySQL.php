@@ -66,7 +66,7 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
      * @param $objects
      * @return array
      */
-    public function saveAll($objects) {
+    public function saveAll(array $objects) {
         $unsaved = array();
         foreach ($objects as $subscription) {
             $id = $this->save($subscription);
