@@ -14,14 +14,18 @@ class RegionalSubscriptionManager {
     private $subscriptionRepository;
     private $zipcodeRepository;
 
-    public function __construct(
-        SubscriptionRepository $subscriptionRepository,
-        ZipcodeRepository $zipcodeRepository
-    ) {
+    public function __construct(SubscriptionRepository $subscriptionRepository, ZipcodeRepository $zipcodeRepository) {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->zipcodeRepository = $zipcodeRepository;
     }
 
+    /**
+     *
+     * @param User $user
+     * @param array $dataset
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function subscribeRegionsToUser(User $user, array $dataset) {
         //get all zipcodes for 'type' in state 'state'
         $zipcodes = $this->getZipcodesForRegions($dataset);
@@ -50,16 +54,22 @@ class RegionalSubscriptionManager {
 
     }
 
+    /**
+     * @param array $dataset
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     private function getZipcodesForRegions(array $dataset) {
         $zipcodes = [];
 
         foreach ($dataset as $data) {
             switch ($data[self::DATA_TYPE]) {
                 case "city":
-                    $zipcodes = array_merge($zipcodes, $this->getAllZipcodesForCity($data[self::CITY], $data[self::STATE]));
+                    $zipcodes = array_merge($zipcodes, $this->getAllZipcodesForCity($data));
                     break;
                 case "county":
-                    $zipcodes = array_merge($zipcodes, $this->getAllZipcodesForCounty($data[self::COUNTY], $data[self::STATE]));
+                    $zipcodes = array_merge($zipcodes, $this->getAllZipcodesForCounty($data));
                     break;
             }
         }
@@ -67,11 +77,39 @@ class RegionalSubscriptionManager {
         return $zipcodes;
     }
 
-    private function getAllZipcodesForCity($city, $state) {
-        return $this->zipcodeRepository->getZipcodesFromCity($city, $state);
+    /**
+     * @param $data
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function getAllZipcodesForCity($data) {
+        $zipcodes = [];
+
+        if (isset($data[self::CITY]) && isset($data[self::STATE])) {
+            $city = $data[self::CITY];
+            $state = $data[self::STATE];
+            $zipcodes = $this->zipcodeRepository->getZipcodesFromCity($city, $state);
+        }
+
+        return $zipcodes;
     }
 
-    private function getAllZipcodesForCounty($county, $state) {
-        return $this->zipcodeRepository->getZipcodesFromCounty($county, $state);
+    /**
+     * @param $data
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function getAllZipcodesForCounty($data) {
+        $zipcodes = [];
+
+        if (isset($data[self::COUNTY]) && isset($data[self::STATE])) {
+            $county = $data[self::COUNTY];
+            $state = $data[self::STATE];
+            $zipcodes = $this->zipcodeRepository->getZipcodesFromCounty($county, $state);
+        }
+
+        return $zipcodes;
     }
 }

@@ -13,7 +13,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const C_ID = 'id';
     const C_CITY = 'city';
     const C_STATE = 'State';
-    const C_COUNTY = 'county';
+    const C_COUNTY = 'County';
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
 
