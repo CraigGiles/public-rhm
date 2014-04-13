@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
@@ -76,15 +77,26 @@ class SubscriptionController extends BaseController {
             $user = $this->getAuthedUser($data);
 
             if (!isset($user)) {
-                $this->storeInfoAndRedirect($data);
+                return $this->storeInfoAndRedirect($data);
             }
 
             $this->subscriptionManager->process($user, $data);
 
-            Redirect::to('profile');
+            $contents = [
+                'message' => 'Success',
+                'redirect' => 'profile'
+            ];
+
+            $status = Response::HTTP_OK;
+
+            $response = new Response();
+            $response->setStatusCode($status);
+            $response->setContent($contents);
+
+            return $response;
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
-            $this->redirectWithErrors($ex->getErrors());
+            return $this->redirectWithErrors($ex->getErrors());
         }
     }
 
@@ -97,9 +109,20 @@ class SubscriptionController extends BaseController {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function redirectWithErrors(MessageBag $messages, $input=[]) {
-        Redirect::action('SubscriptionController@index')
-                ->withInput($input)
-                ->withErrors($messages);
+        $contents = [
+            'message' => 'An unexpected error has occured',
+            'input' => $input,
+            'errors' => $messages,
+            'redirect' => 'subscribe'
+        ];
+
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+        $response = new Response();
+        $response->setStatusCode($status);
+        $response->setContent($contents);
+
+        return $response;
     }
 
     /**
@@ -133,6 +156,17 @@ class SubscriptionController extends BaseController {
         Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
         Session::put($tempId, $data);
 
-        Redirect::to('registration');
+       $contents = [
+           'message' => 'User not authorized',
+           'redirect' => 'registration'
+       ];
+
+        $status = Response::HTTP_UNAUTHORIZED;
+
+        $response = new Response();
+        $response->setStatusCode($status);
+        $response->setContent($contents);
+
+        return $response;
     }
 }
