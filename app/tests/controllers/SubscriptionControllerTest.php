@@ -1,0 +1,36 @@
+<?php
+
+
+use Mockery\MockInterface;
+use Mockery as m;
+
+class SubscriptionControllerTest extends RedHotMayoControllerTestCase {
+    const TEST_USER = 'testusers.testuser01';
+
+    const ROUTE = 'subscribe';
+    const VALID_INPUT = 'subscription.subscription01';
+
+    /** @var MockInterface $subRepo */
+    private $subRepo;
+
+    /** @var MockInterface $userRepo */
+    private $userRepo;
+
+    public function setUp() {
+        parent::setUp();
+
+        $this->subRepo = $this->mock('redhotmayo\dataaccess\repository\SubscriptionRepository');
+        $this->userRepo = $this->mock('redhotmayo\dataaccess\repository\UserRepository');
+    }
+
+    public function tearDown() {
+        parent::tearDown();
+
+        m::close();
+    }
+
+    public function test_store_with_valid_input_and_valid_user() {
+
+        $this->callPostWithArray(self::ROUTE, self::VALID_INPUT);
+    }
+}

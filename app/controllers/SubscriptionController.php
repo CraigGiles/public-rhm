@@ -4,11 +4,13 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\distribution\exception\RegionalSubscriptionException;
+use redhotmayo\distribution\RegionalSubscriptionManager;
 use redhotmayo\model\SubscriptionLocation;
 
 class SubscriptionController extends BaseController {
     const TEMP_ID = 'temp_id';
-    const DATA = 'data';
+    const DATA = 'regions';
 
     /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subscriptionRepository */
     private $subscriptionRepository;
@@ -16,7 +18,14 @@ class SubscriptionController extends BaseController {
     /** @var \redhotmayo\dataaccess\repository\UserRepository $userRepository */
     private $userRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository, UserRepository $userRepository) {
+    /** @var \redhotmayo\distribution\RegionalSubscriptionManager $regSubManager */
+    private $regSubManager;
+
+    public function __construct(SubscriptionRepository $subscriptionRepository,
+                                UserRepository $userRepository,
+                                RegionalSubscriptionManager $regionalSubscriptionManager
+    ) {
+        $this->regSubManager = $regionalSubscriptionManager;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
     }
@@ -59,16 +68,17 @@ class SubscriptionController extends BaseController {
      */
     public function store() {
         $userId = null;
+        $data = Input::get(self::DATA);
         $data = Input::json(self::DATA);
 
         if (Auth::user()) {
             $userId = Auth::user()->id;
         }
 
-        foreach ($data as $subscription) {
-            $tmp = SubscriptionLocation::FromArray($subscription);
-            $tmp->setUserId($userId);
-        }
+//        foreach ($data as $subscription) {
+//            $tmp = SubscriptionLocation::FromArray($subscription);
+//            $tmp->setUserId($userId);
+//        }
 
         // If user is not registered, store their subscriptions and register them.
         if (!Auth::user()) {
@@ -78,20 +88,28 @@ class SubscriptionController extends BaseController {
             Redirect::to('registration');
         }
 
-        //todo: calculate subscription value here (newSub - currentSub)
-        //$subDifference = Billing->Calculate(userId, newSubs) ?
+        try {
+            $user = $this->userRepository->find(['username' => Auth::user()->username]);
+            $this->regSubManager->subscribeRegionsToUser($user, $data);
+        } catch (RegionalSubscriptionException $ex) {
 
-        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
-        //todo: save in session and redirect to billing
-        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
-
-        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
-        $subs = [];
-        foreach ($data as $sub) {
-            $subs[] = SubscriptionLocation::FromArray($sub);
         }
 
-        $this->subscriptionRepository->saveAll($subs);
+//        //todo: calculate subscription value here (newSub - currentSub)
+//        //$subDifference = Billing->Calculate(userId, newSubs) ?
+//
+//        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
+//        //todo: save in session and redirect to billing
+//        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
+//
+//        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
+//        $subs = [];
+//        foreach ($data as $sub) {
+//            $subLocation = SubscriptionLocation::FromArray($sub);
+//            $subs[] = SubscriptionLocation::FromArray($sub);
+//        }
+//
+//        $this->subscriptionRepository->saveAll($subs);
         Redirect::to('profile');
     }
 }
