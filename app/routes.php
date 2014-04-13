@@ -12,6 +12,14 @@ Route::get('/', ['as' => 'home', function() {
     return 'Red Hot Mayo Homepage';
 }]);
 
+Route::get('sessions', function() {
+     dd(Session::get(Cookie::get('temp_id')));
+});
+
+Route::get('cookies', function() {
+    dd(Cookie::get('temp_id'));
+});
+
 Route::post('/api/login/', ApiSessionController::LOGIN);
 Route::post('/api/users/new', ApiRegistrationController::STORE);
 
