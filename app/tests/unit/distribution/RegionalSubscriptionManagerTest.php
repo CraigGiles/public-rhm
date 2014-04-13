@@ -5,7 +5,7 @@ use Mockery\MockInterface;
 use RedHotMayoTestCase;
 use Mockery as m;
 
-class RegionSubscriptionManagerTest extends RedHotMayoTestCase {
+class RegionalSubscriptionManagerTest extends RedHotMayoTestCase {
     const TEST_USER = 'testusers.testuser01';
 
     const ROUTE = 'subscribe';

@@ -120,9 +120,8 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      * @return array
      */
     public function getZipcodesFromCity($city, $state) {
-
-//        ->whereRaw('state=?', [$conditions['state']])
         $zipcodes = [];
+
         $values = DB::table(self::TABLE_NAME)
             ->select(self::C_ZIPCODE)
             ->where(self::C_CITY, 'like', $city)
