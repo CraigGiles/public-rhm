@@ -2,9 +2,10 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\AccountSubscriptionManager;
 use redhotmayo\registration\exceptions\ThrottleException;
@@ -81,7 +82,7 @@ class RegistrationController extends  BaseController {
             return $this->redirectThrottled();
         } catch (Exception $e) {
             Log::info("Registration Failure with Exception");
-            Log::info($input);
+//            Log::info($input);
             return $this->redirectWithErrors($e->getMessage());
 //            return Redirect::back()->withErrors($e->getMessage());
         }
@@ -117,7 +118,7 @@ class RegistrationController extends  BaseController {
         $user = null;
 
         if (Auth::user()) {
-            $user = $this->userRepository->find(['username' => Auth::user()->username]);
+            $user = $this->userRepo->find(['username' => Auth::user()->username]);
         }
 
         return $user;
