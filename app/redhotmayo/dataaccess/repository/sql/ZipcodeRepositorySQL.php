@@ -12,7 +12,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
 
     const C_ID = 'id';
     const C_CITY = 'city';
-    const C_STATE = 'state';
+    const C_STATE = 'State';
     const C_COUNTY = 'county';
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
@@ -116,13 +116,17 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      * Obtain a list of zipcodes for the given city
      *
      * @param string $city
+     * @param $state
      * @return array
      */
-    public function getZipcodesFromCity($city) {
+    public function getZipcodesFromCity($city, $state) {
+
+//        ->whereRaw('state=?', [$conditions['state']])
         $zipcodes = [];
         $values = DB::table(self::TABLE_NAME)
             ->select(self::C_ZIPCODE)
             ->where(self::C_CITY, 'like', $city)
+            ->whereRaw('state=?', [$state])
             ->get();
 
         foreach($values as $value) {
@@ -158,5 +162,27 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
         }
 
         return $constraints;
+    }
+
+    /**
+     * Obtain a list of zipcodes for the given county
+     *
+     * @param string $county
+     * @param string $state
+     * @return array
+     */
+    public function getZipcodesFromCounty($county, $state) {
+        $zipcodes = [];
+        $values = DB::table(self::TABLE_NAME)
+                    ->select(self::C_ZIPCODE)
+                    ->where(self::C_COUNTY, 'like', $county)
+                    ->whereRaw('state=?', [$state])
+                    ->get();
+
+        foreach($values as $value) {
+            if (isset($value->ZipCode)) { $zipcodes[] = $value->ZipCode; }
+        }
+
+        return $zipcodes;
     }
 }
