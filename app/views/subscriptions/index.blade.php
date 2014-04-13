@@ -258,16 +258,25 @@
     console.log("hide error");
     $('#submit').popover('destroy');
     $.ajax({
-      url: 'api',
+      url: 'subscribe',
       type: 'POST',
       dataType: 'json',
       data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
       cache: true,
       success: function(data) {
         //go to next page
-        window.location.href = 'registration'
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        }
       },
-      error: function() {
+      statusCode: {
+        401: function(data) {
+          if (data.redirect){
+            window.location.href = data.redirect;
+          }
+        }
+      },
+      error: function(data) {
         console.log("show error");
         $('#submit').popover({
           title:'Uh oh...',
