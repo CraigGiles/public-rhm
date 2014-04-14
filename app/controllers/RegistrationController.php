@@ -13,7 +13,7 @@ use redhotmayo\registration\Registration;
 use redhotmayo\registration\RegistrationValidator;
 use redhotmayo\validation\ValidationException;
 
-class RegistrationController extends  BaseController {
+class RegistrationController extends RedHotMayoController {
     /** @var redhotmayo\registration\RegistrationValidator $validator*/
     private $validator;
 
@@ -58,79 +58,60 @@ class RegistrationController extends  BaseController {
             $user = $this->getAuthedUser($data);
 
             $this->subscriptionManager->process($user, $data);
-            //todo: clear out session here
+            Session::forget(Cookie::get('temp_id'));
 
-            $contents = [
-                'message' => 'Success',
-                'redirect' => 'profile'
-            ];
+            return $this->respondSuccess('profile');
 
-            $status = Response::HTTP_OK;
-
-            $response = new Response();
-            $response->setStatusCode($status);
-            $response->setContent($contents);
-
-            return $response;
+//            $contents = [
+//                'message' => 'Success',
+//                'redirect' => 'profile'
+//            ];
+//
+//            $status = Response::HTTP_OK;
+//
+//            $response = new Response();
+//            $response->setStatusCode($status);
+//            $response->setContent($contents);
+//
+//            return $response;
 
         } catch (ValidationException $validationException) {
             Log::info("Registration Failure with Validation Exception");
-            Log::info($input);
-            return $this->redirectWithErrors($validationException->getErrors());
-//            return Redirect::back()->withErrors($validationException->getErrors());
+            return $this->respondValidationException($validationException);
         } catch (ThrottleException $throttle) {
-            return $this->redirectThrottled();
+            Log::info("Registration throttled");
+            return $this->respondThrottled($throttle);
         } catch (Exception $e) {
-            Log::info("Registration Failure with Exception");
-//            Log::info($input);
-            return $this->redirectWithErrors($e->getMessage());
-//            return Redirect::back()->withErrors($e->getMessage());
+            Log::error("Registration Failure with Exception");
+            return $this->respondWithUnknownError($e->getMessage());
         }
     }
 
-    private function redirectThrottled() {
-        $contents = [
-            'message' => 'Registration is currently closed at this moment',
-            'redirect' => 'registration'
-        ];
-        $status = Response::HTTP_LOCKED;
+    private function respondThrottled(ThrottleException $throttle) {
+        $this->setStatusCode(Response::HTTP_LOCKED);
+        $this->setMessages($throttle->getErrors());
+        $this->setRedirect('registration');
 
-        $response = new Response();
-        $response->setStatusCode($status);
-        $response->setContent($contents);
+        return $this->respond();
 
-        return $response;
+//        $contents = [
+//            'message' => 'Registration is currently closed at this moment',
+//            'redirect' => 'registration'
+//        ];
+//        $status = Response::HTTP_LOCKED;
+//
+//        $response = new Response();
+//        $response->setStatusCode($status);
+//        $response->setContent($contents);
+//
+//        return $response;
     }
 
-    private function redirectWithErrors($messages) {
-        $contents = [
-            'message' => $messages,
-            'redirect' => 'registration'
-        ];
+    private function respondValidationException(ValidationException $validationException) {
+        $this->setStatusCode(Response::HTTP_CONFLICT);
+        $this->setMessages($validationException->getErrors());
+        $this->setRedirect('registration');
 
-        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-
-        $response = new Response();
-        $response->setStatusCode($status);
-        $response->setContent($contents);
-
-        return $response;
-    }
-
-    /**
-     * Get the authenticated user. If there is no currently authenticated user, null is returned.
-     *
-     * @return User|null
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    private function getAuthedUser() {
-        $user = null;
-
-        if (Auth::user()) {
-            $user = $this->userRepo->find(['username' => Auth::user()->username]);
-        }
-
-        return $user;
+        return $this->respond();
     }
 }
