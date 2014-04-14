@@ -58,8 +58,8 @@ class RegistrationController extends  BaseController {
             $user = $this->getAuthedUser($data);
 
             $this->subscriptionManager->process($user, $data);
+            //todo: clear out session here
 
-            //todo: Redirect to payment page here instead of profile page
             $contents = [
                 'message' => 'Success',
                 'redirect' => 'profile'
@@ -91,7 +91,7 @@ class RegistrationController extends  BaseController {
     private function redirectThrottled() {
         $contents = [
             'message' => 'Registration is currently closed at this moment',
-            'redirect' => 'reigstration'
+            'redirect' => 'registration'
         ];
         $status = Response::HTTP_LOCKED;
 
@@ -105,7 +105,7 @@ class RegistrationController extends  BaseController {
     private function redirectWithErrors($messages) {
         $contents = [
             'message' => $messages,
-            'redirect' => 'reigstration'
+            'redirect' => 'registration'
         ];
 
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
