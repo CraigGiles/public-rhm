@@ -54,6 +54,7 @@
 </div>
 {{ Form::open() }}
 {{ Form::close() }}
+
 @endsection
 
 
@@ -106,6 +107,7 @@
     keys: ['search_by', 'type']
   };
   var states = {states: [
+    {name:'Select a State...', short:'0'},
     {name:'Alabama', short:'AL'},
     {name:'Alaska', short:'AK'},
     {name:'Arizona', short:'AZ'},
