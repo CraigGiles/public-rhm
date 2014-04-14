@@ -37,6 +37,6 @@ class SubscriptionControllerTest extends RedHotMayoControllerTestCase {
         $this->userRepo->shouldReceive('find')->andReturn($this->getRedHotMayoUser());
         $this->subManager->shouldIgnoreMissing();
 
-        $this->callPostWithArray(self::ROUTE, self::VALID_INPUT);
+        $this->callPostWithJson(self::ROUTE, self::VALID_INPUT);
     }
 }
