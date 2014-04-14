@@ -13,7 +13,7 @@ use redhotmayo\registration\Registration;
 use redhotmayo\registration\RegistrationValidator;
 use redhotmayo\validation\ValidationException;
 
-class RegistrationController extends RedHotMayoController {
+class RegistrationWebController extends RedHotMayoWebController {
     /** @var redhotmayo\registration\RegistrationValidator $validator*/
     private $validator;
 

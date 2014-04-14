@@ -1,7 +1,7 @@
 <?php
 
 
-class RedHotMayoController extends BaseController {
+class RedHotMayoWebController extends BaseController {
     use RedHotMayoRedirectorTrait;
 
     /**
