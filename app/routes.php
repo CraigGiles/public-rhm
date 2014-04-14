@@ -76,4 +76,11 @@ Route::get('profile', function() {
 Route::resource('accounts', 'AccountsController');
 Route::post('/accounts/create', 'AccountsController@upload');
 
-
+View::composer('layouts.master', function($view)
+{
+  $username = null;
+  if (Auth::user()) {
+    $username = Auth::user()->username;
+  }
+  $view->with('username',$username);
+});

@@ -40,6 +40,11 @@
 .type {
     padding-left: 8px;
 }
+
+.nav-buttons {
+    line-height: 72px;
+}
+
 .shadow-wrapper {
     position: relative;
 }

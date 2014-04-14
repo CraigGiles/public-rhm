@@ -19,12 +19,27 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-2">
           <div class="logo">
             <a href="http://redhotmayo.com">
               <img src="http://redhotmayo.com/wp-content/uploads/2013/11/logo_website_small_2.png" alt="redhotMAYO">
             </a>
           </div>
+        </div>
+        <div class="col-lg-10 nav-buttons">
+          <ul class="list-inline pull-right">
+            <?php
+              try {
+                isset($username);
+              } catch(Exception $e){
+                $username = null;
+              }
+            ?>
+            @if (isset($username))
+              <li><a href="profile">{{$username}}</a></li>
+            @endif
+            <li><a href="logout">Logout</a></li>
+          </ul>
         </div>
       </div>
       <div class="row shadow-wrapper">
