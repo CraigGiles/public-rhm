@@ -13,12 +13,7 @@
 
 @section('content')
 <div class="page-header">
-  <h1>Registration <small>Region Selection</small></h1>
-  <ol class="breadcrumb">
-    <li class="active" style="color: #333333;">Region Selection</li>
-    <li class="text-muted">Account Creation</a></li>
-    <li class="text-muted">Confirmation</a></li>
-  </ol>
+  <h1>Select your coverage area to get pricing.<br><small>Sign up now to be part of redhotMAYO’s FREE “Limited Release”</small></h1>
 </div>
 
 
@@ -29,7 +24,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6 region-picker">
+  <div class="col-md-4 region-picker">
     <div class="region-list">
       <div class="region-list-filter">
         <div class="input-group">
@@ -42,13 +37,17 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-4">
     <div id="selected-regions" class="selected-regions">
     </div>
   </div>
+
+  <div class="col-md-4">
+    <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
+  </div>
 </div>
 <div class="row">
-  <div class="col-md-12" style="margin-top:8px;">
+  <div class="col-md-8" style="margin-top:8px;">
     <button id="submit" type="button" class="btn btn-primary btn-lg pull-right" onclick="submitRegions();">Continue</button>
   </div>
 </div>

@@ -17,24 +17,30 @@
         </div>
     @endif
 
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-2">
-          <div class="logo">
-            <a href="http://redhotmayo.com">
-              <img src="http://redhotmayo.com/wp-content/uploads/2013/11/logo_website_small_2.png" alt="redhotMAYO">
-            </a>
+
+    <div class="banner">
+      <div class="container banner-image">
+        <div class="row">
+          <div class="col-lg-2">
+            <div class="logo">
+              <a href="http://redhotmayo.com">
+                <img src="assets/logo.png" alt="redhotMAYO" height="120">
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-4 nav-buttons">
+
+          </div>
+          <div class="col-lg-6">
+            <p class="banner-words">
+              Get a leg up on the competition with new restaurant openings,<br>
+              delivered directly to your phone or tablet,<br>
+              as soon as they come out!
+            </p>
           </div>
         </div>
-        <div class="col-lg-10 nav-buttons">
-          <ul class="list-inline pull-right">
-            <?php
-              try {
-                isset($username);
-              } catch(Exception $e){
-                $username = null;
-              }
-            ?>
+        <div class="row">
+          <ul class="nav nav-pills pull-right">
             @if (isset($username))
               <li><a href="profile">{{$username}}</a></li>
             @endif
@@ -42,12 +48,9 @@
           </ul>
         </div>
       </div>
-      <div class="row shadow-wrapper">
-        <div class="shadow-top col-lg-12"></div>
-      </div>
-
+    </div>
+    <div class="container">
       @yield('content')
-
     </div>
 
     {{ javascript_include_tag() }}

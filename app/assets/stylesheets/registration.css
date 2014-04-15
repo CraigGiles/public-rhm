@@ -44,15 +44,20 @@
 .nav-buttons {
     line-height: 72px;
 }
-
-.shadow-wrapper {
-    position: relative;
+.banner {
+    background: #B6C57C;
 }
-.shadow-top {
-    background: url(shadow-top.png);
+.banner-image {
+    background: url(banner.jpg);
     background-repeat: no-repeat;
-    background-size: 100% 42px;
-    height: 42px;
-    position: absolute;
-    top: 0;
+    background-size: contain;
+    background-position: right;
+    height: 120px;
+}
+.banner-words {
+    color: #ffffff;
+    text-shadow: 0 0 8px #333333;
+    font-size: 1.25em;
+    line-height: 40px;
+    text-align: right;
 }
