@@ -23,10 +23,12 @@ class AccountSubscriptionManager {
 
     public function processNewUsersData(User $user) {
         $data = Session::get(Cookie::get('temp_id'));
+
         if (isset($data)) {
             $this->process($user, $data);
-            Session::forget(Cookie::get('temp_id'));
         }
+
+        Session::forget(Cookie::get('temp_id'));
     }
 
     /**
