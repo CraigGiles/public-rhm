@@ -21,7 +21,7 @@ class AccountSubscriptionManager {
         $this->zipcodeRepository = $zipcodeRepository;
     }
 
-    public function processNewUsersData($user) {
+    public function processNewUsersData(User $user) {
         $data = Session::get(Cookie::get('temp_id'));
         if (isset($data)) {
             $this->process($user, $data);

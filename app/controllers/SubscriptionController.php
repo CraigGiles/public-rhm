@@ -5,17 +5,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\MessageBag;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
-use redhotmayo\model\User;
 
-class SubscriptionController extends BaseController {
+class SubscriptionController extends RedHotMayoWebController {
     const TEMP_ID = 'temp_id';
     const DATA = 'regions';
     const ONE_DAY = 1440;
@@ -81,65 +78,19 @@ class SubscriptionController extends BaseController {
             }
 
             $this->subscriptionManager->process($user, $data);
-
-            $contents = [
-                'message' => 'Success',
-                'redirect' => 'profile'
-            ];
-
-            $status = Response::HTTP_OK;
-
-            $response = new Response();
-            $response->setStatusCode($status);
-            $response->setContent($contents);
-
-            return $response;
+            $this->respondSuccess('profile');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
-            return $this->redirectWithErrors($ex->getErrors());
+            return $this->respondAccountSubscriptionException($ex);
         }
     }
 
-    /**
-     * Redirect the user to the SubscriptionController index function with errors
-     *
-     * @param MessageBag $messages
-     * @param array $input
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    private function redirectWithErrors(MessageBag $messages, $input=[]) {
-        $contents = [
-            'message' => 'An unexpected error has occured',
-            'input' => $input,
-            'errors' => $messages,
-            'redirect' => 'subscribe'
-        ];
+    private function respondAccountSubscriptionException(AccountSubscriptionException $ex) {
+        $this->setStatusCode(Response::HTTP_CONFLICT);
+        $this->setMessages($ex->getErrors());
+        $this->setRedirect('subscription');
 
-        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-
-        $response = new Response();
-        $response->setStatusCode($status);
-        $response->setContent($contents);
-
-        return $response;
-    }
-
-    /**
-     * Get the authenticated user. If there is no currently authenticated user, null is returned.
-     *
-     * @return User|null
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    private function getAuthedUser() {
-        $user = null;
-
-        if (Auth::user()) {
-            $user = $this->userRepository->find(['username' => Auth::user()->username]);
-        }
-
-        return $user;
+        return $this->respond();
     }
 
     /**
@@ -149,6 +100,7 @@ class SubscriptionController extends BaseController {
      *
      * @param array $data
      *
+     * @return \Illuminate\Http\Response
      * @author Craig Giles < craig@gilesc.com >
      */
     private function storeInfoAndRedirect($data) {
