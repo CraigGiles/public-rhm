@@ -2,10 +2,8 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\AccountSubscriptionManager;
 use redhotmayo\registration\exceptions\ThrottleException;
@@ -14,7 +12,7 @@ use redhotmayo\registration\RegistrationValidator;
 use redhotmayo\validation\ValidationException;
 
 class RegistrationController extends RedHotMayoWebController {
-    /** @var redhotmayo\registration\RegistrationValidator $validator*/
+    /** @var redhotmayo\registration\RegistrationValidator $validator */
     private $validator;
 
     /** @var UserRepository $userRepo */
@@ -26,7 +24,10 @@ class RegistrationController extends RedHotMayoWebController {
     /** @var \redhotmayo\distribution\AccountSubscriptionManager $subscriptionManager */
     private $subscriptionManager;
 
-    public function __construct(Registration $registration, RegistrationValidator $validator, UserRepository $userRepo, AccountSubscriptionManager $subscriptionManager) {
+    public function __construct(
+        Registration $registration, RegistrationValidator $validator, UserRepository $userRepo,
+        AccountSubscriptionManager $subscriptionManager
+    ) {
         $this->validator = $validator;
         $this->userRepo = $userRepo;
         $this->registrationService = $registration;
