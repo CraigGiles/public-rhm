@@ -11,6 +11,7 @@ use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
+use redhotmayo\model\User;
 
 class SubscriptionController extends RedHotMayoWebController {
     const TEMP_ID = 'temp_id';
@@ -47,10 +48,14 @@ class SubscriptionController extends RedHotMayoWebController {
      */
     public function index() {
         $data = [];
+
         //if the user is currently logged in, grab a list of zipcodes already subscribed
         //and send them along with the view.. otherwise just send the view.
-        if (Auth::user()) {
-            $data = $this->subscriptionRepository->find(['userId' => Auth::user()->id]);
+        /** @var User $user */
+        $user = $this->getAuthedUser();
+
+        if (isset($user)) {
+            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         } else if (Cookie::get(self::TEMP_ID)) {
             //the user has a temporary id adn there-for has picked up some subscription data.
             //pass that data back to the view
@@ -71,7 +76,7 @@ class SubscriptionController extends RedHotMayoWebController {
     public function store() {
         try {
             $data = Input::json(self::DATA);
-            $user = $this->getAuthedUser($data);
+            $user = $this->getAuthedUser();
 
             if (!isset($user)) {
                 return $this->storeInfoAndRedirect($data);
