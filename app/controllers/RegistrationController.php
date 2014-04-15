@@ -47,34 +47,19 @@ class RegistrationController extends RedHotMayoWebController {
             // if registration failed due to not being able to save the user to database, alert user
             if (!$status) {
                 Log::info("Registration service failure with status of false");
-                Log::info($input);
-                return $this->redirectWithErrors("Registration service failure");
-//                return Redirect::back()->withErrors("Unable to register at this time... please try again soon");
+                $mb = new \Illuminate\Support\MessageBag($input);
+                foreach ($mb->getMessages() as $msg) {
+                    Log::info($msg);
+                }
+                return $this->respondWithUnknownError("Registration service failure");
             }
 
             // Login the user
             Auth::attempt(['username' => $input['username'], 'password' => $input['password']]);
-            $data = Session::get(Cookie::get('temp_id'));
-            $user = $this->getAuthedUser($data);
-
-            $this->subscriptionManager->process($user, $data);
-            Session::forget(Cookie::get('temp_id'));
+            $user = $this->getAuthedUser();
+            $this->subscriptionManager->processNewUsersData($user);
 
             return $this->respondSuccess('profile');
-
-//            $contents = [
-//                'message' => 'Success',
-//                'redirect' => 'profile'
-//            ];
-//
-//            $status = Response::HTTP_OK;
-//
-//            $response = new Response();
-//            $response->setStatusCode($status);
-//            $response->setContent($contents);
-//
-//            return $response;
-
         } catch (ValidationException $validationException) {
             Log::info("Registration Failure with Validation Exception");
             return $this->respondValidationException($validationException);
@@ -93,18 +78,6 @@ class RegistrationController extends RedHotMayoWebController {
         $this->setRedirect('registration');
 
         return $this->respond();
-
-//        $contents = [
-//            'message' => 'Registration is currently closed at this moment',
-//            'redirect' => 'registration'
-//        ];
-//        $status = Response::HTTP_LOCKED;
-//
-//        $response = new Response();
-//        $response->setStatusCode($status);
-//        $response->setContent($contents);
-//
-//        return $response;
     }
 
     private function respondValidationException(ValidationException $validationException) {

@@ -1,5 +1,7 @@
 <?php  namespace redhotmayo\distribution;
 
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\model\Subscription;
@@ -17,6 +19,14 @@ class AccountSubscriptionManager {
     public function __construct(SubscriptionRepository $subscriptionRepository, ZipcodeRepository $zipcodeRepository) {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->zipcodeRepository = $zipcodeRepository;
+    }
+
+    public function processNewUsersData($user) {
+        $data = Session::get(Cookie::get('temp_id'));
+        if (isset($data)) {
+            $this->process($user, $data);
+            Session::forget(Cookie::get('temp_id'));
+        }
     }
 
     /**
