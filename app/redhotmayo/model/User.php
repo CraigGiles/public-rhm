@@ -1,9 +1,10 @@
 <?php namespace redhotmayo\model;
 
 use Illuminate\Auth\Reminders\RemindableInterface;
+use Illuminate\Auth\UserInterface;
 use stdClass;
 
-class User extends DataObject implements RemindableInterface {
+class User extends DataObject implements UserInterface, RemindableInterface {
     public static function create($input) {
         if ($input instanceof stdClass) {
             return User::FromStdClass($input);
@@ -53,6 +54,13 @@ class User extends DataObject implements RemindableInterface {
         $this->setMobileDevice($mobileDevice);
     }
 
+    public static function FromGenericUser($genericUser) {
+        $id = isset($genericUser->id) ? $genericUser->id : null;
+        $username = isset($genericUser->username) ? $genericUser->username : null;
+        $email = isset($genericUser->email) ? $genericUser->email : null;
+
+        return new self($id, $username, null, $email, null, null);
+    }
 
 
     public function getUserId() {
@@ -165,5 +173,21 @@ class User extends DataObject implements RemindableInterface {
         return null;
     }
 
+    /**
+     * Get the unique identifier for the user.
+     *
+     * @return mixed
+     */
+    public function getAuthIdentifier() {
+        return $this->getUsername();
+    }
 
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword() {
+        return $this->getPassword();
+    }
 }

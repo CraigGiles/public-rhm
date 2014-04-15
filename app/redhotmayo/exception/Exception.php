@@ -4,8 +4,6 @@ use Illuminate\Support\MessageBag;
 
 class Exception extends \Exception {
     /**
-     * Validation errors
-     *
      * @var MessageBag
      */
     protected $errors;
@@ -25,8 +23,6 @@ class Exception extends \Exception {
     }
 
     /**
-     * Get validation errors
-     *
      * @return MessageBag
      */
     public function getErrors() {

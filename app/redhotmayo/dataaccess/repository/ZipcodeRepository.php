@@ -5,9 +5,19 @@ interface ZipcodeRepository extends Repository {
      * Obtain a list of zipcodes for the given city
      *
      * @param string $city
+     * @param $state
      * @return array
      */
-    public function getZipcodesFromCity($city);
+    public function getZipcodesFromCity($city, $state);
+
+    /**
+     * Obtain a list of zipcodes for the given county
+     *
+     * @param string $county
+     * @param string $state
+     * @return array
+     */
+    public function getZipcodesFromCounty($county, $state);
 
     /**
      * Obtain a list of all cities for the given state
@@ -37,4 +47,5 @@ interface ZipcodeRepository extends Repository {
      * @return mixed
      */
     public function getLocationInformation($array);
+
 }
