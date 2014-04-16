@@ -74,8 +74,9 @@ class RegistrationController extends RedHotMayoWebController {
     }
 
     private function respondThrottled(ThrottleException $throttle) {
+        Log::info($throttle->getErrors());
         $this->setStatusCode(Response::HTTP_LOCKED);
-        $this->setMessages($throttle->getErrors());
+        $this->setMessages($throttle->getMessage());
         $this->setRedirect('registration');
 
         return $this->respond();
