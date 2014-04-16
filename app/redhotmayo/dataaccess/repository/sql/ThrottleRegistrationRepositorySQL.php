@@ -66,11 +66,17 @@ class ThrottleRegistrationRepositorySQL implements ThrottleRegistrationRepositor
     }
 
     private function getMax($key) {
-        return DB::table(self::TABLE_NAME)
+        $max = 0;
+
+        $row = DB::table(self::TABLE_NAME)
                     ->select(self::C_MAX)
                     ->where(self::C_KEY, '=', $key)
-                    ->first()->max;
+                    ->first();
+        if (isset($row->max)) {
+            $max = (int)$row->max;
+        }
 
+        return $max;
     }
 
     private function isValid($result) {
