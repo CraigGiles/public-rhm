@@ -32,6 +32,11 @@ class Registration {
      * @throws ThrottleException
      */
     public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
+        $registered = false;
+
+        //validate input
+        $validated = $validator->validate($input, $validator->getCreationRules());
+
         //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
         $throttle = $this->getThrottleRepository($throttle);
@@ -40,11 +45,6 @@ class Registration {
             throw new ThrottleException;
         }
         //TODO: END WS-43 REMOVE
-
-        $registered = false;
-
-        //validate input
-        $validated = $validator->validate($input, $validator->getCreationRules());
 
         //save user
         if ($validated) {
