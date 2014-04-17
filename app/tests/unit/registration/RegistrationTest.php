@@ -63,7 +63,6 @@ class RegistrationTest extends TestCase {
 
         $this->validator->shouldReceive('getCreationRules')->once();
         $this->validator->shouldReceive('validate')->once()->andThrow(self::VALIDATION_EXCEPTION);
-        $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(true);
 
         $registered = $r->register($input, $this->validator, $this->throttle);
         $this->assertTrue($registered);
@@ -75,6 +74,8 @@ class RegistrationTest extends TestCase {
         $input = $this->getRegistrationInput();
         $this->setExpectedException(self::THROTTLE_EXCEPTION);
         $this->throttle->shouldReceive('canUserRegister')->once()->withAnyArgs()->andReturn(false);
+        $this->validator->shouldReceive('getCreationRules')->once();
+        $this->validator->shouldReceive('validate')->once()->withAnyArgs()->andReturn(true);
 
         $registered = $r->register($input, $this->validator, $this->throttle);
         $this->assertTrue($registered);

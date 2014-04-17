@@ -19,4 +19,19 @@ class Arrays {
 
         return $array;
     }
+
+    /**
+     * Safely grab the value from the given key of the array. If the key does
+     * not exist then return whatever is designated as the default value.
+     *
+     * @param array $array
+     * @param $value
+     * @param null $default
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public static function GetValue(array $array, $value, $default=null) {
+        return isset($array[$value]) ? $array[$value] : $default;
+    }
 } 
