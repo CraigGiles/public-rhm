@@ -33,8 +33,7 @@ class AccountRepositorySQL implements AccountRepository {
             /** @var Address $address */
             $address = $account->getAddress();
             if (isset($address)) {
-                $zipcode = $account->getAddress()
-                                   ->getZipcode();
+                $zipcode = $address->getZipcode();
                 $subRepo = RepositoryFactory::GetSubscriptionRepository();
                 $subscribedUsers = $subRepo->getAllUserIdsSubscribedToZipcode($zipcode);
 

@@ -7,6 +7,7 @@ use redhotmayo\model\Account;
 
 class AccountSQL implements AccountDAO {
     const TABLE_NAME = 'accounts';
+
     const C_ID = 'id';
     const C_ACCOUNT_ID = 'accountId';
     const C_USER = 'userId';
@@ -100,7 +101,8 @@ class AccountSQL implements AccountDAO {
     /**
      * Save a record and return the objectId
      *
-     * @param Account $address
+     * @param \redhotmayo\model\Account $account
+     * @internal param \redhotmayo\model\Account $address
      * @return int|null
      */
     public function save(Account $account) {
@@ -110,42 +112,9 @@ class AccountSQL implements AccountDAO {
             $this->update($account);
         } else {
             //save account
-            $userId = $account->getUserID();
-            $master = !isset($userId);
-            $address = $account->getAddress();
-
             $id = DB::table('accounts')
                     ->insertGetId(array(
-                        self::C_USER => $userId,
-                        self::C_WEEKLY_OPPORTUNITY => $account->getWeeklyOpportunity(),
-                        self::C_ACCOUNT_NAME => $account->getAccountName(),
-                        self::C_OPERATOR_TYPE => $account->getOperatorType(),
-                        self::C_ADDRESS_ID => $address->getAddressId(),
-                        self::C_CONTACT_NAME => $account->getContactName(),
-                        self::C_PHONE => $account->getPhone(),
-                        self::C_SERVICE_TYPE => $account->getServiceType(),
-                        self::C_SERVICE_ID => $account->getServiceId(),
-                        self::C_CUISINE_TYPE => $account->getCuisineType(),
-                        self::C_CUISINE_ID => $account->getCuisineId(),
-                        self::C_SEAT_COUNT => $account->getSeatCount(),
-                        self::C_AVERAGE_CHECK => $account->getAverageCheck(),
-                        self::C_EMAIL_ADDRESS => $account->getEmailAddress(),
-                        self::C_OPEN_DATE => $account->getOpenDate(),
-                        self::C_ESTIMATED_ANNUAL_SALES => $account->getEstimatedAnnualSales(),
-                        self::C_OWNER => $account->getOwner(),
-                        self::C_MOBILE_PHONE => $account->getMobilePhone(),
-                        self::C_WEBSITE => $account->getWebsite(),
-                        self::C_IS_TARGET_ACCOUNT => (bool)$account->getIsTargetAccount(),
-                        self::C_IS_MASTER => $master,
-
-                        self::C_OPERATOR_SIZE => $account->getOperatorSize(),
-                        self::C_OPERATOR_STATUS => $account->getOperatorStatus(),
-                        self::C_ALCOHOL_SERVICE => $account->getAlcoholService(),
-                        self::C_CONTACT_TITLE => $account->getContactTitle(),
-                        self::C_MEAL_PERIOD => $account->getMealPeriod(),
-
-                        self::C_CREATED_AT => Carbon::Now(),
-                        self::C_UPDATED_AT => Carbon::Now(),
+                        $this->getValues($account, false)
                     )
                 );
             $account->setAccountId($id);
@@ -179,64 +148,45 @@ class AccountSQL implements AccountDAO {
     private function update(Account $account) {
         $id = $account->getAccountId();
         $values = $this->getValues($account, isset($id));
+
         DB::table('accounts')
           ->where(self::C_ID, $id)
           ->update($values);
     }
 
     private function getValues(Account $account, $updating = false) {
-        //save account
-        $address = $account->getAddress();
+        $values = [];
 
-        $userId = $account->getUserID();
-        $master = !isset($userId);
-        $weeklyOpportunity = $account->getWeeklyOpportunity();
-        $accountName = $account->getAccountName();
-        $operatorType = $account->getOperatorType();
-        $contactName = $account->getContactName();
-        $phone = $account->getPhone();
-        $serviceType = $account->getServiceType();
-        $serviceId = $account->getServiceId();
-        $cuisineType = $account->getCuisineType();
-        $cuisineId = $account->getCuisineId();
-        $seatCount = $account->getSeatCount();
-        $averageCheck = $account->getAverageCheck();
-        $emailAddress = $account->getEmailAddress();
-        $openDate = $account->getOpenDate();
-        $estimatedAnnualSales = $account->getEstimatedAnnualSales();
-        $owner = $account->getOwner();
-        $mobilePhone = $account->getMobilePhone();
-        $website = $account->getWebsite();
-        $isTargetAccount = (bool)$account->getIsTargetAccount();
-
-        $values = [
-            self::C_UPDATED_AT => Carbon::Now(),
-        ];
-
-        if (isset($userId)) $values[self::C_USER] = $userId;
-        if (isset($weeklyOpportunity)) $values[self::C_WEEKLY_OPPORTUNITY] = $weeklyOpportunity;
-        if (isset($accountName)) $values[self::C_ACCOUNT_NAME] = $accountName;
-        if (isset($operatorType)) $values[self::C_OPERATOR_TYPE] = $operatorType;
-        if (isset($contactName)) $values[self::C_CONTACT_NAME] = $contactName;
-        if (isset($phone)) $values[self::C_PHONE] = $phone;
-        if (isset($serviceType)) $values[self::C_SERVICE_TYPE] = $serviceType;
-        if (isset($serviceId)) $values[self::C_SERVICE_ID] = $serviceId;
-        if (isset($cuisineType)) $values[self::C_CUISINE_TYPE] = $cuisineType;
-        if (isset($cuisineId)) $values[self::C_CUISINE_ID] = $cuisineId;
-        if (isset($seatCount)) $values[self::C_SEAT_COUNT] = $seatCount;
-        if (isset($averageCheck)) $values[self::C_AVERAGE_CHECK] = $averageCheck;
-        if (isset($emailAddress)) $values[self::C_EMAIL_ADDRESS] = $emailAddress;
-        if (isset($openDate)) $values[self::C_OPEN_DATE] = $openDate;
-        if (isset($estimatedAnnualSales)) $values[self::C_ESTIMATED_ANNUAL_SALES] = $estimatedAnnualSales;
-        if (isset($owner)) $values[self::C_OWNER] = $owner;
-        if (isset($mobilePhone)) $values[self::C_MOBILE_PHONE] = $mobilePhone;
-        if (isset($website)) $values[self::C_WEBSITE] = $website;
-        if (isset($isTargetAccount)) $values[self::C_IS_TARGET_ACCOUNT] = $isTargetAccount;
+        $values[self::C_USER] = $account->getUserID();
+        $values[self::C_WEEKLY_OPPORTUNITY] = $account->getWeeklyOpportunity();
+        $values[self::C_ACCOUNT_NAME] = $account->getAccountName();
+        $values[self::C_ADDRESS_ID] = $account->getAddressId();
+        $values[self::C_OPERATOR_TYPE] = $account->getOperatorType();
+        $values[self::C_CONTACT_NAME] = $account->getContactName();
+        $values[self::C_PHONE] = $account->getPhone();
+        $values[self::C_SERVICE_TYPE] = $account->getServiceType();
+        $values[self::C_SERVICE_ID] = $account->getServiceId();
+        $values[self::C_CUISINE_TYPE] = $account->getCuisineType();
+        $values[self::C_CUISINE_ID] = $account->getCuisineId();
+        $values[self::C_SEAT_COUNT] = $account->getSeatCount();
+        $values[self::C_AVERAGE_CHECK] = $account->getAverageCheck();
+        $values[self::C_EMAIL_ADDRESS] = $account->getEmailAddress();
+        $values[self::C_OPEN_DATE] = $account->getOpenDate();
+        $values[self::C_ESTIMATED_ANNUAL_SALES] = $account->getEstimatedAnnualSales();
+        $values[self::C_OWNER] = $account->getOwner();
+        $values[self::C_MOBILE_PHONE] = $account->getMobilePhone();
+        $values[self::C_WEBSITE] = $account->getWebsite();
+        $values[self::C_IS_TARGET_ACCOUNT] = (bool)$account->getIsTargetAccount();
+        $values[self::C_IS_MASTER] = !isset($account->getUserID());
+        $values[self::C_OPERATOR_SIZE] = $account->getOperatorSize();
+        $values[self::C_OPERATOR_STATUS] = $account->getOperatorStatus();
+        $values[self::C_ALCOHOL_SERVICE] = $account->getAlcoholService();
+        $values[self::C_CONTACT_TITLE] = $account->getContactTitle();
+        $values[self::C_MEAL_PERIOD] = $account->getMealPeriod();
+        $values[self::C_UPDATED_AT] = Carbon::Now();
 
         if (!$updating) {
-            $values[self::C_ADDRESS_ID] = $address->getAddressId();
             $values[self::C_CREATED_AT] = Carbon::Now();
-            $values[self::C_IS_MASTER] = !isset($userId);
         }
 
         return $values;

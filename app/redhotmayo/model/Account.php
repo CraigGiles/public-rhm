@@ -162,6 +162,10 @@ class Account extends DataObject {
         return $this->address;
     }
 
+    public function getAddressId() {
+        return $this->getAddress()->getAddressId();
+    }
+
     /**
      * @param mixed $averageCheck
      */
