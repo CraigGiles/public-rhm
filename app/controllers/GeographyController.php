@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Input;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 
-class GeographyController extends \BaseController {
+class GeographyController extends RedHotMayoWebController {
     /** @var ZipcodeRepository $zipcodeRepo */
     private $zipcodeRepo;
 
