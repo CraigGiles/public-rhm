@@ -14,6 +14,7 @@ use redhotmayo\model\Account;
 use redhotmayo\model\Address;
 use redhotmayo\model\Note;
 use redhotmayo\rest\Constraint;
+use redhotmayo\utility\Arrays;
 
 class AccountRepositorySQL implements AccountRepository {
     /**
@@ -286,20 +287,10 @@ class AccountRepositorySQL implements AccountRepository {
 
         $accounts = array();
         foreach ($records as $record) {
-           $accounts[] = $this->removeNullValues($record);
+           $accounts[] = Arrays::RemoveNullValues($record);
         }
 
         return $this->convertRecordsToJsonObjects($accounts);
-    }
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
     }
 
     /**
@@ -358,21 +349,6 @@ class AccountRepositorySQL implements AccountRepository {
         }
     }
 
-    /**
-     * @param $values
-     * @param $acct
-     * @return mixed
-     */
-    private function removeNullValues($values) {
-        $ary = array();
-        foreach ($values as $col => $value) {
-            if (isset($value)) {
-                $ary[$col] = $value;
-            }
-        }
-        return $ary;
-    }
-
     private function getAddressForAccount($accountId) {
         $records = DB::table('addresses')
                  ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
@@ -382,7 +358,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $address = null;
         if (isset($records) && count($records) > 0) {
-            $address = $this->removeNullValues($records[0]);
+            $address = Arrays::RemoveNullValues($records[0]);
 
         }
 
@@ -397,7 +373,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $notes = array();
         foreach ($records as $note) {
-            $notes[] = $this->removeNullValues($note);
+            $notes[] = Arrays::RemoveNullValues($note);
         }
 
         return $notes;
