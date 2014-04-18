@@ -71,7 +71,7 @@ class BillingSQL extends EncryptedSQLTable implements BillingDAO {
      * @param bool
      * @return array
      */
-    private function getValues(Billing $billing, $updating = false) {
+    protected function getValues(Billing $billing, $updating = false) {
         $values = [
             self::C_STRIPE_ID => $billing->getStripeId(),
             self::C_LAST_FOUR => $billing->getLastFourCardDigits(),

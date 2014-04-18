@@ -11,15 +11,6 @@ use redhotmayo\model\User;
 class UserRepositorySQL implements UserRepository {
 
     /**
-     * Return an array of all objects
-     *
-     * @return array
-     */
-    public function all() {
-        // TODO: Implement all() method.
-    }
-
-    /**
      * Return an array of all objects that match the given constraints
      *
      * @param $parameters

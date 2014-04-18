@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Crypt;
 abstract class EncryptedSQLTable {
     /**
      * Obtain a list of encrypted columns
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
      */
     public abstract function getEncryptedColumns();
 

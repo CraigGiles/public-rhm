@@ -156,7 +156,7 @@ class AccountSQL implements AccountDAO {
 
     private function getValues(Account $account, $updating = false) {
         $userId = $account->getUserID();
-        
+
         $values = [];
 
         $values[self::C_USER] = $account->getUserID();
