@@ -155,6 +155,8 @@ class AccountSQL implements AccountDAO {
     }
 
     private function getValues(Account $account, $updating = false) {
+        $userId = $account->getUserID();
+        
         $values = [];
 
         $values[self::C_USER] = $account->getUserID();
@@ -177,7 +179,7 @@ class AccountSQL implements AccountDAO {
         $values[self::C_MOBILE_PHONE] = $account->getMobilePhone();
         $values[self::C_WEBSITE] = $account->getWebsite();
         $values[self::C_IS_TARGET_ACCOUNT] = (bool)$account->getIsTargetAccount();
-        $values[self::C_IS_MASTER] = !isset($account->getUserID());
+        $values[self::C_IS_MASTER] = !isset($userId);
         $values[self::C_OPERATOR_SIZE] = $account->getOperatorSize();
         $values[self::C_OPERATOR_STATUS] = $account->getOperatorStatus();
         $values[self::C_ALCOHOL_SERVICE] = $account->getAlcoholService();
