@@ -221,6 +221,7 @@ class AccountRepositorySQL implements AccountRepository {
         $objects = array();
         $accountId = null;
         foreach ($records as $account) {
+//            dd($account);
             $acct = array();
             $acct = $account;
             $accountId = $acct[AccountSQL::C_ID];
@@ -230,7 +231,9 @@ class AccountRepositorySQL implements AccountRepository {
 
             $objects[] = $acct;
         }
-        return $objects;
+//dd($objects);
+        return Arrays::RemoveNullValues($objects);
+//        return $objects;
     }
 
     /**
@@ -287,7 +290,8 @@ class AccountRepositorySQL implements AccountRepository {
 
         $accounts = array();
         foreach ($records as $record) {
-           $accounts[] = Arrays::RemoveNullValues($record);
+            $accounts[] = json_decode(json_encode($record), true);
+//           $accounts[] = Arrays::RemoveNullValues($record);
         }
 
         return $this->convertRecordsToJsonObjects($accounts);
@@ -358,8 +362,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $address = null;
         if (isset($records) && count($records) > 0) {
-            $address = Arrays::RemoveNullValues($records[0]);
-
+            $address = Arrays::RemoveNullValues(json_decode(json_encode($records[0]), true));
         }
 
         return $address;
@@ -373,7 +376,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $notes = array();
         foreach ($records as $note) {
-            $notes[] = Arrays::RemoveNullValues($note);
+            $notes[] = Arrays::RemoveNullValues(json_decode(json_encode($note), true));
         }
 
         return $notes;
