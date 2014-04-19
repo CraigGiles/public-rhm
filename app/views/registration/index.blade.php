@@ -1,9 +1,9 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="page-header">
-  <h1>Registration <small>Account Creation</small></h1>
-</div>
+<!--<div class="page-header">-->
+<!--  <h1>Registration <small>Account Creation</small></h1>-->
+<!--</div>-->
 
 @if($errors->has())
 @foreach ($errors->all() as $error)
@@ -11,7 +11,7 @@
 @endforeach
 @endif
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-7">
     <ul class="nav nav-tabs" id="tabs">
       <li class="active"><a href="#create" data-toggle="tab">Create an Account</a></li>
       <li><a href="#signin" data-toggle="tab">Sign In</a></li>
@@ -69,34 +69,12 @@
 
       <div class="tab-pane" id="signin">
         <br>
-        {{ Form::open(array('route' => 'sessions.store')) }}
-
-        <div class="form-group row">
-          <div class="col-lg-12">
-            <label for="username" class="control-label">User Name:</label>
-            <input type="text" name="username" id="username" class="form-control">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-lg-12">
-            <label for="password" class="control-label">Password:</label>
-            <input type="password" name="password" id="password" class="form-control">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-lg-12">
-            <button type="submit" class="btn btn-primary btn-lg pull-right">Login</button>
-          </div>
-        </div>
-        <!--      {{ link_to_route('password_resets.create', 'Forgot your password') }}-->
-        {{ Form::close() }}
+        @include('layouts.login')
       </div>
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-5">
     <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
   </div>
 </div>
@@ -111,23 +89,29 @@
       $(this).tab('show')
     })
 
+    var usernameLength = 5;
+    var passwordLength = 8;
     $('#new_user').bootstrapValidator({
       fields: {
         username: {
           validators: {
             notEmpty: {
               message: 'This field is required and cannot be empty'
+            },
+            stringLength: {
+              min: usernameLength,
+              message: 'The username must be longer than '+ usernameLength +' characters'
             }
           }
         },
         password: {
           validators: {
             notEmpty: {
-              message: 'this field is required and cannot be empty'
+              message: 'This field is required and cannot be empty'
             },
-            identical: {
-              field: 'password_confirmation',
-              message: 'Passwords do not match'
+            stringLength: {
+              min: passwordLength,
+              message: 'The password must be longer than '+ passwordLength +' characters'
             }
           }
         },
@@ -139,6 +123,10 @@
             identical: {
               field: 'password',
               message: "Passwords do not match"
+            },
+            stringLength: {
+              min: passwordLength,
+              message: 'The username must be longer than '+ passwordLength +' characters'
             }
           }
         },
@@ -148,7 +136,7 @@
               message: 'The email address is required'
             },
             emailAddress: {
-              message: 'The input is not a valid email address'
+              message: 'Not a valid email address'
             }
           }
         },
@@ -160,32 +148,6 @@
           }
         }
       }
-//      submitHandler: function(validator, form, submitButton) {
-//        var formObject = {
-//          username: $('[name=]'),
-//          password:'',
-//          password_confirmation:'',
-//          email:'',
-//          _token:'',
-//          key:''
-//        };
-//
-//        $.ajax({
-//          url: 'registration',
-//          type: 'POST',
-//          dataType: 'json',
-//          data: JSON.stringify(formObject),
-//          cache: true,
-//          complete: function(data) {
-//            if (data.status === 401 || data.status === 200) {
-//              if (data.responseJSON.redirect){
-//                window.location.href = data.responseJSON.redirect;
-//              }
-//            } else {
-//            }
-//          }
-//        });
-//      }
     });
   });
 </script>

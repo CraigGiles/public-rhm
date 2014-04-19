@@ -13,32 +13,45 @@
 
 @section('content')
 <div class="page-header">
-  <h1>Select your coverage area to get pricing.<br><small>Sign up now to be part of redhotMAYO’s FREE “Limited Release”</small></h1>
+  <h1>
+    Select your coverage area to get pricing.<br>
+    <small>Sign up now to be part of redhotMAYO’s FREE “Limited Release”</small>
+  </h1>
 </div>
 
 
-<div class="row">
-  <div class="col-md-6 state-selection">
-    <select id="states" class="selectpicker" data-live-search="true"></select>
-  </div>
-</div>
+
 
 <div class="row">
-  <div class="col-md-4 region-picker">
-    <div class="region-list">
-      <div class="region-list-filter">
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-search"></i></span>
-          <input id="query" class="form-control region-list-filter-input" type="text" placeholder="Search by City or County name">
-        </div>
-      </div>
-      <div id="regions" class="region-filtered">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-6 state-selection">
+        <select id="states" class="selectpicker" data-live-search="true"></select>
       </div>
     </div>
-  </div>
+    <div class="row">
+      <div class="col-md-6 region-picker">
+        <div class="region-list">
+          <div class="region-list-filter">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              <input id="query" class="form-control region-list-filter-input" type="text" placeholder="Search by City or County name">
+            </div>
+          </div>
+          <div id="regions" class="region-filtered">
+          </div>
+        </div>
+      </div>
 
-  <div class="col-md-4">
-    <div id="selected-regions" class="selected-regions">
+      <div class="col-md-6">
+        <div id="selected-regions" class="selected-regions">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12" style="margin-top:8px;">
+        <button id="submit" type="button" class="btn btn-primary btn-lg pull-right" onclick="submitRegions();">Continue</button>
+      </div>
     </div>
   </div>
 
@@ -46,11 +59,7 @@
     <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-8" style="margin-top:8px;">
-    <button id="submit" type="button" class="btn btn-primary btn-lg pull-right" onclick="submitRegions();">Continue</button>
-  </div>
-</div>
+
 {{ Form::open() }}
 {{ Form::close() }}
 
@@ -159,9 +168,11 @@
     {name:'Wyoming', short:'WY'}
   ]};
   var f;
+  var regions_cache = {};
   var regions = [];
   var selected_regions = [];
   var result = [];
+  var state = '';
 //  var regions_template;
 //  var selected_regions_template;
 
@@ -172,20 +183,49 @@
   $('#states').html(state_template(states));
   $('.selectpicker').selectpicker({title:"Select a State..."});
   $('#states').on('change', function(){
-    console.log($(this).val());
+    if ($(this).val() !== '0') {
+      //save the current state so you dont have to look it up all the time
+      state = $(this).val();
 
-    $.ajax({
-      url: '../geography/search?state='+$(this).val(),
-      cache: true,
-      success: function(data) {
-        //set regions to the JSON from the API
-        regions = data;
+      if (regions_cache[state] === undefined) {
+
+        //go get state data
+        $.ajax({
+          url: '../geography/search?state=' + $(this).val(),
+          cache: true,
+          complete: function (data) {
+            /**
+             * ON SUCCESS
+             */
+            if (data.status === 200) {
+
+              //set regions to the JSON from the API
+              regions_cache[state] = data.responseJSON;
+              regions = regions_cache[state];
+
+              //instantiate a new Fuse searching thing
+              f = new Fuse(regions, options);
+              updateRegionsTemplate();
+            }
+            /**
+             * ELSE HANDLE ERRORS
+             */
+            else {
+              handleResponse(data);
+            }
+          }
+        });
+      }
+
+      //the data is in the cache, get it from there.
+      else {
+        regions = regions_cache[state];
 
         //instantiate a new Fuse searching thing
         f = new Fuse(regions, options);
         updateRegionsTemplate();
       }
-    });
+    }
   });
 
   /**
@@ -219,10 +259,16 @@
     if (regions[index].selected === undefined){
       selected_regions.push(regions[index]);
       regions[index].selected = true;
+      regions[index].state = state;
       regions[index].state = $('#states').val();
-      $('button').button('subscribed');
-      updateRegionsTemplate();
+      var elm = $('.region-filtered p:nth-child('+ (index+1) +')');
+      var button = elm.children('button');
+      button.html('Unsubscribe');
+      button.addClass('btn-danger');
+      button.addClass('active');
+      elm.addClass('selected');
       updateSelectedRegionTemplate();
+      //updateRegionsTemplate();
 
     } else {
       regions[index].selected = undefined;
@@ -235,14 +281,14 @@
       selected_regions.splice(index, 1);
     } else {
       for (var i=0 ; i<selected_regions.length ; i++) {
-        if (selected_regions[i].id === index) {
+        if (selected_regions[i].id === index && selected_regions[i].state === state) {
           selected_regions.splice(i, 1);
           break;
         }
       }
     }
-    updateRegionsTemplate();
     updateSelectedRegionTemplate();
+    updateRegionsTemplate();
   }
   function updateSelectedRegionTemplate(){
     $('#selected-regions').html(selected_regions_template({regions:selected_regions}));
@@ -256,7 +302,6 @@
 
   //submit the form with ajax then redirect
   function submitRegions() {
-    console.log("hide error");
     $('#submit').popover('destroy');
     $.ajax({
       url: 'subscribe',
@@ -270,13 +315,7 @@
             window.location.href = data.responseJSON.redirect;
           }
         } else {
-          console.log("show error");
-          $('#submit').popover({
-            title:'Uh oh...',
-            content:"Something didn't work quite right. Try clicking Continue again.",
-            placement:'left'
-          });
-          $('#submit').popover('show');
+          handleResponse(data);
         }
       }
     });

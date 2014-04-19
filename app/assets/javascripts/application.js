@@ -16,3 +16,4 @@
 //= require bootstrapValidator.min.js
 //= require fuse.min.js
 //= require handlebars-v1.3.0.js
+//= require main.js

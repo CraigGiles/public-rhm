@@ -50,6 +50,9 @@ Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'sto
 
 // Registration
 Route::get('registration', 'RegistrationController@index');
+Route::get('registration/confirmation', function() {
+  return View::make('registration.confirmation');
+});
 
 Route::group(['before' => 'csrf'], function(){
     Route::post('registration', 'RegistrationController@store');

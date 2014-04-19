@@ -1,26 +1,24 @@
 @extends('layouts.master')
 
 @section('content')
-<h1>Login</h1>
 
-{{ Form::open(array('route' => 'sessions.store')) }}
+<div class="page-header">
+  <h1>
+    Sign In
+  </h1>
+</div>
 
-<ul>
-    <li>
-        {{ Form::label('username', 'User Name:') }}
-        {{ Form::text('username') }}
-    </li>
+<div class="row">
 
-    <li>
-        {{ Form::label('password', 'Password:') }}
-        {{ Form::password('password') }}
-    </li>
+  <div class="col-lg-7">
+    @include('layouts.login')
+  </div>
 
-    <li>
-        {{ Form::submit() }}
-        {{ link_to_route('password_resets.create', 'Forgot your password') }}
-    </li>
-</ul>
+  <div class="col-md-5">
+    <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
+  </div>
 
-{{ Form::close() }}
+</div>
+
+
 @stop
