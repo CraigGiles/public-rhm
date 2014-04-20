@@ -81,12 +81,6 @@ class AccountSubscriptionManager {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function getZipcodesForRegions(array $dataset) {
-        try {
-            throw new Exception();
-        } catch (Exception $e) {
-            dd($e->getTraceAsString());
-        }
-        dd($dataset);
         $zipcodes = [];
 
         foreach ($dataset as $data) {
