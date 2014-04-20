@@ -76,3 +76,9 @@
 .footer {
   height: 4em;
 }
+
+.loading {
+  background: url(ajax-loader.gif) #AAAAAA;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}

@@ -84,7 +84,7 @@
     <p class="selected-region">
       <button type="button" class="btn btn-danger" onclick="removeSelectedRegion(@{{@index}})">Unsubscribe</button>
       @{{this.search_by}}
-      <small class="type text-muted">@{{this.type}}</small>
+      <small class="type text-muted">@{{this.type}}, @{{this.state}}</small>
     </p>
     @{{/each}}
   </div>
@@ -93,7 +93,7 @@
 <script id="regions_template" type="text/x-handlebars-template">
   <div>
     @{{#each regions}}
-    <p onclick="selectRegion(@{{this.id}})" class="region @{{#if this.selected}}selected@{{/if}}">
+    <p id="region-@{{this.id}}" onclick="selectRegion(@{{this.id}})" class="region @{{#if this.selected}}selected@{{/if}}">
       @{{#if this.selected}}
       <button type="button" class="btn btn-danger active">Unsubscribe</button>
       @{{else}}
@@ -193,6 +193,11 @@
         $.ajax({
           url: '../geography/search?state=' + $(this).val(),
           cache: true,
+          beforeSend: function() {
+            $('#query').val('');
+            $('#regions').empty();
+            $('#regions').addClass('loading');
+          },
           complete: function (data) {
             /**
              * ON SUCCESS
@@ -202,6 +207,8 @@
               //set regions to the JSON from the API
               regions_cache[state] = data.responseJSON;
               regions = regions_cache[state];
+
+              $('#regions').removeClass('loading');
 
               //instantiate a new Fuse searching thing
               f = new Fuse(regions, options);
@@ -225,6 +232,9 @@
         f = new Fuse(regions, options);
         updateRegionsTemplate();
       }
+    } else {
+      regions = [];
+      updateRegionsTemplate()
     }
   });
 
@@ -256,12 +266,13 @@
    * Adding clickability to regions
    */
   function selectRegion(index){
+    //if the region isnt selected right now
     if (regions[index].selected === undefined){
       selected_regions.push(regions[index]);
       regions[index].selected = true;
       regions[index].state = state;
       regions[index].state = $('#states').val();
-      var elm = $('.region-filtered p:nth-child('+ (index+1) +')');
+      var elm = $('#region-'+index);
       var button = elm.children('button');
       button.html('Unsubscribe');
       button.addClass('btn-danger');
@@ -270,23 +281,29 @@
       updateSelectedRegionTemplate();
       //updateRegionsTemplate();
 
-    } else {
-      regions[index].selected = undefined;
-      removeSelectedRegion(index, true);
+    }
+    //if the region is selected
+    else {
+      removeSelectedRegionByGlobalID(index);
     }
   }
-  function removeSelectedRegion(index, global){
-    if (global === undefined) {
-      regions[selected_regions[index].id].selected = undefined;
-      selected_regions.splice(index, 1);
-    } else {
-      for (var i=0 ; i<selected_regions.length ; i++) {
-        if (selected_regions[i].id === index && selected_regions[i].state === state) {
-          selected_regions.splice(i, 1);
-          break;
-        }
+  function removeSelectedRegion(index){
+    //TODO use regions_cache instead of regions
+    regions_cache[selected_regions[index].state][selected_regions[index].id].selected = undefined;
+    selected_regions.splice(index, 1);
+
+    updateSelectedRegionTemplate();
+    updateRegionsTemplate();
+  }
+  function removeSelectedRegionByGlobalID(index) {
+    for (var i=0 ; i<selected_regions.length ; i++) {
+      if (selected_regions[i].id === index && selected_regions[i].state === state) {
+        regions[index].selected = undefined;
+        selected_regions.splice(i, 1);
+        break;
       }
     }
+
     updateSelectedRegionTemplate();
     updateRegionsTemplate();
   }
