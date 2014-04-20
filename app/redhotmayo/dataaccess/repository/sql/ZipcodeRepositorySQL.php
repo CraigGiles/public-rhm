@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\exceptions\NotSupportedException;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
+use redhotmayo\utility\Arrays;
 
 class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const SERVICE = 'redhotmayo\dataaccess\repository\sql\ZipcodeRepositorySQL';
@@ -97,11 +98,13 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     public function getAllCounties($conditions) {
         $counties = [];
 
-        if (isset($conditions['state'])) {
+        $state = Arrays::GetValue($conditions, self::C_STATE, null);
+
+        if (isset($state)) {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_COUNTY)
                         ->distinct()
-                        ->whereRaw('state=?', [$conditions['state']])
+                        ->whereRaw('state=?', [$state])
                         ->get();
 
             foreach ($values as $value) {
@@ -120,6 +123,10 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      * @return array
      */
     public function getZipcodesFromCity($city, $state) {
+        if (!isset($city) || !isset($state)) {
+            return [];
+        }
+
         $zipcodes = [];
 
         $values = DB::table(self::TABLE_NAME)
@@ -171,6 +178,10 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      * @return array
      */
     public function getZipcodesFromCounty($county, $state) {
+        if (!isset($county) || !isset($state)) {
+            return [];
+        }
+
         $zipcodes = [];
         $values = DB::table(self::TABLE_NAME)
                     ->select(self::C_ZIPCODE)

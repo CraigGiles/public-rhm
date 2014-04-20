@@ -1,11 +1,13 @@
 <?php  namespace redhotmayo\distribution;
 
+use Exception;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
+use redhotmayo\utility\Arrays;
 
 class AccountSubscriptionManager {
     const DATA_TYPE = 'type';
@@ -22,10 +24,13 @@ class AccountSubscriptionManager {
     }
 
     public function processNewUsersData(User $user) {
-        $data = Session::get(Cookie::get('temp_id'));
+        $cookie = Cookie::get('temp_id');
+        if (isset($cookie)) {
+            $data = Session::get($cookie);
 
-        if (isset($data)) {
-            $this->process($user, $data);
+            if (isset($data) && is_array($data)) {
+                $this->process($user, $data);
+            }
         }
 
         Session::forget(Cookie::get('temp_id'));
@@ -76,10 +81,16 @@ class AccountSubscriptionManager {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function getZipcodesForRegions(array $dataset) {
+        try {
+            throw new Exception();
+        } catch (Exception $e) {
+            dd($e->getTraceAsString());
+        }
+        dd($dataset);
         $zipcodes = [];
 
         foreach ($dataset as $data) {
-            switch ($data[self::DATA_TYPE]) {
+            switch (Arrays::GetValue($data, self::DATA_TYPE, null)) {
                 case "city":
                     $zipcodes = array_merge($zipcodes, $this->getAllZipcodesForCity($data));
                     break;

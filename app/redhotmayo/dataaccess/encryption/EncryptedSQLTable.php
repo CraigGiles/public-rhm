@@ -44,13 +44,18 @@ abstract class EncryptedSQLTable {
      *
      * @return array
      */
-    public function decrypt(array $data) {
+    public function decrypt($data) {
+        if (!isset($data) || !is_array($data)) {
+            return null;
+        }
+
         $decrypted = [];
         $encryptedColumnNames = $this->getEncryptedColumns();
 
         foreach ($data as $key => $value) {
             if (in_array($key, $encryptedColumnNames)) {
-                $newData = Crypt::decrypt($value);
+                $decrypt = $this->filter($value);
+                $newData = Crypt::decrypt($decrypt);
             } else {
                 $newData = $value;
             }
@@ -59,5 +64,15 @@ abstract class EncryptedSQLTable {
         }
 
         return $decrypted;
+    }
+
+    private function filter($value) {
+        $decrypt = $value;
+
+        if ($value instanceof \stdClass) {
+            $decrypt = json_decode(json_encode($value), true);
+        }
+
+        return $decrypt;
     }
 }

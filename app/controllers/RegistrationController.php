@@ -4,6 +4,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\distribution\AccountSubscriptionManager;
 use redhotmayo\registration\exceptions\ThrottleException;
@@ -60,16 +61,18 @@ class RegistrationController extends RedHotMayoWebController {
             $user = $this->getAuthedUser();
             $this->subscriptionManager->processNewUsersData($user);
 
+            return View::make('confirmation');
             return $this->respondSuccess('profile');
         } catch (ValidationException $validationException) {
-            Log::info("Registration Failure with Validation Exception");
+            Log::info("Registration Failure due to validation exception.");
             return $this->respondValidationException($validationException);
         } catch (ThrottleException $throttle) {
-            Log::info("Registration throttled");
+            Log::info("Registration failure due to throttle.");
             return $this->respondThrottled($throttle);
         } catch (Exception $e) {
-            Log::error("Registration Failure with Exception");
-            return $this->respondWithUnknownError($e->getMessage());
+            Log::error("Registration Failure with Exception.");
+            Log::error($e);
+            return $this->respondWithUnknownError('Error while registering. Please try again later.');
         }
     }
 
