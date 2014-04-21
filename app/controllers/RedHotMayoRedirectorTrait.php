@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Response as ResponseCodes;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\MessageBag;
 
 trait RedHotMayoRedirectorTrait {
     private $statusCode = ResponseCodes::HTTP_OK;
@@ -67,7 +68,12 @@ trait RedHotMayoRedirectorTrait {
 
         $redirect = $this->getRedirect();
         $headers = $this->getHeaders();
-        $content['message'] = $messages;
+        $content = [];
+        
+        /** @var MessageBag $message */
+        foreach ($messages as $message) {
+            $content['message'][] = $message->getMessages();
+        }
 
         if (isset($redirect)) {
             $content['redirect'] = $redirect;
