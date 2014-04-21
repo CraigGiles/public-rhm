@@ -26,7 +26,59 @@
   <div class="col-md-8">
     <div class="row">
       <div class="col-md-6 state-selection">
-        <select id="states" class="selectpicker" data-live-search="true"></select>
+        <select style="display: none;" id="states" class="selectpicker" data-live-search="true">
+            <option value="0">Select a State...</option>
+            <option value="AL">Alabama</option>
+            <option value="AK">Alaska</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>
+            <option value="CA">California</option>
+            <option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="HI">Hawaii</option>
+            <option value="ID">Idaho</option>
+            <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
+            <option value="IA">Iowa</option>
+            <option value="KS">Kansas</option>
+            <option value="KY">Kentucky</option>
+            <option value="LA">Louisiana</option>
+            <option value="ME">Maine</option>
+            <option value="MD">Maryland</option>
+            <option value="MA">Massachusetts</option>
+            <option value="MI">Michigan</option>
+            <option value="MN">Minnesota</option>
+            <option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option>
+            <option value="MT">Montana</option>
+            <option value="NE">Nebraska</option>
+            <option value="NV">Nevada</option>
+            <option value="NH">New Hampshire</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option>
+            <option value="NY">New York</option>
+            <option value="NC">North Carolina</option>
+            <option value="ND">North Dakota</option>
+            <option value="OH">Ohio</option>
+            <option value="OK">Oklahoma</option>
+            <option value="OR">Oregon</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option>
+            <option value="SD">South Dakota</option>
+            <option value="TN">Tennessee</option>
+            <option value="TX">Texas</option>
+            <option value="UT">Utah</option>
+            <option value="VT">Vermont</option>
+            <option value="VA">Virginia</option>
+            <option value="WA">Washington</option>
+            <option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option>
+            <option value="WY">Wyoming</option>
+        </select>
       </div>
     </div>
     <div class="row">
@@ -114,59 +166,59 @@
   var options = {
     keys: ['search_by', 'type']
   };
-  var states = {states: [
-    {name:'Select a State...', short:'0'},
-    {name:'Alabama', short:'AL'},
-    {name:'Alaska', short:'AK'},
-    {name:'Arizona', short:'AZ'},
-    {name:'Arkansas', short:'AR'},
-    {name:'California', short:'CA'},
-    {name:'Colorado', short:'CO'},
-    {name:'Connecticut', short:'CT'},
-    {name:'Delaware', short:'DE'},
-    {name:'Florida', short:'FL'},
-    {name:'Georgia', short:'GA'},
-    {name:'Hawaii', short:'HI'},
-    {name:'Idaho', short:'ID'},
-    {name:'Illinois', short:'IL'},
-    {name:'Indiana', short:'IN'},
-    {name:'Iowa', short:'IA'},
-    {name:'Kansas', short:'KS'},
-    {name:'Kentucky', short:'KY'},
-    {name:'Louisiana', short:'LA'},
-    {name:'Maine', short:'ME'},
-    {name:'Maryland', short:'MD'},
-    {name:'Massachusetts', short:'MA'},
-    {name:'Michigan', short:'MI'},
-    {name:'Minnesota', short:'MN'},
-    {name:'Mississippi', short:'MS'},
-    {name:'Missouri', short:'MO'},
-    {name:'Montana', short:'MT'},
-    {name:'Nebraska', short:'NE'},
-    {name:'Nevada', short:'NV'},
-    {name:'New Hampshire', short:'NH'},
-    {name:'New Jersey', short:'NJ'},
-    {name:'New Mexico', short:'NM'},
-    {name:'New York', short:'NY'},
-    {name:'North Carolina', short:'NC'},
-    {name:'North Dakota', short:'ND'},
-    {name:'Ohio', short:'OH'},
-    {name:'Oklahoma', short:'OK'},
-    {name:'Oregon', short:'OR'},
-    {name:'Pennsylvania', short:'PA'},
-    {name:'Rhode Island', short:'RI'},
-    {name:'South Carolina', short:'SC'},
-    {name:'South Dakota', short:'SD'},
-    {name:'Tennessee', short:'TN'},
-    {name:'Texas', short:'TX'},
-    {name:'Utah', short:'UT'},
-    {name:'Vermont', short:'VT'},
-    {name:'Virginia', short:'VA'},
-    {name:'Washington', short:'WA'},
-    {name:'West Virginia', short:'WV'},
-    {name:'Wisconsin', short:'WI'},
-    {name:'Wyoming', short:'WY'}
-  ]};
+//  var states = {states: [
+//    {name:'Select a State...', short:'0'},
+//    {name:'Alabama', short:'AL'},
+//    {name:'Alaska', short:'AK'},
+//    {name:'Arizona', short:'AZ'},
+//    {name:'Arkansas', short:'AR'},
+//    {name:'California', short:'CA'},
+//    {name:'Colorado', short:'CO'},
+//    {name:'Connecticut', short:'CT'},
+//    {name:'Delaware', short:'DE'},
+//    {name:'Florida', short:'FL'},
+//    {name:'Georgia', short:'GA'},
+//    {name:'Hawaii', short:'HI'},
+//    {name:'Idaho', short:'ID'},
+//    {name:'Illinois', short:'IL'},
+//    {name:'Indiana', short:'IN'},
+//    {name:'Iowa', short:'IA'},
+//    {name:'Kansas', short:'KS'},
+//    {name:'Kentucky', short:'KY'},
+//    {name:'Louisiana', short:'LA'},
+//    {name:'Maine', short:'ME'},
+//    {name:'Maryland', short:'MD'},
+//    {name:'Massachusetts', short:'MA'},
+//    {name:'Michigan', short:'MI'},
+//    {name:'Minnesota', short:'MN'},
+//    {name:'Mississippi', short:'MS'},
+//    {name:'Missouri', short:'MO'},
+//    {name:'Montana', short:'MT'},
+//    {name:'Nebraska', short:'NE'},
+//    {name:'Nevada', short:'NV'},
+//    {name:'New Hampshire', short:'NH'},
+//    {name:'New Jersey', short:'NJ'},
+//    {name:'New Mexico', short:'NM'},
+//    {name:'New York', short:'NY'},
+//    {name:'North Carolina', short:'NC'},
+//    {name:'North Dakota', short:'ND'},
+//    {name:'Ohio', short:'OH'},
+//    {name:'Oklahoma', short:'OK'},
+//    {name:'Oregon', short:'OR'},
+//    {name:'Pennsylvania', short:'PA'},
+//    {name:'Rhode Island', short:'RI'},
+//    {name:'South Carolina', short:'SC'},
+//    {name:'South Dakota', short:'SD'},
+//    {name:'Tennessee', short:'TN'},
+//    {name:'Texas', short:'TX'},
+//    {name:'Utah', short:'UT'},
+//    {name:'Vermont', short:'VT'},
+//    {name:'Virginia', short:'VA'},
+//    {name:'Washington', short:'WA'},
+//    {name:'West Virginia', short:'WV'},
+//    {name:'Wisconsin', short:'WI'},
+//    {name:'Wyoming', short:'WY'}
+//  ]};
   var f;
   var regions_cache = {};
   var regions = [];
@@ -179,9 +231,9 @@
   /**
    * fill out the states template
    */
-  var state_template = Handlebars.compile($('#states_template').html());
-  $('#states').html(state_template(states));
-  $('.selectpicker').selectpicker({title:"Select a State..."});
+//  var state_template = Handlebars.compile($('#states_template').html());
+//  $('#states').html(state_template(states));
+  $('.selectpicker').selectpicker();
   $('#states').on('change', function(){
     if ($(this).val() !== '0') {
       //save the current state so you dont have to look it up all the time
@@ -288,7 +340,6 @@
     }
   }
   function removeSelectedRegion(index){
-    //TODO use regions_cache instead of regions
     regions_cache[selected_regions[index].state][selected_regions[index].id].selected = undefined;
     selected_regions.splice(index, 1);
 
