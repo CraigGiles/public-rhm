@@ -326,7 +326,11 @@
       dataType: 'json',
       data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
       cache: true,
+      beforeSend: function(){
+        $('#submit').prop('disabled', true);
+      },
       complete: function(data) {
+        $('#submit').prop('disabled', false);
         if (data.status === 401 || data.status === 200) {
           if (data.responseJSON.redirect){
             window.location.href = data.responseJSON.redirect;
