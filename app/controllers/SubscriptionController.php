@@ -114,7 +114,7 @@ class SubscriptionController extends RedHotMayoWebController {
         Session::put($tempId, $data);
 
        $contents = [
-           'message' => 'User not authorized',
+           'message' => 'Unauthorized Access.',
            'redirect' => 'registration'
        ];
 

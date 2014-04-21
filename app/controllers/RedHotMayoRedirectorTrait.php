@@ -45,12 +45,14 @@ trait RedHotMayoRedirectorTrait {
     public function respondSuccess($redirect) {
         $this->setStatusCode(ResponseCodes::HTTP_OK);
         $this->setRedirect($redirect);
+
         return $this->respond();
     }
 
     public function respondWithUnknownError($message) {
         $this->setStatusCode(ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         $this->setMessages($message);
+
         return $this->respond();
     }
 
@@ -59,6 +61,7 @@ trait RedHotMayoRedirectorTrait {
         $this->setMessages($message);
         $this->setRedirect($redirect);
         $this->setHeaders([]);
+
         return $this->respond();
     }
 
@@ -69,7 +72,7 @@ trait RedHotMayoRedirectorTrait {
         $redirect = $this->getRedirect();
         $headers = $this->getHeaders();
         $content = [];
-        
+
         /** @var MessageBag $message */
         foreach ($messages as $message) {
             $content['message'][] = $message->getMessages();
