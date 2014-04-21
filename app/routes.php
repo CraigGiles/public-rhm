@@ -8,17 +8,7 @@ use redhotmayo\api\controllers\ApiRegistrationController;
 use redhotmayo\api\controllers\ApiSessionController;
 use redhotmayo\api\controllers\MobileDeviceController;
 
-Route::get('/', ['as' => 'home', function() {
-    return 'Red Hot Mayo Homepage';
-}]);
-
-Route::get('sessions', function() {
-     dd(Session::get(Cookie::get('temp_id')));
-});
-
-Route::get('cookies', function() {
-    dd(Cookie::get('temp_id'));
-});
+Route::get('/', 'SubscriptionController@index');
 
 Route::post('/api/login/', ApiSessionController::LOGIN);
 Route::post('/api/users/new', ApiRegistrationController::STORE);
@@ -50,9 +40,7 @@ Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'sto
 
 // Registration
 Route::get('registration', 'RegistrationController@index');
-Route::get('registration/confirmation', function() {
-  return View::make('registration.confirmation');
-});
+Route::get('registration/confirmation', 'RegistrationController@confirmation');
 
 Route::group(['before' => 'csrf'], function(){
     Route::post('registration', 'RegistrationController@store');
@@ -72,12 +60,7 @@ Route::resource('billing', 'BillingController');
 /**
  * Remove the folowing once done testing
  */
-Route::get('profile', function() {
-    return "Welcome ". Auth::user()->username;
-})->before('auth');
 
-Route::resource('accounts', 'AccountsController');
-Route::post('/accounts/create', 'AccountsController@upload');
 
 View::composer('layouts.master', function($view)
 {

@@ -75,6 +75,10 @@ class RegistrationController extends RedHotMayoWebController {
         }
     }
 
+    public function confirmation() {
+        return View::make('registration.confirmation');
+    }
+
     private function respondThrottled(ThrottleException $throttle) {
         Log::info($throttle->getErrors());
         $this->setStatusCode(Response::HTTP_LOCKED);

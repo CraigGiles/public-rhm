@@ -75,7 +75,11 @@ trait RedHotMayoRedirectorTrait {
 
         /** @var MessageBag $message */
         foreach ($messages as $message) {
-            $content['message'][] = $message->getMessages();
+            if ($message instanceof MessageBag) {
+                $content['message'][] = $message->getMessages();
+            } else {
+                $content['message'] = $message;
+            }
         }
 
         if (isset($redirect)) {
