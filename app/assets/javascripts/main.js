@@ -1,10 +1,22 @@
+var warning_template_src =  '<div class="alert alert-{{type}}">' +
+                              '<strong>Uh oh...</strong>' +
+                              '{{#each message}}' +
+                                '{{#each this}}' +
+                                  '<p>{{this}}</p>' +
+                                '{{/each}}' +
+                              '{{/each}}' +
+                            '</div>';
+var warning_template = Handlebars.compile(warning_template_src);
+
+
 function handleResponse(data) {
   /**
    * 4xx Client Error
    */
   if (data.status >= 400 && data.status <= 499) {
-    $('#warnings').html('<div class="alert alert-warning"><strong>That\'s strange.</strong> ' +
-      'Something seems to have gone wrong. Give it another shot.</div>');
+    var errors = data.responseJSON;
+    errors.type = 'warning';
+    $('#warnings').html(warning_template(errors));
     $('#regions').empty();
   }
 
@@ -12,9 +24,9 @@ function handleResponse(data) {
    * 5xx Server Error
    */
   else if (data.status >= 500 && data.status <= 599) {
-    $('#warnings').html('<div class="alert alert-danger"><strong>That\'s strange.</strong> ' +
-      'Something seems to have gone wrong on our end. Give it another shot. ' +
-      'If this message keeps appearing wait a few minutes before trying again.</div>');
+    var errors = data.responseJSON;
+    errors.type = 'danger';
+    $('#warnings').html(warning_template(errors));
     $('#regions').empty();
   }
 }

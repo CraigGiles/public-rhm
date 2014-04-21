@@ -16,7 +16,7 @@
 
 <div class="form-group row">
   <div class="col-lg-12">
-    <button type="submit" class="btn btn-primary btn-lg pull-right">Login</button>
+    <button id="signin_submit" type="submit" class="btn btn-primary btn-lg pull-right">Login</button>
   </div>
 </div>
 <!--      {{ link_to_route('password_resets.create', 'Forgot your password') }}-->

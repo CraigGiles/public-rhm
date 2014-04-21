@@ -60,7 +60,7 @@
 
         <div class="form-group row">
           <div class="col-lg-12">
-            <button type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
+            <button id="new_user_submit" type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
           </div>
         </div>
 
@@ -147,6 +147,68 @@
             }
           }
         }
+      },
+      submitHandler: function(validator, form, submitButton) {
+
+        $.ajax({
+          url: $('#new_user').attr('action'),
+          type: $('#new_user').attr('method'),
+          data: form.serialize(),
+          complete: function(data) {
+            $('#new_user_submit').prop('disabled', false);
+            if (data.status === 200) {
+              if (data.responseJSON.redirect){
+                window.location.href = data.responseJSON.redirect;
+              }
+            } else {
+              handleResponse(data);
+            }
+          }
+        });
+      }
+    });
+
+
+
+
+
+    /**
+     * Signin Form validation
+     */
+    $('#signin').bootstrapValidator({
+      fields: {
+        username: {
+          validators: {
+            notEmpty: {
+              message: 'This field is required and cannot be empty'
+            }
+          }
+        },
+        password: {
+          validators: {
+            notEmpty: {
+              message: 'This field is required and cannot be empty'
+            }
+          }
+        }
+      },
+      submitHandler: function(validator, form, submitButton) {
+
+        $.ajax({
+          url: $('#signin').attr('action'),
+          type: $('#signin').attr('method'),
+          data: form.serialize(),
+          complete: function(data) {
+            $('#signin_submit').prop('disabled', false);
+            if (data.status === 200) {
+              if (data.responseJSON.redirect){
+                window.location.href = data.responseJSON.redirect;
+              }
+            } else {
+              handleResponse(data);
+            }
+          }
+        });
       }
     });
   });

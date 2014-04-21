@@ -20,5 +20,53 @@
 
 </div>
 
+@endsection
 
-@stop
+
+@section('javascript')
+
+<script>
+  $(document).ready(function() {
+    /**
+     * Signin Form validation
+     */
+    $('#signin').bootstrapValidator({
+      fields: {
+        username: {
+          validators: {
+            notEmpty: {
+              message: 'This field is required and cannot be empty'
+            }
+          }
+        },
+        password: {
+          validators: {
+            notEmpty: {
+              message: 'This field is required and cannot be empty'
+            }
+          }
+        }
+      },
+      submitHandler: function(validator, form, submitButton) {
+
+        $.ajax({
+          url: $('#signin').attr('action'),
+          type: $('#signin').attr('method'),
+          data: form.serialize(),
+          complete: function(data) {
+            $('#signin_submit').prop('disabled', false);
+            if (data.status === 200) {
+              if (data.responseJSON.redirect){
+                window.location.href = data.responseJSON.redirect;
+              }
+            } else {
+              handleResponse(data);
+            }
+          }
+        });
+      }
+    });
+  });
+</script>
+
+@endsection
