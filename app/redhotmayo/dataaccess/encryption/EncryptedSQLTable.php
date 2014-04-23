@@ -44,11 +44,7 @@ abstract class EncryptedSQLTable {
      *
      * @return array
      */
-    public function decrypt($data) {
-        if (!isset($data) || !is_array($data)) {
-            return null;
-        }
-
+    public function decrypt(array $data) {
         $decrypted = [];
         $encryptedColumnNames = $this->getEncryptedColumns();
 

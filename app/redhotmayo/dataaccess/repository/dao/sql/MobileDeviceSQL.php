@@ -49,9 +49,9 @@ class MobileDeviceSQL extends EncryptedSQLTable {
         if (isset($id)) {
             $this->update($mobile);
         } else {
-            $id = DB::table(self::TABLE_NAME)->insertGetId([
+            $id = DB::table(self::TABLE_NAME)->insertGetId(
                 $this->getValues($mobile, false)
-            ]);
+            );
 
             $mobile->setMobileId($id);
         }
@@ -67,7 +67,7 @@ class MobileDeviceSQL extends EncryptedSQLTable {
     }
 
     public function findByUserId($id) {
-        $values = DB::table(self::TABLE_NAME)
+        $values = (array)DB::table(self::TABLE_NAME)
             ->where(self::C_USER_ID, '=', $id)
             ->first();
 

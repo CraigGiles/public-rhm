@@ -18,5 +18,5 @@ interface Encrypted {
      *
      * @return array
      */
-    public function decrypt($data);
+    public function decrypt(array $data);
 }
