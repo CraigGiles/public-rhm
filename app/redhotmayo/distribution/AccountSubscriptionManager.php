@@ -1,12 +1,14 @@
 <?php  namespace redhotmayo\distribution;
 
-use Exception;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
+use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
+use redhotmayo\model\Account;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\User;
+use redhotmayo\notifications\GooglePushNotification;
 use redhotmayo\utility\Arrays;
 
 class AccountSubscriptionManager {
@@ -14,13 +16,29 @@ class AccountSubscriptionManager {
     const CITY = 'city';
     const STATE = 'state';
     const COUNTY = 'county';
+    const BACKDATE_DAYS = 30;
 
+    /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subscriptionRepository */
     private $subscriptionRepository;
+
+    /** @var \redhotmayo\dataaccess\repository\ZipcodeRepository $zipcodeRepository */
     private $zipcodeRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository, ZipcodeRepository $zipcodeRepository) {
+    /** @var \redhotmayo\dataaccess\repository\AccountRepository $accountRepository */
+    private $accountRepository;
+
+    /** @var \redhotmayo\notifications\GooglePushNotification $notifications */
+    private $notification;
+
+    public function __construct(
+        SubscriptionRepository $subscriptionRepository, ZipcodeRepository $zipcodeRepository,
+        AccountRepository $accountRepository
+    ) {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->zipcodeRepository = $zipcodeRepository;
+        $this->accountRepository = $accountRepository;
+
+        $this->notification = new GooglePushNotification();
     }
 
     public function processNewUsersData(User $user) {
@@ -70,6 +88,11 @@ class AccountSubscriptionManager {
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);
+            $newSubs = $this->backdateAccounts($sub);
+
+            if ($newSubs) {
+                $this->notification->send($user, ['notificationType' => 'newLeads']);
+            }
         }
 
     }
@@ -131,5 +154,28 @@ class AccountSubscriptionManager {
         }
 
         return $zipcodes;
+    }
+
+    /**
+     * @param $sub Subscription
+     *
+     * @return bool
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function backdateAccounts(Subscription $sub) {
+        $accounts = $this->accountRepository->findAllAccountsForZipcode($sub->getZipCode(), self::BACKDATE_DAYS);
+        $newSub = false;
+
+        if (isset($accounts) && is_array($accounts)) {
+            foreach ($accounts as $account) {
+                $acc = Account::FromArray($account);
+
+                if (!$newSub && $this->accountRepository->subscribeAccountToUserId($acc, $sub->getUserID())) {
+                    $newSub = true;
+                }
+            }
+        }
+
+        return $newSub;
     }
 }
