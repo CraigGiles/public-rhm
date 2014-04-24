@@ -18,11 +18,15 @@ class AccountSubscriptionManagerTest extends RedHotMayoTestCase {
     /** @var MockInterface $userRepo */
     private $zipcodeRepo;
 
+    /** @var MockInterface $userRepo */
+    private $accountRepo;
+
     public function setUp() {
         parent::setUp();
 
         $this->subRepo = $this->mock('redhotmayo\dataaccess\repository\SubscriptionRepository');
         $this->zipcodeRepo = $this->mock('redhotmayo\dataaccess\repository\ZipcodeRepository');
+        $this->accountRepo = $this->mock('redhotmayo\dataaccess\repository\AccountRepository');
     }
 
     public function tearDown() {
@@ -41,9 +45,11 @@ class AccountSubscriptionManagerTest extends RedHotMayoTestCase {
                           ->with('SACRAMENTO', 'CA')
                           ->andReturn([95132]);
 
+        $this->accountRepo->shouldIgnoreMissing(false);
+
         $this->subRepo->shouldReceive('save')->times(4);
 
-        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo);
+        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo, $this->accountRepo);
         $manager->process($this->getRedHotMayoUser(), $data);
     }
 
@@ -51,6 +57,7 @@ class AccountSubscriptionManagerTest extends RedHotMayoTestCase {
         $data = Config::get(self::COUNTY_INPUT);
         $data = json_decode($data, true);
 
+        $this->accountRepo->shouldIgnoreMissing(false);
         $this->zipcodeRepo->shouldReceive('getZipcodesFromCounty')
                           ->with('VENTURA', 'CA')
                           ->andReturn([93063, 93064, 93065]);
@@ -60,7 +67,7 @@ class AccountSubscriptionManagerTest extends RedHotMayoTestCase {
 
         $this->subRepo->shouldReceive('save')->times(4);
 
-        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo);
+        $manager = new AccountSubscriptionManager($this->subRepo, $this->zipcodeRepo, $this->accountRepo);
         $manager->process($this->getRedHotMayoUser(), $data);
     }
 }

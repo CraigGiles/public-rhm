@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -163,25 +164,21 @@ class AccountRepositorySQL implements AccountRepository {
      */
     function findAllAccountsForZipcode($zipcode, $daysAgo) {
         $zipcode = intval($zipcode);
+
         $addressCols = AddressSQL::GetColumns();
         $accountCols = AccountSQL::GetColumns();
         $noteCols = NoteSQL::GetColumns();
 
         $cols = array_merge($addressCols, $accountCols, $noteCols);
 
-        $query = "SELECT " . implode(',', $cols) . " FROM accounts " .
-            "JOIN addresses ON accounts.addressId=addresses.id " .
-            "JOIN notes ON notes.accountId=accounts.id " .
-            "WHERE zipCode=? AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
+        $accounts = DB::table('accounts')
+                        ->join('addresses', 'addressId', '=', 'addresses.id')
+                        ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                        ->select($cols)
+                        ->where('accounts.updated_at', '>=', Carbon::now()->subDays($daysAgo)->toDateTimeString())
+                        ->get();
 
-        $accounts = DB::select($query, [$zipcode, $daysAgo]);
-        $convert = [];
-
-        foreach ($accounts as $acct) {
-            $convert[] = json_decode(json_encode($acct), true);
-        }
-
-
+        $convert = json_decode(json_encode($accounts), true);
         $objects = $this->convertRecordsToJsonObjects($convert);
 
         return $objects;
