@@ -10,14 +10,28 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+
+    <testsuites>
+        <testsuite name="all">
+            <directory>./app/tests/</directory>
+        </testsuite>
+    </testsuites>
+
     <testsuites>
         <testsuite name="unit">
             <directory>./app/tests/unit/</directory>
         </testsuite>
     </testsuites>
+
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./app/tests/</directory>
+        <testsuite name="controllers">
+            <directory>./app/tests/controllers/</directory>
+        </testsuite>
+    </testsuites>
+
+    <testsuites>
+        <testsuite name="registration">
+            <directory>./app/tests/unit/registration/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

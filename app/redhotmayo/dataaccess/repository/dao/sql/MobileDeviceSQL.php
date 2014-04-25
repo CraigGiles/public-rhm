@@ -2,9 +2,10 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\model\MobileDevice;
 
-class MobileDeviceSQL {
+class MobileDeviceSQL extends EncryptedSQLTable {
     const TABLE_NAME = 'mobile_devices';
     const C_ID = 'id as mobileId';
 
@@ -29,6 +30,16 @@ class MobileDeviceSQL {
     }
 
     /**
+     * Obtain a list of encrypted columns
+     * @return array
+     */
+    public function getEncryptedColumns() {
+        return [
+            self::C_INSTALLATION_ID
+        ];
+    }
+
+    /**
      * @param MobileDevice $mobile
      * @return int
      */
@@ -38,31 +49,17 @@ class MobileDeviceSQL {
         if (isset($id)) {
             $this->update($mobile);
         } else {
-            $id = DB::table('mobile_devices')->insertGetId([
-                self::C_USER_ID => $mobile->getUserId(),
-                self::C_DEVICE_TYPE => $mobile->getDeviceType(),
-                self::C_INSTALLATION_ID => $mobile->getInstallationId(),
-                self::C_APP_VERSION => $mobile->getAppVersion(),
-                self::C_CREATED_AT => Carbon::now(),
-                self::C_UPDATED_AT => Carbon::now(),
-            ]);
+            $id = DB::table(self::TABLE_NAME)->insertGetId(
+                $this->getValues($mobile, false)
+            );
+
             $mobile->setMobileId($id);
         }
         return $id;
     }
 
     private function update(MobileDevice $mobile) {
-        $values = [
-            self::C_UPDATED_AT => Carbon::now(),
-        ];
-
-        $deviceType = $mobile->getDeviceType();
-        $installationId = $mobile->getInstallationId();
-        $appVersion = $mobile->getAppVersion();
-
-        if (isset($deviceType)) $values[self::C_DEVICE_TYPE] = $deviceType;
-        if (isset($installationId)) $values[self::C_INSTALLATION_ID] = $installationId;
-        if (isset($appVersion)) $values[self::C_APP_VERSION] = $appVersion;
+        $values = $this->getValues($mobile, true);
 
         DB::table(self::TABLE_NAME)
             ->where(self::C_USER_ID, '=', $mobile->getUserId())
@@ -70,9 +67,36 @@ class MobileDeviceSQL {
     }
 
     public function findByUserId($id) {
-        return DB::table(self::TABLE_NAME)
+        $values = (array)DB::table(self::TABLE_NAME)
             ->where(self::C_USER_ID, '=', $id)
             ->first();
+
+        return $this->decrypt($values);
     }
 
+
+    /**
+     * Gets the values used for storing this object
+     *
+     * @param \redhotmayo\model\Billing|\redhotmayo\model\MobileDevice $mobile
+     * @param bool $updating
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function getValues(MobileDevice $mobile, $updating = false) {
+        $values = [
+            self::C_USER_ID => $mobile->getUserId(),
+            self::C_DEVICE_TYPE => $mobile->getDeviceType(),
+            self::C_INSTALLATION_ID => $mobile->getInstallationId(),
+            self::C_APP_VERSION => $mobile->getAppVersion(),
+            self::C_UPDATED_AT => Carbon::now(),
+        ];
+
+        if (!$updating) {
+            $values[self::C_CREATED_AT] = Carbon::now();
+        }
+
+        return $this->encrypt($values);
+    }
 }

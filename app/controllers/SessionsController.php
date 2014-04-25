@@ -5,8 +5,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
+use redhotmayo\distribution\AccountSubscriptionManager;
 
-class SessionsController extends \BaseController {
+class SessionsController extends RedHotMayoWebController {
+
+    /** @var \redhotmayo\distribution\AccountSubscriptionManager $subscriptionManager */
+    private $subscriptionManager;
+
+    public function __construct(AccountSubscriptionManager $subscriptionManager) {
+        $this->subscriptionManager = $subscriptionManager;
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -31,10 +39,15 @@ class SessionsController extends \BaseController {
         ));
 
         if ($attempt) {
-            //set user's last logon to NOW()
+            //TODO: set user's last logon to NOW()
+
+            // if the user just came from subscription process, subscribe them to any leads
+            $user = $this->getAuthedUser();
+            $this->subscriptionManager->processNewUsersData($user);
+
             //redirect to intended page
             return Redirect::intended('/')
-                ->with('flash_message', 'You have been logged in');
+                           ->with('flash_message', 'You have been logged in');
         } else {
             return Redirect::to('login')
                            ->with('flash_message', 'Login Failed');
@@ -44,7 +57,7 @@ class SessionsController extends \BaseController {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @internal param int $id
      * @return Response
      */
     public function destroy() {

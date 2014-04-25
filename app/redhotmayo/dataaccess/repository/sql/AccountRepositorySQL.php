@@ -1,5 +1,6 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +15,7 @@ use redhotmayo\model\Account;
 use redhotmayo\model\Address;
 use redhotmayo\model\Note;
 use redhotmayo\rest\Constraint;
+use redhotmayo\utility\Arrays;
 
 class AccountRepositorySQL implements AccountRepository {
     /**
@@ -33,8 +35,7 @@ class AccountRepositorySQL implements AccountRepository {
             /** @var Address $address */
             $address = $account->getAddress();
             if (isset($address)) {
-                $zipcode = $account->getAddress()
-                                   ->getZipcode();
+                $zipcode = $address->getZipcode();
                 $subRepo = RepositoryFactory::GetSubscriptionRepository();
                 $subscribedUsers = $subRepo->getAllUserIdsSubscribedToZipcode($zipcode);
 
@@ -163,25 +164,21 @@ class AccountRepositorySQL implements AccountRepository {
      */
     function findAllAccountsForZipcode($zipcode, $daysAgo) {
         $zipcode = intval($zipcode);
+
         $addressCols = AddressSQL::GetColumns();
         $accountCols = AccountSQL::GetColumns();
         $noteCols = NoteSQL::GetColumns();
 
         $cols = array_merge($addressCols, $accountCols, $noteCols);
 
-        $query = "SELECT " . implode(',', $cols) . " FROM accounts " .
-            "JOIN addresses ON accounts.addressId=addresses.id " .
-            "JOIN notes ON notes.accountId=accounts.id " .
-            "WHERE zipCode=? AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
+        $accounts = DB::table('accounts')
+                        ->join('addresses', 'addressId', '=', 'addresses.id')
+                        ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                        ->select($cols)
+                        ->where('accounts.updated_at', '>=', Carbon::now()->subDays($daysAgo)->toDateTimeString())
+                        ->get();
 
-        $accounts = DB::select($query, [$zipcode, $daysAgo]);
-        $convert = [];
-
-        foreach ($accounts as $acct) {
-            $convert[] = json_decode(json_encode($acct), true);
-        }
-
-
+        $convert = json_decode(json_encode($accounts), true);
         $objects = $this->convertRecordsToJsonObjects($convert);
 
         return $objects;
@@ -221,6 +218,7 @@ class AccountRepositorySQL implements AccountRepository {
         $objects = array();
         $accountId = null;
         foreach ($records as $account) {
+//            dd($account);
             $acct = array();
             $acct = $account;
             $accountId = $acct[AccountSQL::C_ID];
@@ -230,7 +228,9 @@ class AccountRepositorySQL implements AccountRepository {
 
             $objects[] = $acct;
         }
-        return $objects;
+//dd($objects);
+        return Arrays::RemoveNullValues($objects);
+//        return $objects;
     }
 
     /**
@@ -287,20 +287,11 @@ class AccountRepositorySQL implements AccountRepository {
 
         $accounts = array();
         foreach ($records as $record) {
-           $accounts[] = $this->removeNullValues($record);
+            $accounts[] = json_decode(json_encode($record), true);
+//           $accounts[] = Arrays::RemoveNullValues($record);
         }
 
         return $this->convertRecordsToJsonObjects($accounts);
-    }
-
-    /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
     }
 
     /**
@@ -309,7 +300,7 @@ class AccountRepositorySQL implements AccountRepository {
      * @param $accounts
      * @return array
      */
-    public function saveAll($accounts) {
+    public function saveAll(array $accounts) {
         Log::info("Saving all accounts");
         $unsaved = array();
         foreach ($accounts as $account) {
@@ -359,21 +350,6 @@ class AccountRepositorySQL implements AccountRepository {
         }
     }
 
-    /**
-     * @param $values
-     * @param $acct
-     * @return mixed
-     */
-    private function removeNullValues($values) {
-        $ary = array();
-        foreach ($values as $col => $value) {
-            if (isset($value)) {
-                $ary[$col] = $value;
-            }
-        }
-        return $ary;
-    }
-
     private function getAddressForAccount($accountId) {
         $records = DB::table('addresses')
                  ->join('accounts', 'accounts.addressId', '=', 'addresses.id')
@@ -383,8 +359,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $address = null;
         if (isset($records) && count($records) > 0) {
-            $address = $this->removeNullValues($records[0]);
-
+            $address = Arrays::RemoveNullValues(json_decode(json_encode($records[0]), true));
         }
 
         return $address;
@@ -398,7 +373,7 @@ class AccountRepositorySQL implements AccountRepository {
 
         $notes = array();
         foreach ($records as $note) {
-            $notes[] = $this->removeNullValues($note);
+            $notes[] = Arrays::RemoveNullValues(json_decode(json_encode($note), true));
         }
 
         return $notes;

@@ -2,12 +2,30 @@
 
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
+use redhotmayo\dataaccess\repository\dao\sql\SubscriptionSQL;
+use redhotmayo\dataaccess\repository\dao\sql\UserSQL;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
+use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\model\Account;
 use redhotmayo\model\Subscription;
+use redhotmayo\model\SubscriptionLocation;
 use redhotmayo\model\User;
 
-class SubscriptionRepositorySQL implements SubscriptionRepository {
+class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRepository {
+    const SERVICE = '\redhotmayo\dataaccess\repository\sql\SubscriptionRepositorySQL';
+
+    /** @var \redhotmayo\dataaccess\repository\UserRepository */
+    private $userRepository;
+
+    /** @var \redhotmayo\dataaccess\repository\ZipcodeRepository */
+    private $zipcodeRepository;
+
+    public function __construct(UserRepository $userRepository, ZipcodeRepository $zipcodeRepository) {
+        $this->userRepository = $userRepository;
+        $this->zipcodeRepository = $zipcodeRepository;
+    }
+
     public function all() {
         // TODO: Implement all() method.
     }
@@ -15,11 +33,13 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
     /**
      * Return an array of all objects that match the given constraints
      *
-     * @param $search
      * @param $parameters
-     * @return mixed
+     * @internal param $search
+     * @return array
      */
     public function find($parameters) {
+        $subscriptions = parent::find($parameters);
+        return $this->getSubscriptionLocationObjects($subscriptions);
     }
 
     public function create($input) {
@@ -46,7 +66,7 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
      * @param $objects
      * @return array
      */
-    public function saveAll($objects) {
+    public function saveAll(array $objects) {
         $unsaved = array();
         foreach ($objects as $subscription) {
             $id = $this->save($subscription);
@@ -115,5 +135,33 @@ class SubscriptionRepositorySQL implements SubscriptionRepository {
     function isSubscriptionRecorded(Subscription $subscription) {
         $users = $this->getAllUserIdsSubscribedToZipcode($subscription->getZipCode());
         return in_array($subscription->getUserID(), $users);
+    }
+
+    protected function getConstraints($parameters) {
+        $constraints = [];
+        if (isset($parameters[SubscriptionSQL::C_USER_ID])) {
+            $constraints[SubscriptionSQL::C_USER_ID] = $parameters[SubscriptionSQL::C_USER_ID];
+        }
+
+        return $constraints;
+    }
+
+    private function getSubscriptionLocationObjects($subscriptions) {
+        $data = [];
+
+        foreach ($subscriptions as $sub) {
+            $result = $this->zipcodeRepository->getLocationInformation([ZipcodeRepositorySQL::C_ZIPCODE => $sub->zipCode]);
+            $data[] = SubscriptionLocation::FromStdClass($result);
+        }
+
+        return $data;
+    }
+
+    function getTableName() {
+        return SubscriptionSQL::TABLE_NAME;
+    }
+
+    function getColumns() {
+        return SubscriptionSQL::GetColumns();
     }
 }

@@ -1,19 +1,13 @@
 <?php namespace redhotmayo\distribution;
 
 use Exception;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 use redhotmayo\api\GoogleMapsAPI;
 use redhotmayo\api\SmartyStreetsAPI;
 use redhotmayo\api\TexasAMAPI;
-use redhotmayo\dataaccess\repository\CuisineRepository;
 use redhotmayo\dataaccess\repository\RepositoryFactory;
-use redhotmayo\dataaccess\repository\FoodServicesRepository;
 use redhotmayo\dataaccess\repository\sql\UserRepositorySQL;
-use redhotmayo\library\CuisineMapper;
 use redhotmayo\library\ExcelParser;
-use redhotmayo\library\FoodMap;
 use redhotmayo\library\Timer;
 use redhotmayo\model\Account;
 use redhotmayo\notifications\GooglePushNotification;
@@ -54,12 +48,12 @@ class AccountDistribution extends Distribution {
         }
 
         if (count($accounts) == 0) {
-            App::info('No records found in XLSX file.');
+            Log::info('No records found in XLSX file.');
             return;
         }
 
-
-
+        //TODO: change this to an AccountDistributionService
+        //AccountDistributionService::distribute($accounts)
 
         $accountRepo = RepositoryFactory::GetAccountRepository();
         Log::info('Saving all records...');
