@@ -111,12 +111,11 @@ class AccountSQL implements AccountDAO {
             //update account
             $this->update($account);
         } else {
+            $values = $this->getValues($account, false);
+
             //save account
             $id = DB::table('accounts')
-                    ->insertGetId(array(
-                        $this->getValues($account, false)
-                    )
-                );
+                    ->insertGetId($values);
             $account->setAccountId($id);
         }
 
