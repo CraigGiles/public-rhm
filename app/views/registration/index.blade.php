@@ -105,6 +105,27 @@
 @section('javascript')
 <script>
   $(document).ready(function() {
+
+    window.onpopstate = function(event) {
+      console.log(event);
+      if (event.state === null) {
+        $('#registration_confirmation').hide();
+        $('#signin_confirmation').hide();
+        $('#forms_part').show();
+      }
+
+      else if (event.state.elm === 'signin_confirmation') {
+        $('#forms_part').hide();
+        $('#signin_confirmation').show();
+      }
+
+      else if (event.state.elm === 'registration_confirmation') {
+        $('#forms_part').hide();
+        $('#registration_confirmation').show();
+      }
+    }
+
+
     $('#tabs a').click(function (e) {
       e.preventDefault()
       $(this).tab('show')
@@ -178,6 +199,7 @@
           complete: function(data) {
             $('#new_user_submit').prop('disabled', false);
             if (data.status === 200) {
+              history.pushState({ elm: "registration_confirmation" }, "Registration Confirmation", "confirmation");
               $('#forms_part').hide();
               $('#registration_confirmation').show()
             } else {
@@ -221,6 +243,7 @@
           complete: function(data) {
             $('#signin_submit').prop('disabled', false);
             if (data.status === 200) {
+              history.pushState({ elm: "signin_confirmation" }, "Signin Confirmation", "confirmation");
               $('#forms_part').hide();
               $('#signin_confirmation').show()
             } else {

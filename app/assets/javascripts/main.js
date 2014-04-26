@@ -11,6 +11,21 @@ var warning_template = Handlebars.compile(warning_template_src);
 
 function handleResponse(data) {
   /**
+   * Handle redirection as long as the page is not where we are right now.
+   */
+  if (data.responseJSON.redirect !== window.location.pathname.replace('/', '')) {
+    window.location.href = data.responseJSON.redirect;
+  }
+
+  /**
+   * make sure message value is an array of objects
+   */
+  if (typeof data.responseJSON.message === 'string') {
+    data.responseJSON.message = [{err: data.responseJSON.message}];
+  }
+
+
+  /**
    * 4xx Client Error
    */
   if (data.status >= 400 && data.status <= 499) {
