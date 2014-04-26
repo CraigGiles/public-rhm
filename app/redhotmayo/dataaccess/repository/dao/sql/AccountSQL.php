@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\dao\AccountDAO;
 use redhotmayo\model\Account;
+use redhotmayo\utility\Arrays;
 
 class AccountSQL implements AccountDAO {
     const TABLE_NAME = 'accounts';
@@ -190,7 +191,8 @@ class AccountSQL implements AccountDAO {
             $values[self::C_CREATED_AT] = Carbon::Now();
         }
 
-        return $values;
+        return Arrays::RemoveNullValues($values);
+//        return $values;
     }
 
     public function restore($accounts) {
