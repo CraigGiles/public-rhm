@@ -7,6 +7,7 @@ use redhotmayo\api\auth\ApiSession;
 use redhotmayo\dataaccess\repository\AccountRepository;
 use redhotmayo\dataaccess\repository\dao\DataAccessObject;
 use redhotmayo\model\Account;
+use redhotmayo\utility\Arrays;
 
 class ApiAccountController extends ApiController {
     const UPDATE = 'redhotmayo\api\controllers\ApiAccountController@update';
@@ -120,7 +121,7 @@ class ApiAccountController extends ApiController {
             $session = new ApiSession();
             $id = $session->getIdOfAuthedUser($input['token']);
 
-            $accounts = isset($input['accounts']) ? $input['accounts'] : [];
+            $accounts = Arrays::GetValue($input, 'accounts', []);
 
             //todo: add account filter here
             //$accounts = $this->accountFilter->filterAccountCollection($accounts);

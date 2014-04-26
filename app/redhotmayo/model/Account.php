@@ -163,7 +163,8 @@ class Account extends DataObject {
     }
 
     public function getAddressId() {
-        return $this->getAddress()->getAddressId();
+        $address = $this->getAddress();
+        return isset($address) ? $address->getAddressId() : null;
     }
 
     /**

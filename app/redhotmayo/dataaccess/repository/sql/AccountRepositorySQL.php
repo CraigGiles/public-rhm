@@ -68,13 +68,19 @@ class AccountRepositorySQL implements AccountRepository {
         $account->setUserID($userId);
         $account->setAccountId(null);
         $address = $account->getAddress();
-        $address->setAddressId(null);
+        if (isset($address)) {
+            $address->setAddressId(null);
+        }
+
         $notes = $account->getNotes();
 
-        /** @var Note $note */
-        foreach ($notes as $note) {
-            $note->setNoteId(null);
+        if (isset($notes)) {
+            /** @var Note $note */
+            foreach ($notes as $note) {
+                $note->setNoteId(null);
+            }
         }
+
         return $this->save($account);
     }
 
@@ -172,11 +178,13 @@ class AccountRepositorySQL implements AccountRepository {
         $cols = array_merge($addressCols, $accountCols, $noteCols);
 
         $accounts = DB::table('accounts')
-                        ->join('addresses', 'addressId', '=', 'addresses.id')
-                        ->join('notes', 'notes.accountId', '=', 'accounts.id')
-                        ->select($cols)
-                        ->where('accounts.updated_at', '>=', Carbon::now()->subDays($daysAgo)->toDateTimeString())
-                        ->get();
+                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
+                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                      ->select($cols)
+                      ->where('zipCode', '=', $zipcode)
+                      ->whereNull('userId')
+                      ->where('accounts.updated_at', '>=', Carbon::now()->subDays($daysAgo)->toDateTimeString())
+                      ->get();
 
         $convert = json_decode(json_encode($accounts), true);
         $objects = $this->convertRecordsToJsonObjects($convert);
@@ -185,26 +193,45 @@ class AccountRepositorySQL implements AccountRepository {
     }
 
     public function allAccountsDistributedToday() {
-//        $addressCols = AddressSQL::GetColumns();
+        $addressCols = AddressSQL::GetColumns();
         $accountCols = AccountSQL::GetColumns();
-//        $noteCols = NoteSQL::GetColumns();
+        $noteCols = NoteSQL::GetColumns();
 
-//        $cols = array_merge($addressCols, $accountCols, $noteCols);
+        $cols = array_merge($addressCols, $accountCols, $noteCols);
 
-        $query = "SELECT " . implode(',', $accountCols) . " FROM accounts " .
-            "WHERE userId IS NOT NULL AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+        $accounts = DB::table('accounts')
+                      ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
+                      ->join('notes', 'notes.accountId', '=', 'accounts.id')
+                      ->select($cols)
+                      ->whereNull('userId')
+                      ->where('accounts.updated_at', '>=', Carbon::now()->subDay()->toDateTimeString())
+                      ->get();
 
-        $accounts = DB::select($query);
-        $convert = [];
-
-        foreach ($accounts as $acct) {
-            $convert[] = json_decode(json_encode($acct), true);
-        }
-
-
+        $convert = json_decode(json_encode($accounts), true);
         $objects = $this->convertRecordsToJsonObjects($convert);
 
         return $objects;
+        // ------------------------------------------------
+////        $addressCols = AddressSQL::GetColumns();
+//        $accountCols = AccountSQL::GetColumns();
+////        $noteCols = NoteSQL::GetColumns();
+//
+////        $cols = array_merge($addressCols, $accountCols, $noteCols);
+//
+//        $query = "SELECT " . implode(',', $accountCols) . " FROM accounts " .
+//            "WHERE userId IS NOT NULL AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+//
+//        $accounts = DB::select($query);
+//        $convert = [];
+//
+//        foreach ($accounts as $acct) {
+//            $convert[] = json_decode(json_encode($acct), true);
+//        }
+//
+//
+//        $objects = $this->convertRecordsToJsonObjects($convert);
+//
+//        return $objects;
     }
 
 
@@ -218,8 +245,6 @@ class AccountRepositorySQL implements AccountRepository {
         $objects = array();
         $accountId = null;
         foreach ($records as $account) {
-//            dd($account);
-            $acct = array();
             $acct = $account;
             $accountId = $acct[AccountSQL::C_ID];
 
@@ -228,9 +253,8 @@ class AccountRepositorySQL implements AccountRepository {
 
             $objects[] = $acct;
         }
-//dd($objects);
+
         return Arrays::RemoveNullValues($objects);
-//        return $objects;
     }
 
     /**

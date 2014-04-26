@@ -12,6 +12,7 @@ use redhotmayo\library\Timer;
 use redhotmayo\model\Account;
 use redhotmayo\notifications\GooglePushNotification;
 use redhotmayo\parser\AccountParserS2;
+use redhotmayo\utility\Arrays;
 
 class AccountDistribution extends Distribution {
     private $timer;
@@ -67,7 +68,11 @@ class AccountDistribution extends Distribution {
         $userIds = [];
 
         foreach ($newAccounts as $acct) {
-            $userIds[] = $acct['userId'];
+            $uid = Arrays::GetValue($acct, 'userId', false);
+            
+            if (is_numeric($uid)) {
+                $userIds[] = $uid;
+            }
         }
 
         $userIds = array_unique($userIds);

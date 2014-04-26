@@ -62,7 +62,7 @@ class SessionsController extends RedHotMayoWebController {
      */
     public function destroy() {
         Auth::logout();
-        return Redirect::home();
+        return Redirect::to('/');
     }
 
 }

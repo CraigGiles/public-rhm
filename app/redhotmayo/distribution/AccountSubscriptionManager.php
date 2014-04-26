@@ -85,16 +85,22 @@ class AccountSubscriptionManager {
 //            $subs[] = SubscriptionLocation::FromArray($sub);
 //        }
 
+        $newSubs = false;
+
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);
-            $newSubs = $this->backdateAccounts($sub);
+            $subs = $this->backdateAccounts($sub);
 
-            if ($newSubs) {
-                $this->notification->send($user, ['notificationType' => 'newLeads']);
+            // if newSubs is false, keep trying to get new subscriptions
+            if (!$newSubs) {
+                $newSubs = $subs;
             }
         }
 
+        if ($newSubs) {
+            $this->notification->send($user, ['notificationType' => 'newLeads']);
+        }
     }
 
     /**
@@ -170,7 +176,7 @@ class AccountSubscriptionManager {
             foreach ($accounts as $account) {
                 $acc = Account::FromArray($account);
 
-                if (!$newSub && $this->accountRepository->subscribeAccountToUserId($acc, $sub->getUserID())) {
+                if ($this->accountRepository->subscribeAccountToUserId($acc, $sub->getUserID())) {
                     $newSub = true;
                 }
             }
