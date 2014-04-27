@@ -6,6 +6,7 @@ use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
 use redhotmayo\registration\exceptions\ThrottleException;
+use redhotmayo\utility\Arrays;
 
 class Registration {
     /**
@@ -42,7 +43,8 @@ class Registration {
         $throttle = $this->getThrottleRepository($throttle);
 
         if (!$throttle->canUserRegister($input)) {
-            throw new ThrottleException;
+            $key = Arrays::GetValue($input, 'key', 'UNKNOWN');
+            throw new ThrottleException($key);
         }
         //TODO: END WS-43 REMOVE
 
