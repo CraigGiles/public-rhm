@@ -72,7 +72,7 @@ class RegistrationController extends RedHotMayoWebController {
             $response->setContent($contents);
             return $response;
         } catch (ValidationException $validationException) {
-            Log::info("Registration Failure due to validation exception. Token Used: " . $token$validationException->getToken());
+            Log::info("Registration Failure due to validation exception. Token Used: " . $validationException->getToken());
             return $this->respondValidationException($validationException);
         } catch (ThrottleException $throttle) {
             Log::info("Registration failure due to throttle.");
