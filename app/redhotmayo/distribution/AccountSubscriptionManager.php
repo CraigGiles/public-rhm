@@ -31,7 +31,8 @@ class AccountSubscriptionManager {
     private $notification;
 
     public function __construct(
-        SubscriptionRepository $subscriptionRepository, ZipcodeRepository $zipcodeRepository,
+        SubscriptionRepository $subscriptionRepository,
+        ZipcodeRepository $zipcodeRepository,
         AccountRepository $accountRepository
     ) {
         $this->subscriptionRepository = $subscriptionRepository;
@@ -41,6 +42,11 @@ class AccountSubscriptionManager {
         $this->notification = new GooglePushNotification();
     }
 
+    /**
+     * @param User $user
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function processNewUsersData(User $user) {
         $cookie = Cookie::get('temp_id');
         if (isset($cookie)) {
@@ -85,17 +91,11 @@ class AccountSubscriptionManager {
 //            $subs[] = SubscriptionLocation::FromArray($sub);
 //        }
 
-        $newSubs = false;
 
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);
-            $subs = $this->backdateAccounts($sub);
-
-            // if newSubs is false, keep trying to get new subscriptions
-            if (!$newSubs) {
-                $newSubs = $subs;
-            }
+            $this->backdate($user, $sub);
         }
 
         if ($newSubs) {
@@ -122,6 +122,9 @@ class AccountSubscriptionManager {
                     break;
             }
         }
+
+        $zipcodes = array_map('intval', $zipcodes);
+        $zipcodes = array_unique($zipcodes);
 
         return $zipcodes;
     }
@@ -163,25 +166,21 @@ class AccountSubscriptionManager {
     }
 
     /**
+     * @param \redhotmayo\model\User $user
      * @param $sub Subscription
      *
      * @return bool
      * @author Craig Giles < craig@gilesc.com >
      */
-    private function backdateAccounts(Subscription $sub) {
+    private function backdate(User $user, Subscription $sub) {
+        //get all master accounts in the given zipcode for the last X days
         $accounts = $this->accountRepository->findAllAccountsForZipcode($sub->getZipCode(), self::BACKDATE_DAYS);
-        $newSub = false;
 
         if (isset($accounts) && is_array($accounts)) {
-            foreach ($accounts as $account) {
-                $acc = Account::FromArray($account);
-
-                if ($this->accountRepository->subscribeAccountToUserId($acc, $sub->getUserID())) {
-                    $newSub = true;
-                }
+            foreach($accounts as $account) {
+                $acct = Account::FromArray($account);
+                $this->accountRepository->subscribeAccountToUserId($acct, $user->getUserId());
             }
         }
-
-        return $newSub;
     }
 }
