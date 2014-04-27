@@ -23,7 +23,7 @@
 
 
 <div class="row">
-  <div class="col-md-8">
+  <div id="selections" class="col-md-8">
     <div class="row">
       <div class="col-md-6 state-selection">
         <select style="display: none;" id="states" class="selectpicker" data-live-search="true">
@@ -159,6 +159,19 @@
 </script>
 
 <script type="application/javascript">
+
+  $(document).ready(function (){
+    var height = $(window).height();
+
+    var potentialHeight = height - $('#selections').offset().top - $('.footer').height();
+
+    var extra = $('#selections').height() - $('.region-list').height();
+
+    $('.region-list').height(potentialHeight-extra);
+    $('.selected-regions').height(potentialHeight-extra);
+    $('.region-filtered').height(potentialHeight-extra-42);
+  });
+
 
   /**
    * Variable declarations
