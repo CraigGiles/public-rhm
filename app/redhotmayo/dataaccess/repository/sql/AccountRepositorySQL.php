@@ -211,27 +211,6 @@ class AccountRepositorySQL implements AccountRepository {
         $objects = $this->convertRecordsToJsonObjects($convert);
 
         return $objects;
-        // ------------------------------------------------
-////        $addressCols = AddressSQL::GetColumns();
-//        $accountCols = AccountSQL::GetColumns();
-////        $noteCols = NoteSQL::GetColumns();
-//
-////        $cols = array_merge($addressCols, $accountCols, $noteCols);
-//
-//        $query = "SELECT " . implode(',', $accountCols) . " FROM accounts " .
-//            "WHERE userId IS NOT NULL AND accounts.updated_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
-//
-//        $accounts = DB::select($query);
-//        $convert = [];
-//
-//        foreach ($accounts as $acct) {
-//            $convert[] = json_decode(json_encode($acct), true);
-//        }
-//
-//
-//        $objects = $this->convertRecordsToJsonObjects($convert);
-//
-//        return $objects;
     }
 
 
@@ -491,6 +470,7 @@ class AccountRepositorySQL implements AccountRepository {
      * Mark the given accounts as target accounts
      *
      * @param $accounts
+     * @param bool $targeted
      */
     public function markAccountsTargeted($accounts, $targeted=true) {
         if (!is_array($accounts)) {

@@ -83,4 +83,5 @@ interface AccountRepository extends Repository {
      * @return array
      */
     public function getAllUsersAccountIds($id);
+
 }
