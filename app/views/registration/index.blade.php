@@ -196,6 +196,9 @@
           url: $('#new_user').attr('action'),
           type: $('#new_user').attr('method'),
           data: form.serialize(),
+          beforeSend: function() {
+            beforeAjax();
+          },
           complete: function(data) {
             $('#new_user_submit').prop('disabled', false);
             if (data.status === 200) {
@@ -240,6 +243,9 @@
           url: $('#signin').attr('action'),
           type: $('#signin').attr('method'),
           data: form.serialize(),
+          beforeSend: function() {
+            beforeAjax();
+          },
           complete: function(data) {
             $('#signin_submit').prop('disabled', false);
             if (data.status === 200) {

@@ -45,3 +45,8 @@ function handleResponse(data) {
     $('#regions').empty();
   }
 }
+
+
+function beforeAjax() {
+  $('#warnings').empty();
+}
