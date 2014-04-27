@@ -29,20 +29,13 @@ class UserRepositorySQL implements UserRepository {
     }
 
     /**
-     * Create an object from given input
-     *
-     * @param $input
-     * @return mixed
-     */
-    public function create($input) {
-        // TODO: Implement create() method.
-    }
-
-    /**
      * Save the object to the database returning true if the object was saved, false otherwise.
      *
      * @param User $user
      * @return bool
+     *
+     * @throws Exception
+     * @author Craig Giles < craig@gilesc.com >
      */
     public function save($user) {
         DB::beginTransaction();
@@ -74,35 +67,20 @@ class UserRepositorySQL implements UserRepository {
     /**
      * Save all objects to the database returning any objects that were unsuccessful.
      *
-     * @param $objects
+     * @param array $users
      * @return array
      */
-    public function saveAll(array $objects) {
-        // TODO: Implement saveAll() method.
-    }
+    public function saveAll(array $users) {
+        $unsaved = [];
+        foreach ($users as $user) {
 
-    /**
-     * Take an array of database records and convert them to the appropriate objects
-     *
-     * @param $records
-     * @return array
-     */
-    function convertRecordsToJsonObjects($records) {
-        // TODO: Implement convertRecordsToJsonObjects() method.
-    }
+            try {
+                $this->save($user);
+            } catch (Exception $e) {
+                $unsaved[] = $user;
+            }
+        }
 
-    /**
-     *
-     *
-     * @param $user
-     * @return mixed
-     */
-    public function update($user) {
-        // TODO: Implement update() method.
-    }
-
-    public function registerMobileDevice($user, $input) {
-        $mobileDAO = DataAccessObject::GetMobileDevicesDAO();
-        $mobileDAO->save($mobileDevice);
+        return $unsaved;
     }
 }
