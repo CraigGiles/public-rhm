@@ -202,12 +202,12 @@
           complete: function(data) {
             $('#new_user_submit').prop('disabled', false);
             if (data.status === 200) {
-              history.pushState({ elm: "registration_confirmation" }, "Registration Confirmation", "confirmation");
-              $('#forms_part').hide();
-              $('#registration_confirmation').show()
-            } else {
-              handleResponse(data);
+//              history.pushState({ elm: "registration_confirmation" }, "Registration Confirmation", "registration#register_confirmation");
+//              $('#forms_part').hide();
+//              $('#registration_confirmation').show()
             }
+
+            handleResponse(data);
           }
         });
       }
@@ -220,7 +220,7 @@
     /**
      * Signin Form validation
      */
-    $('#signin').bootstrapValidator({
+    $('#signin_form').bootstrapValidator({
       fields: {
         username: {
           validators: {
@@ -240,8 +240,8 @@
       submitHandler: function(validator, form, submitButton) {
 
         $.ajax({
-          url: $('#signin').attr('action'),
-          type: $('#signin').attr('method'),
+          url: $('#signin_form').attr('action'),
+          type: $('#signin_form').attr('method'),
           data: form.serialize(),
           beforeSend: function() {
             beforeAjax();
@@ -249,11 +249,12 @@
           complete: function(data) {
             $('#signin_submit').prop('disabled', false);
             if (data.status === 200) {
-              history.pushState({ elm: "signin_confirmation" }, "Signin Confirmation", "confirmation");
-              $('#forms_part').hide();
-              $('#signin_confirmation').show()
-            } else {
+//              history.pushState({ elm: "signin_confirmation" }, "Signin Confirmation", "signin_confirmation");
+//              $('#forms_part').hide();
+//              $('#signin_confirmation').show()
               handleResponse(data);
+            } else {
+              handleResponse(data, false);
             }
           }
         });

@@ -9,11 +9,11 @@ var warning_template_src =  '<div class="alert alert-{{type}}">' +
 var warning_template = Handlebars.compile(warning_template_src);
 
 
-function handleResponse(data) {
+function handleResponse(data, redirect) {
   /**
    * Handle redirection as long as the page is not where we are right now.
    */
-  if (data.responseJSON.redirect !== window.location.pathname.replace('/', '')) {
+  if (redirect !== false && data.responseJSON.redirect !== window.location.pathname.replace('/', '')) {
     window.location.href = data.responseJSON.redirect;
   }
 

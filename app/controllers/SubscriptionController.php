@@ -110,10 +110,10 @@ class SubscriptionController extends RedHotMayoWebController {
         $cookie = Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
         Session::put($tempId, $data);
 
-       $contents = [
-           'message' => 'Unauthorized Access.',
-           'redirect' => 'registration'
-       ];
+        $contents = [
+            'message' => 'Unauthorized Access.',
+            'redirect' => 'registration'
+        ];
 
         $status = Response::HTTP_UNAUTHORIZED;
 

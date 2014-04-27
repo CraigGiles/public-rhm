@@ -45,12 +45,30 @@ class SessionsController extends RedHotMayoWebController {
             $user = $this->getAuthedUser();
             $this->subscriptionManager->processNewUsersData($user);
 
+            $contents = [
+                'message' => 'Login Successful.',
+                'redirect' => 'login/confirmation'
+            ];
+            $status = Response::HTTP_OK;
+            $response = new Response();
+            $response->setStatusCode($status);
+            $response->setContent($contents);
+            return $response;
             //redirect to intended page
-            return Redirect::intended('/')
-                           ->with('flash_message', 'You have been logged in');
+//            return Redirect::intended('/')
+//                           ->with('flash_message', 'You have been logged in');
         } else {
-            return Redirect::to('login')
-                           ->with('flash_message', 'Login Failed');
+            $contents = [
+                'message' => 'The username or password you entered is incorrect.',
+                'redirect' => 'login'
+            ];
+            $status = Response::HTTP_UNAUTHORIZED;
+            $response = new Response();
+            $response->setStatusCode($status);
+            $response->setContent($contents);
+            return $response;
+//          return Redirect::to('login')
+//                           ->with('flash_message', 'Login Failed');
         }
     }
 
@@ -65,4 +83,7 @@ class SessionsController extends RedHotMayoWebController {
         return Redirect::to('/');
     }
 
+    public function confirmation() {
+        return View::make('sessions.confirmation');
+    }
 }
