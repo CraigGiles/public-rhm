@@ -259,6 +259,7 @@
           url: '../geography/search?state=' + $(this).val(),
           cache: true,
           beforeSend: function() {
+            beforeAjax();
             $('#query').val('');
             $('#regions').empty();
             $('#regions').addClass('loading');
@@ -391,6 +392,7 @@
       data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
       cache: true,
       beforeSend: function(){
+        beforeAjax();
         $('#submit').prop('disabled', true);
       },
       complete: function(data) {

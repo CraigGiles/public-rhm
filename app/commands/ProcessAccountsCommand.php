@@ -1,17 +1,7 @@
 <?php
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
-use redhotmayo\api\GoogleMapsAPI;
-use redhotmayo\api\SmartyStreetsAPI;
-use redhotmayo\api\TexasAMAPI;
-use redhotmayo\dataaccess\repository\RepositoryFactory;
 use redhotmayo\distribution\AccountDistribution;
-use redhotmayo\library\CuisineMapper;
-use redhotmayo\library\ExcelParser;
-use redhotmayo\library\FoodMap;
-use redhotmayo\library\Timer;
-use redhotmayo\parser\AccountParserS2;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -34,7 +24,7 @@ class ProcessAccountsCommand extends Command {
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @return \ProcessAccountsCommand
      */
     public function __construct() {
         parent::__construct();

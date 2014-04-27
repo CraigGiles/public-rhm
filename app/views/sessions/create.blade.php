@@ -30,7 +30,7 @@
     /**
      * Signin Form validation
      */
-    $('#signin').bootstrapValidator({
+    $('#signin_form').bootstrapValidator({
       fields: {
         username: {
           validators: {
@@ -50,9 +50,12 @@
       submitHandler: function(validator, form, submitButton) {
 
         $.ajax({
-          url: $('#signin').attr('action'),
-          type: $('#signin').attr('method'),
+          url: $('#signin_form').attr('action'),
+          type: $('#signin_form').attr('method'),
           data: form.serialize(),
+          beforeSend: function() {
+            beforeAjax();
+          },
           complete: function(data) {
             $('#signin_submit').prop('disabled', false);
             if (data.status === 200) {

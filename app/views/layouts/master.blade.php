@@ -12,11 +12,11 @@
 
 
 
-  @if (Session::get('flash_message'))
-    <div class="flash">
-      {{ Session::get('flash_message') }}
-    </div>
-  @endif
+<!--  @if (Session::get('flash_message'))-->
+<!--    <div class="flash">-->
+<!--      {{ Session::get('flash_message') }}-->
+<!--    </div>-->
+<!--  @endif-->
 
 
   <div class="banner">

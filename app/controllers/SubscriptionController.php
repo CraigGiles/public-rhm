@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
@@ -49,15 +48,13 @@ class SubscriptionController extends RedHotMayoWebController {
     public function index() {
         $data = [];
 
-        //if the user is currently logged in, grab a list of zipcodes already subscribed
-        //and send them along with the view.. otherwise just send the view.
         /** @var User $user */
         $user = $this->getAuthedUser();
 
         if (isset($user)) {
             $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         } else if (Cookie::get(self::TEMP_ID)) {
-            //the user has a temporary id adn there-for has picked up some subscription data.
+            //the user has a temporary id which means they've picked up some subscription data.
             //pass that data back to the view
             $data = Session::get(self::TEMP_ID);
         }
@@ -113,10 +110,10 @@ class SubscriptionController extends RedHotMayoWebController {
         $cookie = Cookie::make(self::TEMP_ID, $tempId, self::ONE_DAY);
         Session::put($tempId, $data);
 
-       $contents = [
-           'message' => 'Unauthorized Access.',
-           'redirect' => 'registration'
-       ];
+        $contents = [
+            'message' => 'Unauthorized Access.',
+            'redirect' => 'registration'
+        ];
 
         $status = Response::HTTP_UNAUTHORIZED;
 

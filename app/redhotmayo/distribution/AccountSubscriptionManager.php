@@ -97,10 +97,6 @@ class AccountSubscriptionManager {
             $this->subscriptionRepository->save($sub);
             $this->backdate($user, $sub);
         }
-
-        if ($newSubs) {
-            $this->notification->send($user, ['notificationType' => 'newLeads']);
-        }
     }
 
     /**
