@@ -3,9 +3,10 @@
 use Illuminate\Console\Command;
 use redhotmayo\dataaccess\repository\ThrottleRegistrationRepository;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class RegistrationThrottleCommand extends Command {
+    const KEY = 'key';
+    const MAX = 'max';
 
     /**
      * The console command name.
@@ -36,8 +37,8 @@ class RegistrationThrottleCommand extends Command {
      * @return mixed
      */
     public function fire() {
-        $key = $this->argument('key');
-        $max = $this->argument('max');
+        $key = $this->argument(self::KEY);
+        $max = $this->argument(self::MAX);
 
         $this->throttle->addKey($key, $max);
     }
@@ -49,8 +50,8 @@ class RegistrationThrottleCommand extends Command {
      */
     protected function getArguments() {
         return array(
-            array('key', InputArgument::REQUIRED, 'Key used to throttle'),
-            array('max', InputArgument::REQUIRED, 'Max number of units to throttle'),
+            array(self::KEY, InputArgument::REQUIRED, 'Key used to throttle'),
+            array(self::MAX, InputArgument::REQUIRED, 'Max number of units to throttle'),
         );
     }
 }
