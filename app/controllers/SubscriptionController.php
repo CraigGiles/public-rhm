@@ -80,7 +80,7 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
-            $this->respondSuccess('profile');
+            return $this->respondSuccess('login/confirmation');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondAccountSubscriptionException($ex);
