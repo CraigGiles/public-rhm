@@ -1,6 +1,8 @@
 <?php
 
 
+use redhotmayo\model\User;
+
 class RedHotMayoWebController extends BaseController {
     use RedHotMayoRedirectorTrait;
 
