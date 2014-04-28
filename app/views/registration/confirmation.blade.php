@@ -9,7 +9,7 @@
       <p>You have completed the registration process. The next step is to download our Android app from the Google Play store.
         You can log in there and you will start receiving accounts.</p>
       <p>
-        <a href="https://play.google.com/store/search?q=pub:redhotmayo">
+        <a href="https://play.google.com/store/apps/details?id=com.redhotmayo.accountManager">
           <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
         </a>
       </p>
