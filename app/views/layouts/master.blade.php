@@ -28,12 +28,6 @@
         </div>
       </div>
       <div class="row">
-<!--        <ul class="nav nav-pills pull-right">-->
-<!--          @if (isset($username))-->
-<!--            <li><a href="profile">{{$username}}</a></li>-->
-<!--            <li><a href="logout">Logout</a></li>-->
-<!--          @endif-->
-<!--        </ul>-->
       </div>
     </div>
   </div>
