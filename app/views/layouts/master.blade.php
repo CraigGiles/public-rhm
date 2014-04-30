@@ -12,11 +12,11 @@
 
 
 
-  @if (Session::get('flash_message'))
-    <div class="flash">
-      {{ Session::get('flash_message') }}
-    </div>
-  @endif
+<!--  @if (Session::get('flash_message'))-->
+<!--    <div class="flash">-->
+<!--      {{ Session::get('flash_message') }}-->
+<!--    </div>-->
+<!--  @endif-->
 
 
   <div class="banner">
@@ -28,13 +28,6 @@
         </div>
       </div>
       <div class="row">
-        <ul class="nav nav-pills pull-right">
-          @if (isset($username))
-            <li><a href="profile">{{$username}}</a></li>
-            <li><a href="logout">Logout</a></li>
-          @endif
-
-        </ul>
       </div>
     </div>
   </div>

@@ -13,12 +13,15 @@ class AccountFilter {
     }
 
     /**
-     * @param $userId
-     * @param array $accounts Account[]
+     * Takes an array of accounts and a userId value and returns only instances of
+     * accounts that belong to the specified userId.
      *
-     * @return array Account[]
+     * @param int $userId
+     * @param array $accounts
+     * @return array
      *
      * @throws InvalidArgumentException
+     * @author Craig Giles < craig@gilesc.com >
      */
     public function filterAccountCollections($userId, array $accounts) {
         $valid = [];
@@ -38,19 +41,22 @@ class AccountFilter {
     }
 
     /**
-     * @param $userId
-     * @param $accountIds
-     *
+     * @param int $userId
+     * @param array $accountIds
      * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
      */
-    public function filterAccountIds($userId, $accountIds) {
+    public function filterAccountIds($userId, array $accountIds) {
         $accounts = $this->accountRepo->getAllUsersAccountIds($userId);
         $valid = [];
+
         foreach ($accountIds as $id) {
             if (in_array($id, $accounts)) {
                 $valid[] = $id;
             }
         }
+
         return $valid;
     }
 } 
