@@ -168,7 +168,7 @@
             },
             stringLength: {
               min: passwordLength,
-              message: 'The username must be longer than '+ passwordLength +' characters'
+              message: 'The password must be longer than '+ passwordLength +' characters'
             }
           }
         },
