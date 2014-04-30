@@ -3,6 +3,7 @@
 use BaseController;
 use Exception;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use redhotmayo\api\auth\ApiSession;
 use redhotmayo\api\auth\exceptions\LoginException;
 use redhotmayo\auth\AuthorizationService;
@@ -33,18 +34,21 @@ class ApiSessionController extends BaseController {
 
             if ($user instanceof User) {
                 $info = $this->session->getSessionInformationForUser($user);
-
-                if (empty($info)) {
-                    $array[self::TOKEN] = $this->session->create($user);
-                } else {
-                    $array[self::TOKEN] = $info->token;
-                }
+                $array[self::TOKEN] = property_exists($info, 'token') ? $info->token : $this->session->create($user);
             } else {
+                //TODO: not sure i like throwing exceptions here or in the auth object.
                 throw new LoginException('Invalid username or password.');
             }
 
             $success = true;
+        } catch (LoginException $le) {
+            Log::info('Unsuccessful login attempt.');
+            Log::info(Input::json()->all());
+            $success = false;
+            $array[self::MESSAGE] = $e->getMessage();
         } catch (Exception $e) {
+            Log::error('ApiSessionController Exception');
+            Log::error($e->getTrace());
             $success = false;
             $array[self::MESSAGE] = $e->getMessage();
         }

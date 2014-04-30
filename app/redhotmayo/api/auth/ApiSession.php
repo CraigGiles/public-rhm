@@ -14,7 +14,7 @@ class ApiSession {
     const C_UPDATED_AT = 'updated_at';
 
     public function getSessionInformationForUser(User $user) {
-        $id = DB::table(self::TABLE_NAME)
+        $id = (array)DB::table(self::TABLE_NAME)
                 ->where(self::C_USER, '=', $user->getUserId())
                 ->first();
 
