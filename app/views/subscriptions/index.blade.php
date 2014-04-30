@@ -389,7 +389,7 @@
       url: 'subscribe',
       type: 'POST',
       dataType: 'json',
-      data: JSON.stringify({_token: $('[name=_token').val(), regions:selected_regions}),
+      data: JSON.stringify({_token: $('[name=_token]').val(), regions:selected_regions}),
       cache: true,
       beforeSend: function(){
         beforeAjax();
