@@ -15,6 +15,10 @@ class MobileDevice extends DataObject {
     }
 
     public static function FromArray($input) {
+        if (is_array($input) && empty($input)) {
+            return null;
+        }
+
         $userId = isset($input['userId']) ? $input['userId'] : null;
         $deviceType = isset($input['deviceType']) ? $input['deviceType'] : null;
         $installationId = isset($input['installationId']) ? $input['installationId'] : null;
