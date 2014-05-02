@@ -17,7 +17,7 @@ class AuthorizationServiceProvider extends RedHotMayoServiceProvider {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getService() {
-        $userRepo = App::make('redhotmayo\dataaccess\repository\UserRepository');
+        $userRepo = App::make('UserRepository');
         return new AuthorizationService($userRepo);
     }
 

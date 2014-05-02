@@ -32,16 +32,16 @@ class DataAccessServiceProvider extends ServiceProvider {
         $this->app->bind('redhotmayo\dataaccess\repository\BillingRepository', BillingRepositorySQL::SERVICE);
         $this->app->bind('redhotmayo\dataaccess\repository\ThrottleRegistrationRepository', ThrottleRegistrationRepositorySQL::SERVICE);
 
-        $this->app->bind('AccountRepository', 'redhotmayo\dataaccess\repository\sql\AccountRepositorySQL');
-        $this->app->bind('UserRepository', 'redhotmayo\dataaccess\repository\sql\UserRepositorySQL');
-        $this->app->bind('AddressRepository', 'AddressRepositorySQL');
-        $this->app->bind('NoteRepository', 'NoteRepositorySQL');
-        $this->app->bind('SubscriptionRepository', SubscriptionRepositorySQL::SERVICE);
-        $this->app->bind('ZipcodeRepository', ZipcodeRepositorySQL::SERVICE);
-        $this->app->bind('CuisineRepository', CuisineRepositorySQL::SERVICE);
-        $this->app->bind('FoodServicesRepository', FoodServicesRepositorySQL::SERVICE);
-        $this->app->bind('MobileDeviceRepository', MobileDeviceRepositorySQL::SERVICE);
-        $this->app->bind('BillingRepository', BillingRepositorySQL::SERVICE);
-        $this->app->bind('ThrottleRegistrationRepository', ThrottleRegistrationRepositorySQL::SERVICE);
+        $this->app->alias('AccountRepository', 'redhotmayo\dataaccess\repository\AccountRepository');
+        $this->app->alias('UserRepository', 'redhotmayo\dataaccess\repository\UserRepository');
+        $this->app->alias('AddressRepository', 'redhotmayo\dataaccess\repository\AddressRepository');
+        $this->app->alias('NoteRepository', 'redhotmayo\dataaccess\repository\NoteRepository');
+        $this->app->alias('SubscriptionRepository', 'redhotmayo\dataaccess\repository\SubscriptionRepository');
+        $this->app->alias('ZipcodeRepository','redhotmayo\dataaccess\repository\ZipcodeRepository');
+        $this->app->alias('CuisineRepository','redhotmayo\dataaccess\repository\CuisineRepository');
+        $this->app->alias('FoodServicesRepository','redhotmayo\dataaccess\repository\FoodServicesRepository');
+        $this->app->alias('MobileDeviceRepository','redhotmayo\dataaccess\repository\MobileDeviceRepository');
+        $this->app->alias('BillingRepository','redhotmayo\dataaccess\repository\BillingRepository');
+        $this->app->alias('ThrottleRegistrationRepository','redhotmayo\dataaccess\repository\ThrottleRegistrationRepository');
     }
 }
