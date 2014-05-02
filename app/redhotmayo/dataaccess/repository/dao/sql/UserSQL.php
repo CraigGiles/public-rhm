@@ -18,6 +18,8 @@ class UserSQL implements UserDAO {
     const C_CREATED_AT = 'created_at';
     const C_UPDATED_AT = 'updated_at';
 
+    const C_REMEMBER_TOKEN = User::REMEMBER_TOKEN;
+
     public static function GetColumns() {
         return [
             self::TABLE_NAME .'.'. self::C_ID,
