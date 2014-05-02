@@ -18,6 +18,8 @@ use redhotmayo\rest\Constraint;
 use redhotmayo\utility\Arrays;
 
 class AccountRepositorySQL implements AccountRepository {
+    const SERVICE = '\redhotmayo\dataaccess\repository\sql\AccountRepositorySQL';
+
     /**
      * Given a list of account objects, iterate through each account object and distribute it to all users subscribed
      * to that accounts zipcode that are not already subscribed to the account. This process will return a list of

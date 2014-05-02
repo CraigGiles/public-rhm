@@ -9,6 +9,7 @@ use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\model\User;
 
 class UserRepositorySQL implements UserRepository {
+    const SERVICE = '\redhotmayo\dataaccess\repository\sql\UserRepositorySQL';
 
     /**
      * Return an array of all objects that match the given constraints
