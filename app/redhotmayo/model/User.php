@@ -43,7 +43,8 @@ class User extends DataObject implements UserInterface, RemindableInterface {
     private $email;
     private $emailVerified = false;
     private $permissions;
-
+    private $rememberToken;
+    
     /** @var  MobileDevice $mobileDevice */
     private $mobileDevice;
 
