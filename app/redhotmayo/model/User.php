@@ -33,7 +33,9 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $password = isset($values->password) ? $values->password : null;
         $id = isset($values->id) ? $values->id : null;
         $permissions = isset($values->permissions) ? $values->permissions : null;
-        $mobileDevice = isset($values->mobileDevice) ? $values->mobileDevice : null;
+
+        $mobile = isset($values->mobileDevice) ? $values->mobileDevice : null;
+        $mobileDevice = MobileDevice::FromArray(json_decode(json_encode($mobile), true));
 
         return new User($id, $username, $password, $email, $permissions, $mobileDevice);
     }

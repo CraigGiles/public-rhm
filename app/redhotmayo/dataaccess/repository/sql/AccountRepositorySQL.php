@@ -205,7 +205,7 @@ class AccountRepositorySQL implements AccountRepository {
                       ->join('addresses', 'accounts.addressId', '=', 'addresses.id')
                       ->join('notes', 'notes.accountId', '=', 'accounts.id')
                       ->select($cols)
-                      ->whereNull('userId')
+                      ->whereNotNull('userId')
                       ->where('accounts.updated_at', '>=', Carbon::now()->subDay()->toDateTimeString())
                       ->get();
 
