@@ -6,7 +6,7 @@ use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\dataaccess\repository\dao\BillingDAO;
 use redhotmayo\model\Billing;
 
-class BillingSQL extends EncryptedSQLTable implements BillingDAO {
+class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
     const TABLE_NAME = 'billing';
 
     const C_ID = 'id';

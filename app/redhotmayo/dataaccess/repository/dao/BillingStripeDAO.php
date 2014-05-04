@@ -2,6 +2,6 @@
 
 use redhotmayo\dataaccess\encryption\Encrypted;
 
-interface BillingDAO extends Encrypted {
+interface BillingStripeDAO extends Encrypted {
 
 } 
