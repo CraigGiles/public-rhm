@@ -1,7 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\dao\sql;
 
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder as DB;
+use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\dataaccess\repository\dao\BillingDAO;
 use redhotmayo\model\Billing;
@@ -10,9 +10,9 @@ class BillingSQL extends EncryptedSQLTable implements BillingDAO {
     const TABLE_NAME = 'billing';
 
     const C_ID = 'id';
-    const C_STRIPE_ACTIVE = 'stripe_active';
-    const C_STRIPE_ID = 'stripe_id';
-    const C_STRIPE_PLAN = 'stripe_plan';
+    const C_ACTIVE = 'stripe_active';
+    const C_BILLABLE_ID = 'stripe_id';
+    const C_PLAN = 'stripe_plan';
     const C_LAST_FOUR = 'last_four';
     const C_TRIAL_ENDS_AT = 'trial_ends_at';
     const C_SUBSCRIPTION_ENDS_AT = 'subscription_ends_at';
@@ -73,11 +73,11 @@ class BillingSQL extends EncryptedSQLTable implements BillingDAO {
      */
     protected function getValues(Billing $billing, $updating = false) {
         $values = [
-            self::C_STRIPE_ID => $billing->getStripeId(),
-            self::C_LAST_FOUR => $billing->getLastFourCardDigits(),
-            self::C_STRIPE_PLAN => $billing->getStripePlan(),
-            self::C_STRIPE_ACTIVE => $billing->subscribed(),
-            self::C_SUBSCRIPTION_ENDS_AT => $billing->getSubscriptionEndDate(),
+            self::C_BILLABLE_ID => $billing->getBillableId(),
+            self::C_LAST_FOUR => $billing->getLastFour(),
+            self::C_PLAN => $billing->getPlan(),
+            self::C_ACTIVE => (int)$billing->getActive(),
+            self::C_SUBSCRIPTION_ENDS_AT => $billing->getCurrentPeriodEnd(),
             self::C_UPDATED_AT => Carbon::now(),
         ];
 
@@ -95,7 +95,7 @@ class BillingSQL extends EncryptedSQLTable implements BillingDAO {
      */
     public function getEncryptedColumns() {
         return [
-            self::C_STRIPE_ID,
+            self::C_BILLABLE_ID,
             self::C_LAST_FOUR
         ];
     }
