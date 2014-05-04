@@ -51,7 +51,7 @@ class StripeBilling extends Stripe implements BillingInterface {
                 "plan" => $plan->getId()
             ]);
 
-            $stripeId = $this->billable->getId();
+            $stripeId = $this->billable->getCustomerId();
             $stripeActive = true;
             $stripePlan = $plan->getId();
             $lastFour = $this->billable->getLastFour();
@@ -134,7 +134,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      */
     private function createStripeCustomer() {
         return StripeCustomer::create([
-            'card' => $this->billable->getId(),
+            'card' => $this->billable->getCustomerId(),
             'description' => $this->billable->getEmail(),
         ], $this->getApiKey());
     }
@@ -145,7 +145,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function getStripeCustomer() {
-        $id = $this->billable->getId();
+        $id = $this->billable->getCustomerId();
         $this->customer = StripeCustomer::retrieve($id);
 
         if (!isset($this->customer)) {

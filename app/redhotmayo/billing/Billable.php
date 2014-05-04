@@ -8,7 +8,7 @@ interface Billable {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function getId();
+    public function getCustomerId();
 
     /**
      * Last four digits of the clients credit card number
