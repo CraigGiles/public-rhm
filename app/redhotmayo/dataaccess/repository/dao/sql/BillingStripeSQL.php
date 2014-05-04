@@ -3,18 +3,17 @@
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
-use redhotmayo\dataaccess\repository\dao\BillingDAO;
+use redhotmayo\dataaccess\repository\dao\BillingStripeDAO;
 use redhotmayo\model\Billing;
 
-class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
+class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     const TABLE_NAME = 'billing';
 
     const C_ID = 'id';
-    const C_ACTIVE = 'stripe_active';
-    const C_BILLABLE_ID = 'stripe_id';
-    const C_PLAN = 'stripe_plan';
-    const C_LAST_FOUR = 'last_four';
-    const C_TRIAL_ENDS_AT = 'trial_ends_at';
+
+    const C_USER_ID = 'user_id';
+    const C_PLAN_ID = 'plan_id';
+    const C_CUSTOMER_TOKEN = 'customer_token';
     const C_SUBSCRIPTION_ENDS_AT = 'subscription_ends_at';
 
     const C_CREATED_AT = 'created_at';
@@ -40,10 +39,9 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
     private function create(Billing $billing) {
         $values = $this->getValues($billing, false);
 
-        $id = DB::table(self::TABLE_NAME)
-                ->insertGetId($values);
-
+        $id = DB::table(self::TABLE_NAME)->insertGetId($values);
         $billing->setId($id);
+
         return $id;
     }
 
@@ -58,7 +56,7 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
         $values = $this->getValues($billing, true);
 
         DB::table(self::TABLE_NAME)
-          ->where(self::C_ID, $id)
+          ->where(self::C_ID, '=', $id)
           ->update($values);
 
         return $id;
@@ -73,11 +71,10 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
      */
     protected function getValues(Billing $billing, $updating = false) {
         $values = [
-            self::C_BILLABLE_ID => $billing->getBillableId(),
-            self::C_LAST_FOUR => $billing->getLastFour(),
-            self::C_PLAN => $billing->getPlan(),
-            self::C_ACTIVE => (int)$billing->getActive(),
-            self::C_SUBSCRIPTION_ENDS_AT => $billing->getCurrentPeriodEnd(),
+            self::C_USER_ID => $billing->getUserId(),
+            self::C_PLAN_ID => $billing->getPlanId(),
+            self::C_CUSTOMER_TOKEN => $billing->getCustomerToken(),
+            self::C_SUBSCRIPTION_ENDS_AT => $billing->getSubscriptionEndsAt(),
             self::C_UPDATED_AT => Carbon::now(),
         ];
 
@@ -95,8 +92,7 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingDAO {
      */
     public function getEncryptedColumns() {
         return [
-            self::C_BILLABLE_ID,
-            self::C_LAST_FOUR
+            self::C_CUSTOMER_TOKEN
         ];
     }
 }

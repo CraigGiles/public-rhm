@@ -1,7 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 use redhotmayo\dataaccess\repository\BillingRepository;
-use redhotmayo\dataaccess\repository\dao\sql\BillingSQL;
+use redhotmayo\dataaccess\repository\dao\sql\BillingStripeSQL;
 
 class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
     const SERVICE = 'redhotmayo\dataaccess\repository\sql\BillingRepositorySQL';
@@ -13,7 +13,7 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      * @return bool
      */
     public function save($object) {
-        $dao = new BillingSQL();//todo: dont do this
+        $dao = new BillingStripeSQL();//todo: dont do this
         $dao->save($object);
     }
 
@@ -28,7 +28,7 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
     }
 
     public function getTableName() {
-        return BillingSQL::TABLE_NAME;
+        return BillingStripeSQL::TABLE_NAME;
     }
 
     public function getColumns() {
