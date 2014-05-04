@@ -1,26 +1,26 @@
 <?php  namespace redhotmayo\billing;
 
-use redhotmayo\billing\plan\BillingPlan;
+use redhotmayo\billing\plan\BillingPlan as Plan;
 
 interface BillingInterface {
     /**
      * Subscribe a user to a billing plan
      *
-     * @param BillingPlan $plan
+     * @param Plan $plan
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function subcribe(BillingPlan $plan);
+    public function subscribe(Plan $plan);
 
     /**
      * Change the users current billing plan for a new billing plan
      *
-     * @param BillingPlan $plan
+     * @param Plan $plan
      * @return bool
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function change(BillingPlan $plan);
+    public function change(Plan $plan);
 
     /**
      * Cancel the current billing plan
@@ -34,7 +34,7 @@ interface BillingInterface {
     /**
      * Return the users current billing plan
      *
-     * @return BillingPlan
+     * @return Plan
      *
      * @author Craig Giles < craig@gilesc.com >
      */

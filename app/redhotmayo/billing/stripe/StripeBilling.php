@@ -12,6 +12,7 @@ use redhotmayo\model\Billing;
 use redhotmayo\utility\Arrays;
 use Stripe;
 
+
 class StripeBilling extends Stripe implements BillingInterface {
     const PRIVATE_API_KEY = 'stripe.private_key';
 
@@ -42,7 +43,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function subcribe(BillingPlan $plan) {
+    public function subscribe(BillingPlan $plan) {
         try {
             $customer = $this->getStripeCustomer();
 

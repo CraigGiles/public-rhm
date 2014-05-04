@@ -1,6 +1,6 @@
 <?php  namespace redhotmayo\billing\plan;
 
-class BasicBillingPlan {
+class BasicBillingPlan extends RedHotMayoBillingPlan {
     const ID = 'stripe.plans.basic.id';
     const NAME = 'stripe.plans.basic.name';
     const PRICE = 'stripe.plans.basic.price';

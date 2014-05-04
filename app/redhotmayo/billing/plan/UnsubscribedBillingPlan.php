@@ -1,6 +1,6 @@
 <?php  namespace redhotmayo\billing\plan;
 
-class UnsubscribedBillingPlan {
+class UnsubscribedBillingPlan extends RedHotMayoBillingPlan {
     const ID = 'stripe.plans.unsubscribed.id';
     const NAME = 'stripe.plans.unsubscribed.name';
     const PRICE = 'stripe.plans.unsubscribed.price';

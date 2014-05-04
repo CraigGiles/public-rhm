@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Crypt;
 use Mockery as m;
-use redhotmayo\dataaccess\repository\dao\sql\BillingSQL;
+use redhotmayo\dataaccess\repository\dao\sql\BillingStripeSQL;
 use TestCase;
 
 class EncryptedSQLTableTest extends TestCase {
@@ -10,29 +10,23 @@ class EncryptedSQLTableTest extends TestCase {
     /**
      * @test
      */
-    public function it_should_encrypt_only_stripe_id_and_last_four_rows() {
+    public function it_should_encrypt_only_customer_token() {
         $columns = [
-            'stripe_plan' => 'stripe_plan_decrypted',
-            'stripe_id' => 'stripe_id_decrypted',
-            'last_four' => 'value_decrypted',
+            'plan_id' => 'stripe_plan_decrypted',
+            'customer_token' => 'customer_token_decrypted',
         ];
 
         Crypt::shouldReceive('encrypt')
              ->once()
-             ->with('stripe_id_decrypted')
-             ->andReturn('stripe_id_encrypted');
-        Crypt::shouldReceive('encrypt')
-             ->once()
-             ->with('value_decrypted')
-             ->andReturn('value_encrypted');
+             ->with('customer_token_decrypted')
+             ->andReturn('customer_token_encrypted');
 
         $expected = [
-            'stripe_plan' => 'stripe_plan_decrypted',
-            'stripe_id' => 'stripe_id_encrypted',
-            'last_four' => 'value_encrypted',
+            'plan_id' => 'stripe_plan_decrypted',
+            'customer_token' => 'customer_token_encrypted',
         ];
 
-        $billing = new BillingSQL();
+        $billing = new BillingStripeSQL();
         $result = $billing->encrypt($columns);
         $this->assertEquals($result, $expected);
     }
@@ -42,27 +36,21 @@ class EncryptedSQLTableTest extends TestCase {
      */
     public function it_should_decrypt_only_stripe_id_and_last_four_rows() {
         $columns = [
-            'stripe_plan' => 'stripe_plan_decrypted',
-            'stripe_id' => 'stripe_id_encrypted',
-            'last_four' => 'value_encrypted',
+            'plan_id' => 'stripe_plan_decrypted',
+            'customer_token' => 'customer_token_encrypted',
         ];
 
         Crypt::shouldReceive('decrypt')
              ->once()
-             ->with('stripe_id_encrypted')
-             ->andReturn('stripe_id_decrypted');
-        Crypt::shouldReceive('decrypt')
-             ->once()
-             ->with('value_encrypted')
-             ->andReturn('value_decrypted');
+             ->with('customer_token_encrypted')
+             ->andReturn('customer_token_decrypted');
 
         $expected = [
-            'stripe_plan' => 'stripe_plan_decrypted',
-            'stripe_id' => 'stripe_id_decrypted',
-            'last_four' => 'value_decrypted',
+            'plan_id' => 'stripe_plan_decrypted',
+            'customer_token' => 'customer_token_decrypted',
         ];
 
-        $billing = new BillingSQL();
+        $billing = new BillingStripeSQL();
         $result = $billing->decrypt($columns);
         $this->assertEquals($result, $expected);
     }
