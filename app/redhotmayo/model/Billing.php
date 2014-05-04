@@ -3,85 +3,61 @@
 use redhotmayo\utility\Arrays;
 
 class Billing extends DataObject {
-    const BILLABLE_ID = 'billableId';
-    const ACTIVE = 'active';
-    const PLAN = 'plan';
-    const LAST_FOUR = 'lastFour';
-    const CURRENT_PERIOD_END = 'currentPeriodEnd';
-    const TRIAL_ENDS_AT = 'trialEndsAt';
+    const USER_ID = 'userId';
+    const PLAN_ID = 'planId';
+    const CUSTOMER_TOKEN = 'customerToken';
+    const SUBSCRIPTION_ENDS_AT = 'subscriptionEndsAt';
 
-    private $billableId;
-    private $active;
-    private $plan;
-    private $lastFour;
-    private $currentPeriodEnd;
-    private $trialEndsAt;
+    private $userId;
+    private $planId;
+    private $customerToken;
+    private $subscriptionEndsAt;
 
-    function __construct($active, $currentPeriodEnd, $billableId, $lastFour, $plan, $trialEndsAt) {
-        $this->active = $active;
-        $this->currentPeriodEnd = $currentPeriodEnd;
-        $this->billableId = $billableId;
-        $this->lastFour = $lastFour;
-        $this->plan = $plan;
-        $this->trialEndsAt = $trialEndsAt;
+    function __construct($userId, $planId, $customerToken, $subscriptionEndsAt) {
+        $this->userId;
+        $this->planId = $planId;
+        $this->customerToken = $customerToken;
+        $this->subscriptionEndsAt = $subscriptionEndsAt;
     }
 
     public static function createWithData($array) {
         return new self(
-            Arrays::GetValue($array, self::ACTIVE, null),
-            Arrays::GetValue($array, self::CURRENT_PERIOD_END, null),
-            Arrays::GetValue($array, self::BILLABLE_ID, null),
-            Arrays::GetValue($array, self::LAST_FOUR, null),
-            Arrays::GetValue($array, self::PLAN, null),
-            Arrays::GetValue($array, self::TRIAL_ENDS_AT, null)
+            Arrays::GetValue($array, self::USER_ID, null),
+            Arrays::GetValue($array, self::PLAN_ID, null),
+            Arrays::GetValue($array, self::CUSTOMER_TOKEN, null),
+            Arrays::GetValue($array, self::SUBSCRIPTION_ENDS_AT, null)
         );
     }
 
-    public function setActive($active) {
-        $this->active = $active;
+    public function setSubscriptionEndsAt($currentPeriodEnd) {
+        $this->subscriptionEndsAt = $currentPeriodEnd;
     }
 
-    public function getActive() {
-        return $this->active;
+    public function getSubscriptionEndsAt() {
+        return $this->subscriptionEndsAt;
     }
 
-    public function setCurrentPeriodEnd($currentPeriodEnd) {
-        $this->currentPeriodEnd = $currentPeriodEnd;
+    public function setCustomerToken($customerToken) {
+        $this->customerToken = $customerToken;
     }
 
-    public function getCurrentPeriodEnd() {
-        return $this->currentPeriodEnd;
+    public function getCustomerToken() {
+        return $this->customerToken;
     }
 
-    public function setBillableId($billableId) {
-        $this->billableId = $billableId;
+    public function setPlanId($plan) {
+        $this->planId = (int)$plan;
     }
 
-    public function getBillableId() {
-        return $this->billableId;
+    public function getPlanId() {
+        return $this->planId;
     }
 
-    public function setLastFour($lastFour) {
-        $this->lastFour = $lastFour;
+    public function setUserId($userId) {
+        $this->userId = $userId;
     }
 
-    public function getLastFour() {
-        return $this->lastFour;
-    }
-
-    public function setPlan($plan) {
-        $this->plan = $plan;
-    }
-
-    public function getPlan() {
-        return $this->plan;
-    }
-
-    public function setTrialEndsAt($trialEndsAt) {
-        $this->trialEndsAt = $trialEndsAt;
-    }
-
-    public function getTrialEndsAt() {
-        return $this->trialEndsAt;
+    public function getUserId() {
+        return $this->userId;
     }
 }

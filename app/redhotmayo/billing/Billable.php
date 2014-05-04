@@ -11,7 +11,7 @@ interface Billable {
     public function getUserId();
 
     /**
-     * Customer ID used to identify the client on our billing provider
+     * Customer token used to identify the client on our billing provider
      *
      * @return string
      *
