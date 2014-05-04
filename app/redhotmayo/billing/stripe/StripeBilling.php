@@ -51,20 +51,11 @@ class StripeBilling extends Stripe implements BillingInterface {
                 "plan" => $plan->getId()
             ]);
 
-            $stripeId = $this->billable->getCustomerId();
-            $stripeActive = true;
-            $stripePlan = $plan->getId();
-            $lastFour = $this->billable->getLastFour();
-            $currentPeriodEnd = Carbon::createFromTimestamp($result->current_period_end)->toDateTimeString();
-            $trialEndsAt = isset($result->trial_end) ? Carbon::createFromTimestamp($result->trial_end)->toDateTimeString() : null;
-
             $billing = Billing::createWithData([
-                Billing::BILLABLE_ID => $stripeId,
-                Billing::ACTIVE => (bool)$stripeActive,
-                Billing::PLAN => $stripePlan,
-                Billing::LAST_FOUR => $lastFour,
-                Billing::CURRENT_PERIOD_END => $currentPeriodEnd,
-                Billing::TRIAL_ENDS_AT => $trialEndsAt,
+                Billing::USER_ID => $this->billable->getUserId(),
+                Billing::CUSTOMER_TOKEN => $this->billable->getCustomerToken(),
+                Billing::PLAN_ID => $plan->getId(),
+                Billing::SUBSCRIPTION_ENDS_AT => Carbon::createFromTimestamp($result->current_period_end)->toDateTimeString(),
             ]);
 
             $this->billingRepo->save($billing);
@@ -134,7 +125,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      */
     private function createStripeCustomer() {
         return StripeCustomer::create([
-            'card' => $this->billable->getCustomerId(),
+            'card' => $this->billable->getCustomerToken(),
             'description' => $this->billable->getEmail(),
         ], $this->getApiKey());
     }
@@ -145,8 +136,10 @@ class StripeBilling extends Stripe implements BillingInterface {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function getStripeCustomer() {
-        $id = $this->billable->getCustomerId();
-        $this->customer = StripeCustomer::retrieve($id);
+        if (!isset($this->customer)) {
+            $id = $this->billable->getCustomerToken();
+            $this->customer = StripeCustomer::retrieve($id);
+        }
 
         if (!isset($this->customer)) {
             $this->customer = $this->createStripeCustomer();
