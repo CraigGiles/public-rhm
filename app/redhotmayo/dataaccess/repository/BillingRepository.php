@@ -10,4 +10,13 @@ interface BillingRepository extends Repository {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getCustomerToken(User $user);
+
+    /**
+     * Return the value associated with an unknown customer token
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUnknownCustomerToken();
 }

@@ -21,13 +21,12 @@ class BillingService {
         //get the stripe_customer_id from the database that associates with this users id
         $customerId = $this->billingRepo->getCustomerToken($user);
 
-        if ($customerId === false) {
+        if ($this->billingRepo->getUnknownCustomerToken() === $customerId) {
             //customer account needs to be created
             $customerId = $this->billingProvider->createCustomer($user, $token);
         }
 
         $this->billingProvider->subscribe($customerId, $plan);
-
 
         //if stripe id doesn't exist, we'll need to create a new customer
         $billable = new StripeBillableUser($user, $token);

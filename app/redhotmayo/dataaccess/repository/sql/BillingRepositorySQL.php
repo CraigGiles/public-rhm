@@ -1,6 +1,5 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\dao\BillingStripeDAO;
@@ -56,6 +55,17 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
             ->first();
 
         $decryptedRow = $this->dao->decrypt($token);
-        return Arrays::GetValue($decryptedRow, BillingStripeSQL::C_CUSTOMER_TOKEN, false);
+        return Arrays::GetValue($decryptedRow, BillingStripeSQL::C_CUSTOMER_TOKEN, $this->getUnknownCustomerToken());
+    }
+
+    /**
+     * Return the value associated with an unknown customer token
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUnknownCustomerToken() {
+        return BillingStripeSQL::UNKNOWN_CUSTOMER_TOKEN;
     }
 }

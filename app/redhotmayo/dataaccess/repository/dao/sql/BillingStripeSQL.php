@@ -19,6 +19,8 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     const C_CREATED_AT = 'created_at';
     const C_UPDATED_AT = 'updated_at';
 
+    const UNKNOWN_CUSTOMER_TOKEN = '';
+
     /**
      * Saves the object to the database returning the id of the object
      *

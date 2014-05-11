@@ -1,7 +1,6 @@
 <?php  namespace redhotmayo\billing;
 
 use Illuminate\Support\ServiceProvider;
-use redhotmayo\billing\stripe\StripeBilling;
 
 class BillingServiceProvider extends ServiceProvider {
 

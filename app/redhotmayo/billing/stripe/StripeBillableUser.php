@@ -57,4 +57,6 @@ class StripeBillableUser implements Billable {
     public function getEmail() {
         return $this->user->getEmail();
     }
+
+
 }

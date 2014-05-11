@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
-use redhotmayo\billing\Billable;
 use redhotmayo\billing\BillingInterface;
 use redhotmayo\billing\exception\BillingException;
 use redhotmayo\billing\exception\CardErrorException;
@@ -17,6 +16,7 @@ use Stripe;
 
 class StripeBilling extends Stripe implements BillingInterface {
     const PRIVATE_API_KEY = 'stripe.private_key';
+    const UNKNOWN_CUSTOMER_TOKEN = '';
 
     /** @var \redhotmayo\billing\Billable $billable */
     private $billable;
@@ -113,7 +113,6 @@ class StripeBilling extends Stripe implements BillingInterface {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function change(BillingPlan $plan) {
-
     }
 
     /**
@@ -174,5 +173,16 @@ class StripeBilling extends Stripe implements BillingInterface {
         }
 
         return $this->customer;
+    }
+
+    /**
+     * Return the value associated with an unknown customer token
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUnknownCustomerToken() {
+        return self::UNKNOWN_CUSTOMER_TOKEN;
     }
 }
