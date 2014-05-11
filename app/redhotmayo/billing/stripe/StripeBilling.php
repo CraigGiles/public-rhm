@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use redhotmayo\billing\Billable;
 use redhotmayo\billing\BillingInterface;
 use redhotmayo\billing\exception\BillingException;
@@ -9,6 +10,7 @@ use redhotmayo\billing\exception\CardErrorException;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\model\Billing;
+use redhotmayo\model\User;
 use redhotmayo\utility\Arrays;
 use Stripe;
 
@@ -25,12 +27,33 @@ class StripeBilling extends Stripe implements BillingInterface {
     /** @var \Stripe_Customer $customer */
     private $customer;
 
-    public function __construct(BillingRepository $billingRepository, Billable $billable, StripeCustomer $customer=null) {
-        $this->billable = $billable;
+    public function __construct(BillingRepository $billingRepository, StripeCustomer $customer=null) {
         $this->billingRepo = $billingRepository;
         $this->customer = $customer;
 
         $this->setApiKey(Config::get(self::PRIVATE_API_KEY));
+    }
+
+    /**
+     * Create a customer with the billing service given the current data
+     *
+     * @param \redhotmayo\model\User $user
+     * @param $billableToken
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function createCustomer(User $user, $billableToken) {
+        $customer = StripeCustomer::create([
+            'card' => $billableToken,
+            'description' => $user->getUsername(),
+        ], $this->getApiKey());
+
+        if (isset($customer) && $customer instanceof \Stripe_Customer) {
+            return $customer->id;
+        }
+
+        return null;
     }
 
     /**
@@ -54,7 +77,7 @@ class StripeBilling extends Stripe implements BillingInterface {
 
             $billing = Billing::createWithData([
                 Billing::USER_ID => $this->billable->getUserId(),
-                Billing::CUSTOMER_TOKEN => $this->billable->getCustomerToken(),
+                Billing::CUSTOMER_TOKEN => $this->billable->getBillingToken(),
                 Billing::PLAN_ID => $plan->getId(),
                 Billing::SUBSCRIPTION_ENDS_AT => Carbon::createFromTimestamp($result->current_period_end)->toDateTimeString(),
             ]);
@@ -63,17 +86,21 @@ class StripeBilling extends Stripe implements BillingInterface {
         } catch (\Stripe_CardError $cardError) {
             $body = $cardError->getJsonBody();
             $message = Arrays::GetValue($body, 'message', '');
+            Log::error($message);
             throw new CardErrorException($message);
         } catch (\Stripe_ApiConnectionError $apiConnectionError) {
-            // Network communication with Stripe failed
-            throw new BillingException('');
+            $body = $apiConnectionError->getJsonBody();
+            $message = Arrays::GetValue($body, 'message', '');
+            Log::error($message);
+            throw new BillingException('Network connection with billing partner failed.');
         } catch (\Stripe_Error $stripeError) {
-            // Display a very generic error to the user, and maybe send
-            // yourself an email
-            throw new BillingException('');
+            $body = $stripeError->getJsonBody();
+            $message = Arrays::GetValue($body, 'message', '');
+            Log::error($message);
+            throw new BillingException('Error will billing. Please try again later.');
         } catch (\Exception $ex) {
-            // Something else happened, completely unrelated to Stripe
-            throw new BillingException($ex->getMessage());
+            Log::error($ex);
+            throw new BillingException($ex);
         }
     }
 
@@ -126,7 +153,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      */
     private function createStripeCustomer() {
         return StripeCustomer::create([
-            'card' => $this->billable->getCustomerToken(),
+            'card' => $customerToken,
             'description' => $this->billable->getEmail(),
         ], $this->getApiKey());
     }
@@ -138,7 +165,7 @@ class StripeBilling extends Stripe implements BillingInterface {
      */
     private function getStripeCustomer() {
         if (!isset($this->customer)) {
-            $id = $this->billable->getCustomerToken();
+            $id = $this->billable->getBillingToken();
             $this->customer = StripeCustomer::retrieve($id);
         }
 

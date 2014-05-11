@@ -11,13 +11,22 @@ interface Billable {
     public function getUserId();
 
     /**
-     * Customer token used to identify the client on our billing provider
+     * Customer token given to us via our billing provider
      *
      * @return string
      *
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getCustomerToken();
+
+    /**
+     * Credit Card token given to us via our billing provider
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getBillingToken();
 
     /**
      * Email address of the client

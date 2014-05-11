@@ -1,8 +1,20 @@
 <?php  namespace redhotmayo\billing;
 
 use redhotmayo\billing\plan\BillingPlan as Plan;
+use redhotmayo\model\User;
 
 interface BillingInterface {
+    /**
+     * Create a customer with the billing service given the current data
+     *
+     * @param User $user
+     * @param $billableToken
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function createCustomer(User $user, $billableToken);
+
     /**
      * Subscribe a user to a billing plan
      *

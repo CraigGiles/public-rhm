@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Config;
 use redhotmayo\exception\NullArgumentException;
 use redhotmayo\utility\Arrays;
 
-class RedHotMayoBillingPlan {
+class BillingPlan {
     /** Config path to grab plan data */
     const ALL_PLANS = 'stripe.plans';
 
@@ -30,7 +30,7 @@ class RedHotMayoBillingPlan {
      * Load the given $planId's plan and return a new object with the plan details.
      *
      * @param int $planId
-     * @return RedHotMayoBillingPlan
+     * @return BillingPlan
      *
      * @author Craig Giles < craig@gilesc.com >
      */
@@ -45,7 +45,7 @@ class RedHotMayoBillingPlan {
      * Create a new object with the given plan details
      *
      * @param array $plan
-     * @return RedHotMayoBillingPlan
+     * @return BillingPlan
      *
      * @author Craig Giles < craig@gilesc.com >
      */
