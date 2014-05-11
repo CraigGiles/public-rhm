@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Response;
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\exception\BillingException;
 use redhotmayo\billing\plan\BillingPlan;

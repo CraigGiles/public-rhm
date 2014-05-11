@@ -36,6 +36,10 @@ class StripeBillableUser implements Billable {
         return $this->customerToken;
     }
 
+    public function setCustomerToken($id) {
+        $this->customerToken = $id;
+    }
+
     /**
      * Credit Card token given to us via our billing provider
      *
@@ -59,4 +63,14 @@ class StripeBillableUser implements Billable {
     }
 
 
+    /**
+     * Get the description used by the service provider
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getCustomerDescription() {
+        return $this->user->getUsername();
+    }
 }
