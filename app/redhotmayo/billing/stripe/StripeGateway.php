@@ -24,12 +24,17 @@ class StripeGateway {
                 "plan" => $plan->getId()
             ]);
 
-            $billing = Billing::createWithData([
-                Billing::USER_ID              => $user->getUserId(),
-                Billing::CUSTOMER_TOKEN       => $user->getBillingToken(),
-                Billing::PLAN_ID              => $plan->getId(),
-                Billing::SUBSCRIPTION_ENDS_AT => Carbon::createFromTimestamp($result->current_period_end)
-                                                       ->toDateTimeString(),
+            $trialEnd = isset($result->trial_end) ? Carbon::createFromTimestampUTC($result->trial_end) : null;
+            $canceledAt = isset($result->canceled_at) ? Carbon::createFromTimestampUTC($result->canceled_at) : null;
+
+            $billing = new StripeSubscription([
+                StripeSubscription::PLAN_ID => $plan->getId(),
+                StripeSubscription::STRIPE_STATUS => $result->status,
+                StripeSubscription::STRIPE_CUSTOMER_TOKEN => $result->customer,
+                StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $result->cancel_at_period_end,
+                StripeSubscription::STRIPE_CURRENT_PERIOD_END => Carbon::createFromTimestampUTC($result->current_period_end),
+                StripeSubscription::STRIPE_TRIAL_END => $trialEnd,
+                StripeSubscription::STRIPE_CANCELED_AT => $canceledAt,
             ]);
 
             return $billing;
@@ -54,7 +59,9 @@ class StripeGateway {
         }
     }
 
-    public function updateExistingSubscription(StripeBillableUser $user, BillingPlan $plan) {
+    public function updateExistingSubscription(
+        StripeBillableUser $user, BillingPlan $newPlan, StripeSubscription $subscription
+    ) {
         throw new \Exception("Function currently not implemented");
     }
 
@@ -73,7 +80,7 @@ class StripeGateway {
                      [
                          StripeSubscription::STRIPE_START                   => $subscription->start,
                          StripeSubscription::STRIPE_STATUS                  => $subscription->status,
-                         StripeSubscription::STRIPE_CUSTOMER                => $subscription->customer,
+                         StripeSubscription::STRIPE_CUSTOMER_TOKEN                => $subscription->customer,
                          StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END    => $subscription->cancel_at_period_end,
                          StripeSubscription::STRIPE_CURRENT_PERIOD_START    => $subscription->current_period_start,
                          StripeSubscription::STRIPE_CURRENT_PERIOD_END      => $subscription->current_period_end,
@@ -106,7 +113,8 @@ class StripeGateway {
     private function getStripeCustomer(StripeBillableUser $user) {
         $customerToken = $user->getCustomerToken();
 
-        return isset($customerToken) ? StripeCustomer::retrieve($customerToken, $this->getApiKey()) : $this->createStripeCustomer($user);
+        return isset($customerToken) ? StripeCustomer::retrieve($customerToken, $this->getApiKey()) :
+            $this->createStripeCustomer($user);
     }
 
 }

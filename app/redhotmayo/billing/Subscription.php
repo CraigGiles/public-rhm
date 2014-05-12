@@ -3,6 +3,36 @@
 use Carbon\Carbon;
 
 interface Subscription {
+    public function getId();
+    public function setId($id);
+
+    /**
+     * Obtain the Plan ID for this subscription
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPlanId();
+
+    /**
+     * Obtain the customer token used to identify the charged client
+     *
+     * @return string
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getCustomerToken();
+
+    /**
+     * Return the ending date of the current billing cycle
+     *
+     * @return Carbon
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getSubscriptionEndDate();
+
     /**
      * Is the current subscription active?
      *
@@ -38,4 +68,13 @@ interface Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getTrialEndDate();
+
+    /**
+     * Get the date the subscription was canceled by the client
+     *
+     * @return Carbon
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getCanceledDate();
 }

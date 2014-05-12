@@ -3,6 +3,7 @@
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\BillingRepository;
+use redhotmayo\model\Billing;
 use redhotmayo\model\User;
 
 class StripeBillingService implements BillingService {
@@ -24,12 +25,12 @@ class StripeBillingService implements BillingService {
         $stripeUser = new StripeBillableUser($user, $token);
 
         //TODO:: REMOVE WHEN DONE TESTING
-        $stripeUser->setCustomerToken('cus_3l1F0opIfB3h0v');
+//        $stripeUser->setCustomerToken('cus_3l1F0opIfB3h0v');
 
         $current = $this->getActiveSubscription($stripeUser);
 
-        isset($current) ? $this->gateway->updateExistingSubscription($stripeUser, $plan) :
-            $this->gateway->createNewSubscription($stripeUser, $plan);
+        isset($current) ? $this->updateExistingSubscription($stripeUser, $plan, $current) :
+            $this->createNewSubscription($stripeUser, $plan);
     }
 
     private function getActiveSubscription(StripeBillableUser $user) {
@@ -53,6 +54,11 @@ class StripeBillingService implements BillingService {
         }
 
         return $active;
+    }
+
+    private function createNewSubscription(StripeBillableUser $user, BillingPlan $plan) {
+        $subscription = $this->gateway->createNewSubscription($user, $plan);
+        $this->billingRepo->save($subscription);
     }
 }
 

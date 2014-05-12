@@ -16,10 +16,13 @@ class CreateStripeBillingTable extends Migration {
 		{
 			$table->increments('id');
 
-            $table->integer('user_id')->unsigned();
             $table->integer('plan_id')->unsigned();
+            $table->string('current_status', 15);
             $table->string('customer_token', 255);
+            $table->boolean('auto_renew');
             $table->timestamp('subscription_ends_at');
+            $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
 
 			$table->timestamps();
 		});
