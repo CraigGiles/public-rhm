@@ -66,31 +66,21 @@ class StripeGateway {
     }
 
     public function getActiveSubscriptions(StripeBillableUser $user) {
+        $subs = new Collection();
+
         $customer      = $this->getStripeCustomer($user);
         $subscriptions = $customer->subscriptions->all();
 
-        //foreach subscriptions as subscription
-        //create BillingPlan for each subscription
-        //return collection of billing plans
-
-        $subs = new Collection();
         foreach ($subscriptions['data'] as $subscription) {
             $subs->push(
                  new StripeSubscription(
                      [
-                         StripeSubscription::STRIPE_START                   => $subscription->start,
                          StripeSubscription::STRIPE_STATUS                  => $subscription->status,
                          StripeSubscription::STRIPE_CUSTOMER_TOKEN                => $subscription->customer,
                          StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END    => $subscription->cancel_at_period_end,
-                         StripeSubscription::STRIPE_CURRENT_PERIOD_START    => $subscription->current_period_start,
                          StripeSubscription::STRIPE_CURRENT_PERIOD_END      => $subscription->current_period_end,
-                         StripeSubscription::STRIPE_ENDED_AT                => $subscription->ended_at,
-                         StripeSubscription::STRIPE_TRIAL_START             => $subscription->trial_start,
                          StripeSubscription::STRIPE_TRIAL_END               => $subscription->trial_end,
                          StripeSubscription::STRIPE_CANCELED_AT             => $subscription->canceled_at,
-                         StripeSubscription::STRIPE_QUANTITY                => $subscription->quantity,
-                         StripeSubscription::STRIPE_APPLICATION_FEE_PERCENT => $subscription->application_fee_percent,
-                         StripeSubscription::STRIPE_DISCOUNT                => $subscription->discount,
                      ]
                  )
             );
