@@ -3,7 +3,7 @@
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\BillingRepository;
-use redhotmayo\model\Billing;
+use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\model\User;
 
 class StripeBillingService implements BillingService {
@@ -16,17 +16,19 @@ class StripeBillingService implements BillingService {
     /** @var \redhotmayo\dataaccess\repository\BillingRepository $billingRepo */
     private $billingRepo;
 
-    public function __construct(BillingRepository $billingRepository, StripeGateway $gateway) {
+    /** @var \redhotmayo\dataaccess\repository\UserRepository $userRepo */
+    private $userRepo;
+
+    public function __construct(
+        BillingRepository $billingRepository, UserRepository $userRepo, StripeGateway $gateway
+    ) {
+        $this->userRepo    = $userRepo;
         $this->gateway     = $gateway;
         $this->billingRepo = $billingRepository;
     }
 
     public function subscribe(User $user, BillingPlan $plan, $token) {
         $stripeUser = new StripeBillableUser($user, $token);
-
-        //TODO:: REMOVE WHEN DONE TESTING
-//        $stripeUser->setCustomerToken('cus_3l1F0opIfB3h0v');
-
         $current = $this->getActiveSubscription($stripeUser);
 
         isset($current) ? $this->updateExistingSubscription($stripeUser, $plan, $current) :
@@ -58,7 +60,11 @@ class StripeBillingService implements BillingService {
 
     private function createNewSubscription(StripeBillableUser $user, BillingPlan $plan) {
         $subscription = $this->gateway->createNewSubscription($user, $plan);
+        $rhmUser = $user->getUserObject();
         $this->billingRepo->save($subscription);
+
+        $rhmUser->setBillingId($subscription->getId());
+        $this->userRepo->save($rhmUser);
     }
 }
 

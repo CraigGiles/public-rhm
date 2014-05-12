@@ -2,6 +2,7 @@
 
 use Illuminate\Auth\Reminders\RemindableInterface;
 use Illuminate\Auth\UserInterface;
+use redhotmayo\utility\Arrays;
 use stdClass;
 
 class User extends DataObject implements UserInterface, RemindableInterface {
@@ -23,8 +24,9 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $email = isset($input['email']) ? $input['email'] : null;
         $password = isset($input['password']) ? $input['password'] : null;
         $permissions = isset($input['permissions']) ? $input['permissions'] : null;
+        $billingId = Arrays::GetValue($input, 'billingId', null);
 
-        return new User($id, $username, $password, $email, $permissions, $mobileDevice);
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $billingId);
     }
 
     public static function FromStdClass($values) {
@@ -33,11 +35,12 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $password = isset($values->password) ? $values->password : null;
         $id = isset($values->id) ? $values->id : null;
         $permissions = isset($values->permissions) ? $values->permissions : null;
+        $billingId = isset($values->billingId) ? $values->billingId : null;
 
         $mobile = isset($values->mobileDevice) ? $values->mobileDevice : null;
         $mobileDevice = MobileDevice::FromArray(json_decode(json_encode($mobile), true));
 
-        return new User($id, $username, $password, $email, $permissions, $mobileDevice);
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $billingId);
     }
 
     private $username;
@@ -46,17 +49,19 @@ class User extends DataObject implements UserInterface, RemindableInterface {
     private $emailVerified = false;
     private $permissions;
     private $rememberToken;
+    private $billingId;
     
     /** @var  MobileDevice $mobileDevice */
     private $mobileDevice;
 
-    function __construct($id, $username, $password, $email, $permissions, $mobileDevice) {
+    function __construct($id, $username, $password, $email, $permissions, $mobileDevice, $billingId) {
         $this->setUserId($id);
         $this->setUsername($username);
         $this->setPassword($password);
         $this->setEmail($email);
         $this->setPermissions($permissions);
         $this->setMobileDevice($mobileDevice);
+        $this->setBillingId($billingId);
     }
 
     public static function FromGenericUser($genericUser) {
@@ -64,7 +69,7 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $username = isset($genericUser->username) ? $genericUser->username : null;
         $email = isset($genericUser->email) ? $genericUser->email : null;
 
-        return new self($id, $username, null, $email, null, null);
+        return new self($id, $username, null, $email, null, null, null);
     }
 
 
@@ -222,5 +227,13 @@ class User extends DataObject implements UserInterface, RemindableInterface {
      */
     public function getRememberTokenName() {
         return self::REMEMBER_TOKEN;
+    }
+
+    public function setBillingId($billingId) {
+        $this->billingId = (int)$billingId;
+    }
+
+    public function getBillingId() {
+        return $this->billingId;
     }
 }

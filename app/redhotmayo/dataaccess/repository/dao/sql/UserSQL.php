@@ -10,6 +10,7 @@ use redhotmayo\model\User;
 class UserSQL implements UserDAO {
     const TABLE_NAME = 'users';
     const C_ID = 'id';
+    const C_BILLING_ID = 'billing_id';
     const C_USER_NAME = 'username';
     const C_PASSWORD = 'password';
     const C_EMAIL = 'email';
@@ -23,6 +24,7 @@ class UserSQL implements UserDAO {
     public static function GetColumns() {
         return [
             self::TABLE_NAME .'.'. self::C_ID,
+            self::TABLE_NAME .'.'. self::C_BILLING_ID,
             self::TABLE_NAME .'.'. self::C_USER_NAME,
             self::TABLE_NAME .'.'. self::C_PASSWORD,
             self::TABLE_NAME .'.'. self::C_EMAIL,
@@ -48,6 +50,7 @@ class UserSQL implements UserDAO {
             // New users must have their passwords hashed
             $id = DB::table('users')
                     ->insertGetId([
+                    self::C_BILLING_ID => $user->getBillingId(),
                     self::C_USER_NAME => $user->getUsername(),
                     self::C_PASSWORD => Hash::make($user->getPassword()),
                     self::C_EMAIL => $user->getEmail(),
@@ -113,6 +116,7 @@ class UserSQL implements UserDAO {
 
         $values = [
             self::C_USER_NAME => $user->getUsername(),
+            self::C_BILLING_ID => $user->getBillingId(),
             self::C_EMAIL => $user->getEmail(),
             self::C_EMAIL_VERIFIED => $emailVerified,
             self::C_PERMISSIONS => $user->getPermissions(),

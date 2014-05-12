@@ -73,4 +73,15 @@ class StripeBillableUser implements Billable {
     public function getCustomerDescription() {
         return $this->user->getUsername();
     }
+
+    /**
+     * Get the user object
+     *
+     * @return User
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUserObject() {
+        return $this->user;
+    }
 }
