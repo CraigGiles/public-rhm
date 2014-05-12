@@ -14,7 +14,7 @@ class AddBillingIdToUsersTable extends Migration {
 	{
 		Schema::table('users', function(Blueprint $table)
 		{
-            $table->integer('billing_id')->unsigned()->nullable()->after('id');
+            $table->integer('stripe_billing_id')->unsigned()->nullable()->after('id');
 		});
 	}
 
@@ -27,7 +27,7 @@ class AddBillingIdToUsersTable extends Migration {
 	{
 		Schema::table('users', function(Blueprint $table)
 		{
-            $table->dropColumn('billing_id');
+            $table->dropColumn('stripe_billing_id');
 		});
 	}
 

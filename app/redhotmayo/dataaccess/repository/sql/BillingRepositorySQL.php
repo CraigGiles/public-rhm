@@ -51,7 +51,7 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
     public function getCustomerToken(User $user) {
         $token = (array)DB::table($this->getTableName())
             ->select(BillingStripeSQL::C_CUSTOMER_TOKEN)
-            ->where(BillingStripeSQL::C_ID, '=', $user->getBillingId())
+            ->where(BillingStripeSQL::C_ID, '=', $user->getStripeBillingId())
             ->first();
 
         $decryptedRow = $this->dao->decrypt($token);

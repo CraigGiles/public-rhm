@@ -24,9 +24,9 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $email = isset($input['email']) ? $input['email'] : null;
         $password = isset($input['password']) ? $input['password'] : null;
         $permissions = isset($input['permissions']) ? $input['permissions'] : null;
-        $billingId = Arrays::GetValue($input, 'billingId', null);
+        $stripeBillingId = Arrays::GetValue($input, 'billingId', null);
 
-        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $billingId);
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $stripeBillingId);
     }
 
     public static function FromStdClass($values) {
@@ -35,12 +35,12 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $password = isset($values->password) ? $values->password : null;
         $id = isset($values->id) ? $values->id : null;
         $permissions = isset($values->permissions) ? $values->permissions : null;
-        $billingId = isset($values->billingId) ? $values->billingId : null;
+        $stripeBillingId = isset($values->billingId) ? $values->billingId : null;
 
         $mobile = isset($values->mobileDevice) ? $values->mobileDevice : null;
         $mobileDevice = MobileDevice::FromArray(json_decode(json_encode($mobile), true));
 
-        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $billingId);
+        return new User($id, $username, $password, $email, $permissions, $mobileDevice, $stripeBillingId);
     }
 
     private $username;
@@ -49,19 +49,19 @@ class User extends DataObject implements UserInterface, RemindableInterface {
     private $emailVerified = false;
     private $permissions;
     private $rememberToken;
-    private $billingId;
+    private $stripeBillingId;
     
     /** @var  MobileDevice $mobileDevice */
     private $mobileDevice;
 
-    function __construct($id, $username, $password, $email, $permissions, $mobileDevice, $billingId) {
+    function __construct($id, $username, $password, $email, $permissions, $mobileDevice, $stripeBillingId) {
         $this->setUserId($id);
         $this->setUsername($username);
         $this->setPassword($password);
         $this->setEmail($email);
         $this->setPermissions($permissions);
         $this->setMobileDevice($mobileDevice);
-        $this->setBillingId($billingId);
+        $this->setStripeBillingId($stripeBillingId);
     }
 
     public static function FromGenericUser($genericUser) {
@@ -229,11 +229,11 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         return self::REMEMBER_TOKEN;
     }
 
-    public function setBillingId($billingId) {
-        $this->billingId = (int)$billingId;
+    public function setStripeBillingId($billingId) {
+        $this->stripeBillingId = (int)$billingId;
     }
 
-    public function getBillingId() {
-        return $this->billingId;
+    public function getStripeBillingId() {
+        return $this->stripeBillingId;
     }
 }

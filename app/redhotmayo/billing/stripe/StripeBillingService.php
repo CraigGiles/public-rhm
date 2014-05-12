@@ -63,7 +63,7 @@ class StripeBillingService implements BillingService {
         $rhmUser = $user->getUserObject();
         $this->billingRepo->save($subscription);
 
-        $rhmUser->setBillingId($subscription->getId());
+        $rhmUser->setStripeBillingId($subscription->getId());
         $this->userRepo->save($rhmUser);
     }
 }
