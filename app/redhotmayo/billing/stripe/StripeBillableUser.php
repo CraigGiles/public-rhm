@@ -36,6 +36,13 @@ class StripeBillableUser implements Billable {
         return $this->customerToken;
     }
 
+    /**
+     * Sets the customer token
+     *
+     * @param string $id
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function setCustomerToken($id) {
         $this->customerToken = $id;
     }
