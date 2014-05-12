@@ -7,16 +7,6 @@ use redhotmayo\api\controllers\ApiNoteController;
 use redhotmayo\api\controllers\ApiRegistrationController;
 use redhotmayo\api\controllers\ApiSessionController;
 use redhotmayo\api\controllers\MobileDeviceController;
-use redhotmayo\billing\BillingService;
-
-Route::get('/test', function() {
-    $billable = new \redhotmayo\billing\SampleBillable();
-    $stripe = new \redhotmayo\billing\stripe\StripeBilling(
-        App::make('BillingRepository'),
-        $billable
-    );
-
-});
 
 Route::get('/', 'SubscriptionController@index');
 

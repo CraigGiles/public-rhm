@@ -29,11 +29,11 @@ interface Billable {
     public function getBillingToken();
 
     /**
-     * Email address of the client
+     * Get the description used by the service provider
      *
      * @return string
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function getEmail();
+    public function getCustomerDescription();
 }
