@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 use redhotmayo\billing\exception\BillingException;
 use redhotmayo\billing\exception\CardErrorException;
 use redhotmayo\billing\plan\BillingPlan;
-use redhotmayo\model\Billing;
 use redhotmayo\utility\Arrays;
 
 class StripeGateway {
@@ -24,17 +23,17 @@ class StripeGateway {
                 "plan" => $plan->getId()
             ]);
 
-            $trialEnd = isset($result->trial_end) ? Carbon::createFromTimestampUTC($result->trial_end) : null;
+            $trialEnd   = isset($result->trial_end) ? Carbon::createFromTimestampUTC($result->trial_end) : null;
             $canceledAt = isset($result->canceled_at) ? Carbon::createFromTimestampUTC($result->canceled_at) : null;
 
             $billing = new StripeSubscription([
-                StripeSubscription::PLAN_ID => $plan->getId(),
-                StripeSubscription::STRIPE_STATUS => $result->status,
-                StripeSubscription::STRIPE_CUSTOMER_TOKEN => $result->customer,
+                StripeSubscription::PLAN_ID                     => $plan->getId(),
+                StripeSubscription::STRIPE_STATUS               => $result->status,
+                StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $result->customer,
                 StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $result->cancel_at_period_end,
-                StripeSubscription::STRIPE_CURRENT_PERIOD_END => Carbon::createFromTimestampUTC($result->current_period_end),
-                StripeSubscription::STRIPE_TRIAL_END => $trialEnd,
-                StripeSubscription::STRIPE_CANCELED_AT => $canceledAt,
+                StripeSubscription::STRIPE_CURRENT_PERIOD_END   => Carbon::createFromTimestampUTC($result->current_period_end),
+                StripeSubscription::STRIPE_TRIAL_END            => $trialEnd,
+                StripeSubscription::STRIPE_CANCELED_AT          => $canceledAt,
             ]);
 
             return $billing;
@@ -75,12 +74,12 @@ class StripeGateway {
             $subs->push(
                  new StripeSubscription(
                      [
-                         StripeSubscription::STRIPE_STATUS                  => $subscription->status,
-                         StripeSubscription::STRIPE_CUSTOMER_TOKEN                => $subscription->customer,
-                         StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END    => $subscription->cancel_at_period_end,
-                         StripeSubscription::STRIPE_CURRENT_PERIOD_END      => $subscription->current_period_end,
-                         StripeSubscription::STRIPE_TRIAL_END               => $subscription->trial_end,
-                         StripeSubscription::STRIPE_CANCELED_AT             => $subscription->canceled_at,
+                         StripeSubscription::STRIPE_STATUS               => $subscription->status,
+                         StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $subscription->customer,
+                         StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $subscription->cancel_at_period_end,
+                         StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $subscription->current_period_end,
+                         StripeSubscription::STRIPE_TRIAL_END            => $subscription->trial_end,
+                         StripeSubscription::STRIPE_CANCELED_AT          => $subscription->canceled_at,
                      ]
                  )
             );
