@@ -84,11 +84,12 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    protected function filter($values) {
-        $decrypted = $this->dao->decrypt($values);
+    protected function filter(array $values) {
         $subscriptions = [];
-        foreach ($decrypted as $sub) {
-            $subscriptions[] = new StripeSubscription($sub);
+
+        foreach ($values as $value) {
+            $decrypted = $this->dao->decrypt($value);
+            $subscriptions[] = new StripeSubscription($decrypted);
         }
 
         return $subscriptions;

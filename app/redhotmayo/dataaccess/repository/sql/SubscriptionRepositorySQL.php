@@ -175,7 +175,7 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    protected function filter($values) {
+    protected function filter(array $values) {
         //todo: convert this properly
         return $values;
     }

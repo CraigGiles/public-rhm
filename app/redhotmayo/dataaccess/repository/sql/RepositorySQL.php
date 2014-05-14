@@ -3,6 +3,8 @@
 
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\dataaccess\repository\Repository;
 
 abstract class RepositorySQL implements Repository {
@@ -20,7 +22,7 @@ abstract class RepositorySQL implements Repository {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    abstract protected function filter($values);
+    abstract protected function filter(array $values);
 
     /**
      * Return an array of all objects that match the given constraints

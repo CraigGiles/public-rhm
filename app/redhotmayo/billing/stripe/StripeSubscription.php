@@ -8,12 +8,15 @@ use redhotmayo\utility\Arrays;
 
 class StripeSubscription extends DataObject implements Subscription {
     const PLAN_ID                     = 'plan_id';
-    const STRIPE_STATUS               = 'status';
+    const STRIPE_STATUS               = 'current_status';
     const STRIPE_CUSTOMER_TOKEN       = 'customer';
     const STRIPE_CANCEL_AT_PERIOD_END = 'cancel_at_period_end';
-    const STRIPE_CURRENT_PERIOD_END   = 'current_period_end';
+    const STRIPE_CURRENT_PERIOD_END   = 'subscription_ends_at';
     const STRIPE_TRIAL_END            = 'trial_end';
     const STRIPE_CANCELED_AT          = 'canceled_at';
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
 
     private $planId;
     private $status;

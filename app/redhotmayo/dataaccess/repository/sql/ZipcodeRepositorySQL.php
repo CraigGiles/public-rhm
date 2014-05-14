@@ -206,7 +206,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    protected function filter($values) {
+    protected function filter(array $values) {
         return $values;
     }
 }
