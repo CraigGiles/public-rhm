@@ -11,6 +11,18 @@ abstract class RepositorySQL implements Repository {
     abstract protected function getConstraints($parameters);
 
     /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    abstract protected function filter($values);
+
+    /**
      * Return an array of all objects that match the given constraints
      *
      * @param $parameters
@@ -30,7 +42,8 @@ abstract class RepositorySQL implements Repository {
                 $builder->where($constraint, '=', $value);
             }
 
-            return $builder->get();
+            $results = $builder->get();
+            return $this->filter(json_decode(json_encode($results), true));
         } catch (Exception $e) {
             Log::error($e);
             throw $e;

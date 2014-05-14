@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 use Illuminate\Support\Facades\DB;
+use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\dao\BillingStripeDAO;
 use redhotmayo\dataaccess\repository\dao\sql\BillingStripeSQL;
@@ -24,8 +25,7 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      * @return bool
      */
     public function save($object) {
-        $dao = new BillingStripeSQL();//todo: dont do this
-        $dao->save($object);
+        $this->dao->save($object);
     }
 
     /**
@@ -43,9 +43,14 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
     }
 
     public function getColumns() {
+        return BillingStripeSQL::GetColumns();
     }
 
     protected function getConstraints($parameters) {
+        $constraints = [];
+        $constraints[BillingStripeSQL::C_ID] = Arrays::GetValue($parameters, BillingStripeSQL::C_ID, null);
+
+        return Arrays::RemoveNullValues($constraints);
     }
 
     public function getCustomerToken(User $user) {
@@ -67,5 +72,25 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      */
     public function getUnknownCustomerToken() {
         return BillingStripeSQL::UNKNOWN_CUSTOMER_TOKEN;
+    }
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    protected function filter($values) {
+        $decrypted = $this->dao->decrypt($values);
+        $subscriptions = [];
+        foreach ($decrypted as $sub) {
+            $subscriptions[] = new StripeSubscription($sub);
+        }
+
+        return $subscriptions;
     }
 }

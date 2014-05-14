@@ -164,4 +164,19 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
     function getColumns() {
         return SubscriptionSQL::GetColumns();
     }
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    protected function filter($values) {
+        //todo: convert this properly
+        return $values;
+    }
 }

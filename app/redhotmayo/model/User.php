@@ -24,7 +24,7 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $email = isset($input['email']) ? $input['email'] : null;
         $password = isset($input['password']) ? $input['password'] : null;
         $permissions = isset($input['permissions']) ? $input['permissions'] : null;
-        $stripeBillingId = Arrays::GetValue($input, 'billingId', null);
+        $stripeBillingId = Arrays::GetValue($input, 'stripe_billing_id', null);
 
         return new User($id, $username, $password, $email, $permissions, $mobileDevice, $stripeBillingId);
     }
@@ -35,7 +35,7 @@ class User extends DataObject implements UserInterface, RemindableInterface {
         $password = isset($values->password) ? $values->password : null;
         $id = isset($values->id) ? $values->id : null;
         $permissions = isset($values->permissions) ? $values->permissions : null;
-        $stripeBillingId = isset($values->billingId) ? $values->billingId : null;
+        $stripeBillingId = isset($values->stripe_billing_id) ? $values->stripe_billing_id : null;
 
         $mobile = isset($values->mobileDevice) ? $values->mobileDevice : null;
         $mobileDevice = MobileDevice::FromArray(json_decode(json_encode($mobile), true));
@@ -65,13 +65,9 @@ class User extends DataObject implements UserInterface, RemindableInterface {
     }
 
     public static function FromGenericUser($genericUser) {
-        $id = isset($genericUser->id) ? $genericUser->id : null;
-        $username = isset($genericUser->username) ? $genericUser->username : null;
-        $email = isset($genericUser->email) ? $genericUser->email : null;
-
-        return new self($id, $username, null, $email, null, null, null);
+        $repo = App::make('UserRepository');
+        return $repo->find(['id' => $genericUser->id]);
     }
-
 
     public function getUserId() {
         return $this->getId();
