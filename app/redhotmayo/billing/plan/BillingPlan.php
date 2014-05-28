@@ -6,19 +6,19 @@ use redhotmayo\utility\Arrays;
 
 class BillingPlan {
     /** Config path to grab plan data */
-    const ALL_PLANS = 'stripe.plans';
+    const ALL_PLANS = 'billing.plans';
 
     /** Index information for plans within config data */
     const UNSUBSCRIBED = 0;
-    const BASIC = 1;
-    const PREMIUM = 2;
+    const BASIC        = 1;
+    const PREMIUM      = 2;
 
     /** array fields for plans within config data */
-    const PLAN_ID = 'id';
-    const PLAN_NAME = 'name';
-    const PLAN_PRICE = 'price';
+    const PLAN_ID                = 'id';
+    const PLAN_NAME              = 'name';
+    const PLAN_PRICE             = 'price';
     const PLAN_SUBSCRIPTION_TERM = 'subscription_term';
-    const PLAN_TRIAL_PERIOD = 'trial_period';
+    const PLAN_TRIAL_PERIOD      = 'trial_period';
 
     private $id;
     private $name;
@@ -36,7 +36,7 @@ class BillingPlan {
      */
     public static function CreateFromId($planId) {
         $plans = Config::get(self::ALL_PLANS);
-        $plan = Arrays::GetValue($plans, (int)$planId, null);
+        $plan  = Arrays::GetValue($plans, (int)$planId, null);
 
         return self::CreateWithData($plan);
     }
@@ -50,10 +50,10 @@ class BillingPlan {
      * @author Craig Giles < craig@gilesc.com >
      */
     public static function CreateWithData(array $plan) {
-        $id = Arrays::GetValue($plan, self::PLAN_ID, null);
-        $name = Arrays::GetValue($plan, self::PLAN_NAME, null);
+        $id    = Arrays::GetValue($plan, self::PLAN_ID, null);
+        $name  = Arrays::GetValue($plan, self::PLAN_NAME, null);
         $price = Arrays::GetValue($plan, self::PLAN_PRICE, null);
-        $term = Arrays::GetValue($plan, self::PLAN_SUBSCRIPTION_TERM, null);
+        $term  = Arrays::GetValue($plan, self::PLAN_SUBSCRIPTION_TERM, null);
         $trial = Arrays::GetValue($plan, self::PLAN_TRIAL_PERIOD, null);
 
         return new self($id, $name, $price, $term, $trial);
@@ -66,11 +66,11 @@ class BillingPlan {
         $this->filterNull($term);
         $this->filterNull($trial);
 
-        $this->id = $id;
-        $this->name = $name;
-        $this->price = $price;
+        $this->id               = $id;
+        $this->name             = $name;
+        $this->price            = $price;
         $this->subscriptionTerm = $term;
-        $this->trialPeriod = $trial;
+        $this->trialPeriod      = $trial;
     }
 
     /**
