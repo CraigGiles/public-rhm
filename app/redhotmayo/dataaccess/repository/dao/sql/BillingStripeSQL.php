@@ -22,6 +22,21 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
 
     const UNKNOWN_CUSTOMER_TOKEN = '';
 
+    public static function GetColumns() {
+        return [
+            self::TABLE_NAME .'.'. self::C_ID,
+            self::TABLE_NAME .'.'. self::C_PLAN_ID,
+            self::TABLE_NAME .'.'. self::C_STATUS,
+            self::TABLE_NAME .'.'. self::C_CUSTOMER_TOKEN,
+            self::TABLE_NAME .'.'. self::C_SUBSCRIPTION_ENDS_AT,
+            self::TABLE_NAME .'.'. self::C_AUTO_RENEW,
+            self::TABLE_NAME .'.'. self::C_TRIAL_END,
+            self::TABLE_NAME .'.'. self::C_CANCELED_AT,
+            self::TABLE_NAME .'.'. self::C_CREATED_AT,
+            self::TABLE_NAME .'.'. self::C_UPDATED_AT
+        ];
+    }
+
     /**
      * Saves the object to the database returning the id of the object
      *

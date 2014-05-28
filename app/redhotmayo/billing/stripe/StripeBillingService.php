@@ -27,6 +27,18 @@ class StripeBillingService implements BillingService {
         $this->billingRepo = $billingRepository;
     }
 
+    /**
+     * @param User $user
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUsersSubscription(User $user) {
+        $tmp = $this->billingRepo->find(['id' => $user->getStripeBillingId()]);
+        //get the users current plan_id from the table and return the subscription information
+        //if the result doesn't exist, attempt to get the information from stripe
+        //if all else fails, return the Unsubscribed subscription
+    }
+
     public function subscribe(User $user, BillingPlan $plan, $token) {
         $stripeUser = new StripeBillableUser($user, $token);
         $current = $this->getActiveSubscription($stripeUser);

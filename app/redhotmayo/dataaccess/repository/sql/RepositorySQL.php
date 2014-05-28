@@ -3,12 +3,26 @@
 
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use redhotmayo\dataaccess\encryption\EncryptedSQLTable;
 use redhotmayo\dataaccess\repository\Repository;
 
 abstract class RepositorySQL implements Repository {
     abstract public function getTableName();
     abstract public function getColumns();
     abstract protected function getConstraints($parameters);
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    abstract protected function filter(array $values);
 
     /**
      * Return an array of all objects that match the given constraints
@@ -30,7 +44,8 @@ abstract class RepositorySQL implements Repository {
                 $builder->where($constraint, '=', $value);
             }
 
-            return $builder->get();
+            $results = $builder->get();
+            return $this->filter(json_decode(json_encode($results), true));
         } catch (Exception $e) {
             Log::error($e);
             throw $e;
