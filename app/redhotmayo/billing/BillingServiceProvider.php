@@ -1,5 +1,6 @@
 <?php  namespace redhotmayo\billing;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class BillingServiceProvider extends ServiceProvider {
@@ -10,11 +11,12 @@ class BillingServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $stripe = 'redhotmayo\billing\stripe\StripeBillingService';
-        $this->app->bind('redhotmayo\billing\BillingInterface', $stripe);
-        $this->app->bind('BillingInterface', $stripe);
+        $service = Config::get('billing.service');
 
-        $this->app->bind('redhotmayo\billing\BillingService', $stripe);
-        $this->app->bind('BillingService', $stripe);
+        $this->app->bind('redhotmayo\billing\BillingInterface', $service);
+        $this->app->bind('BillingInterface', $service);
+
+        $this->app->bind('redhotmayo\billing\BillingService', $service);
+        $this->app->bind('BillingService', $service);
     }
 }
