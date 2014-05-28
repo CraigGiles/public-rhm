@@ -64,6 +64,12 @@ class StripeGateway {
         throw new \Exception("Function currently not implemented");
     }
 
+    /**
+     * @param StripeBillableUser $user
+     * @return Collection
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function getActiveSubscriptions(StripeBillableUser $user) {
         $subs = new Collection();
 

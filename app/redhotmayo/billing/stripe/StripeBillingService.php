@@ -34,6 +34,7 @@ class StripeBillingService implements BillingService {
      */
     public function getUsersSubscription(User $user) {
         $tmp = $this->billingRepo->find(['id' => $user->getStripeBillingId()]);
+
         //get the users current plan_id from the table and return the subscription information
         //if the result doesn't exist, attempt to get the information from stripe
         //if all else fails, return the Unsubscribed subscription
@@ -41,12 +42,18 @@ class StripeBillingService implements BillingService {
 
     public function subscribe(User $user, BillingPlan $plan, $token) {
         $stripeUser = new StripeBillableUser($user, $token);
-        $current = $this->getActiveSubscription($stripeUser);
+        $current    = $this->getActiveSubscription($stripeUser);
 
         isset($current) ? $this->updateExistingSubscription($stripeUser, $plan, $current) :
             $this->createNewSubscription($stripeUser, $plan);
     }
 
+    /**
+     * @param StripeBillableUser $user
+     * @return StripeSubscription|null
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     private function getActiveSubscription(StripeBillableUser $user) {
         $active        = null;
         $subCollection = $this->gateway->getActiveSubscriptions($user);
@@ -72,11 +79,17 @@ class StripeBillingService implements BillingService {
 
     private function createNewSubscription(StripeBillableUser $user, BillingPlan $plan) {
         $subscription = $this->gateway->createNewSubscription($user, $plan);
-        $rhmUser = $user->getUserObject();
+        $rhmUser      = $user->getUserObject();
         $this->billingRepo->save($subscription);
 
         $rhmUser->setStripeBillingId($subscription->getId());
         $this->userRepo->save($rhmUser);
+    }
+
+    private function updateExistingSubscription(
+        StripeBillableUser $user, BillingPlan $plan, StripeSubscription $current)
+    {
+        //todo
     }
 }
 
