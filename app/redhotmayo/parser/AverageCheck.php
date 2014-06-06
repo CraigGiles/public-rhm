@@ -26,9 +26,11 @@ class AverageCheck implements Parser {
         if (isset($value) && is_string($value)) {
             $values = explode('-', $value);
             if (count($values) == 1) {
+                if (!isset($values[0][0])) { return null; }
                 //WS-42 I dont know why numerical values start with t... but apparently they do ¯\_(ツ)_/¯
                 $result = $values[0][0] === '$' || $values[0][0] === 't' ? (float)substr($values[0], 1) : (float)$values[0];
             } else if (count($values) > 1) {
+                if (!isset($values[0][0]) || !isset($values[1][0])) { return null; }
                 $first = $values[0][0] === '$' ? (float)substr($values[0], 1) : (float)$values[0];
                 $second = $values[1][0] === '$' ? (float)substr($values[1], 1) : (float)$values[1];
 
