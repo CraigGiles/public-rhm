@@ -137,7 +137,13 @@ class StripeBillingService implements BillingService {
     private function updateExistingSubscription(
         StripeBillableUser $user, BillingPlan $plan, StripeSubscription $current)
     {
-        //todo
+        $subscription = $this->gateway->updateExistingSubscription($user, $plan);
+        $rhmUser      = $user->getUserObject();
+
+        $this->billingRepo->upgrade($rhmUser->getStripeBillingId(), $current, $subscription);
+
+        $rhmUser->setStripeBillingId($subscription->getId());
+        $this->userRepo->save($rhmUser);
     }
 }
 

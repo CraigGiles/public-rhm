@@ -19,6 +19,8 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     const C_CANCELED_AT          = 'canceled_at';
     const C_CREATED_AT           = 'created_at';
     const C_UPDATED_AT           = 'updated_at';
+    const C_UPGRADED_AT          = 'upgraded_at';
+    const C_UPGRADED_ID          = 'upgraded_id';
 
     const UNKNOWN_CUSTOMER_TOKEN = '';
 
@@ -33,7 +35,9 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
             self::TABLE_NAME .'.'. self::C_TRIAL_END,
             self::TABLE_NAME .'.'. self::C_CANCELED_AT,
             self::TABLE_NAME .'.'. self::C_CREATED_AT,
-            self::TABLE_NAME .'.'. self::C_UPDATED_AT
+            self::TABLE_NAME .'.'. self::C_UPDATED_AT,
+            self::TABLE_NAME .'.'. self::C_UPGRADED_AT,
+            self::TABLE_NAME .'.'. self::C_UPGRADED_ID
         ];
     }
 
@@ -97,6 +101,8 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
             self::C_AUTO_RENEW           => $billing->isSetToRenew(),
             self::C_TRIAL_END            => $billing->getTrialEndDate(),
             self::C_CANCELED_AT          => $billing->getCanceledDate(),
+            self::C_UPGRADED_AT          => $billing->getUpgradedDate(),
+            self::C_UPGRADED_ID          => $billing->getUpgradedPlanId(),
             self::C_UPDATED_AT           => Carbon::now(),
         ];
 

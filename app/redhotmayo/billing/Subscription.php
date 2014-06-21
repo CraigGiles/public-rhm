@@ -77,4 +77,23 @@ interface Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getCanceledDate();
+
+    /**
+     * Get the date in which the user upgraded their account. This date
+     * being present ensures that the current row in the database is old
+     *
+     * @return Carbon
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedDate();
+
+    /**
+     * Get the id of the plan in which the user updated to
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedPlanId();
 }

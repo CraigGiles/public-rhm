@@ -58,10 +58,34 @@ class StripeGateway {
         }
     }
 
-    public function updateExistingSubscription(
-        StripeBillableUser $user, BillingPlan $newPlan, StripeSubscription $subscription
-    ) {
-        throw new \Exception("Function currently not implemented");
+    public function updateExistingSubscription(StripeBillableUser $user, BillingPlan $newPlan) {
+        $customer = $this->getStripeCustomer($user);
+        $id = $newPlan->getId();
+        /**
+         * $cu = Stripe_Customer::retrieve("cus_4GRkHrmIMMbKi9");
+         * $subscription = $cu->subscriptions->retrieve("sub_4GSuy2BOhcBcXK");
+         * $subscription->plan = "basic";
+         * $subscription->save();
+         */
+
+        $result = $customer->updateSubscription([
+            "plan" => $id
+        ]);
+
+        $trialEnd   = isset($result->trial_end) ? Carbon::createFromTimestampUTC($result->trial_end) : null;
+        $canceledAt = isset($result->canceled_at) ? Carbon::createFromTimestampUTC($result->canceled_at) : null;
+
+        $billing = new StripeSubscription([
+            StripeSubscription::PLAN_ID                     => $id,
+            StripeSubscription::STRIPE_STATUS               => $result->status,
+            StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $result->customer,
+            StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $result->cancel_at_period_end,
+            StripeSubscription::STRIPE_CURRENT_PERIOD_END   => Carbon::createFromTimestampUTC($result->current_period_end),
+            StripeSubscription::STRIPE_TRIAL_END            => $trialEnd,
+            StripeSubscription::STRIPE_CANCELED_AT          => $canceledAt,
+        ]);
+
+        return $billing;
     }
 
     /**
@@ -77,6 +101,10 @@ class StripeGateway {
         $subscriptions = $customer->subscriptions->all();
 
         foreach ($subscriptions['data'] as $subscription) {
+            $currentPeriodEnd = isset($subscription->current_period_end) ? Carbon::createFromTimestamp($subscription->current_period_end) : null;
+            $trialEnd = isset($subscription->trial_end) ? Carbon::createFromTimestamp($subscription->trial_end) : null;
+            $canceledAt = isset($subscription->canceled_at) ? Carbon::createFromTimestamp($subscription->canceled_at) : null;
+
             $subs->push(
                  new StripeSubscription(
                      [
@@ -84,9 +112,9 @@ class StripeGateway {
                          StripeSubscription::STRIPE_STATUS               => $subscription->status,
                          StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $subscription->customer,
                          StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $subscription->cancel_at_period_end,
-                         StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $subscription->current_period_end,
-                         StripeSubscription::STRIPE_TRIAL_END            => $subscription->trial_end,
-                         StripeSubscription::STRIPE_CANCELED_AT          => $subscription->canceled_at,
+                         StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $currentPeriodEnd,
+                         StripeSubscription::STRIPE_TRIAL_END            => $trialEnd,
+                         StripeSubscription::STRIPE_CANCELED_AT          => $canceledAt,
                      ]
                  )
             );

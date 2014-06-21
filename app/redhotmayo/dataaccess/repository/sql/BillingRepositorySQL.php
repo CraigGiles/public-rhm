@@ -112,4 +112,25 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
 
         return BillingPlan::CreateFromId($planId);
     }
+
+    /**
+     * Upgrade the users subscription
+     *
+     * @param int $oldId
+     * @param StripeSubscription $current
+     * @param StripeSubscription $subscription
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function upgrade($oldId, StripeSubscription $current, StripeSubscription $subscription) {
+        DB::beginTransaction();
+
+        $this->save($subscription);
+        $current->setId($oldId);
+        $current->upgraded($subscription);
+        $this->save($current);
+
+        DB::commit();
+    }
 }

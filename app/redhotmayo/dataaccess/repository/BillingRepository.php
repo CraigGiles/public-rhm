@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository;
 
 use redhotmayo\billing\plan\BillingPlan;
+use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\model\User;
 
 interface BillingRepository extends Repository {
@@ -31,4 +32,16 @@ interface BillingRepository extends Repository {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getUnknownCustomerToken();
+
+    /**
+     * Upgrade the users subscription
+     *
+     * @param int $oldId
+     * @param StripeSubscription $current
+     * @param StripeSubscription $subscription
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function upgrade($oldId, StripeSubscription $current, StripeSubscription $subscription);
 }

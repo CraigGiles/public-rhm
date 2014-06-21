@@ -25,19 +25,15 @@ class StripeSubscription extends DataObject implements Subscription {
     private $current_period_end;
     private $trial_end;
     private $canceled_at;
+    private $upgraded_at;
+    private $upgraded_id;
 
     public function __construct(array $data) {
-        $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
-        $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
-        $this->customer             = Arrays::GetValue($data, self::STRIPE_CUSTOMER_TOKEN, '');
-        $this->cancel_at_period_end = Arrays::GetValue($data, self::STRIPE_CANCEL_AT_PERIOD_END, true);
-        $this->current_period_end   = Arrays::GetValue($data, self::STRIPE_CURRENT_PERIOD_END, null);
-        $this->trial_end            = Arrays::GetValue($data, self::STRIPE_TRIAL_END, null);
-        $this->canceled_at          = Arrays::GetValue($data, self::STRIPE_CANCELED_AT, null);
+        $this->parse($data);
+    }
 
-        if (!isset($this->planId) || !isset($this->current_period_end)) {
-            throw new NullArgumentException('Subscription data is invalid');
-        }
+    public function update(array $data) {
+        $this->parse($data);
     }
 
     /**
@@ -126,5 +122,48 @@ class StripeSubscription extends DataObject implements Subscription {
      */
     public function getCanceledDate() {
         return $this->canceled_at;
+    }
+
+    private function parse(array $data) {
+        $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
+        $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
+        $this->customer             = Arrays::GetValue($data, self::STRIPE_CUSTOMER_TOKEN, '');
+        $this->cancel_at_period_end = Arrays::GetValue($data, self::STRIPE_CANCEL_AT_PERIOD_END, true);
+        $this->current_period_end   = Arrays::GetValue($data, self::STRIPE_CURRENT_PERIOD_END, null);
+        $this->trial_end            = Arrays::GetValue($data, self::STRIPE_TRIAL_END, null);
+        $this->canceled_at          = Arrays::GetValue($data, self::STRIPE_CANCELED_AT, null);
+
+        if (!isset($this->planId) || !isset($this->current_period_end)) {
+            throw new NullArgumentException('Subscription data is invalid');
+        }
+    }
+
+    public function upgraded(StripeSubscription $newSub) {
+        $this->upgraded_at = Carbon::now();
+        $this->upgraded_id = $newSub->getId();
+        $this->status = 'inactive';
+    }
+
+    /**
+     * Get the date in which the user upgraded their account. This date
+     * being present ensures that the current row in the database is old
+     *
+     * @return Carbon
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedDate() {
+        return $this->upgraded_at;
+    }
+
+    /**
+     * Get the id of the plan in which the user updated to
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedPlanId() {
+        return $this->upgraded_id;
     }
 }
