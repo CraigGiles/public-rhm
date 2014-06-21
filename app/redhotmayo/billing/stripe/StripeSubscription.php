@@ -37,6 +37,29 @@ class StripeSubscription extends DataObject implements Subscription {
     }
 
     /**
+     * Get the date in which the user upgraded their account. This date
+     * being present ensures that the current row in the database is old
+     *
+     * @return Carbon
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedDate() {
+        return $this->upgraded_at;
+    }
+
+    /**
+     * Get the id of the plan in which the user updated to
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUpgradedPlanId() {
+        return $this->upgraded_id;
+    }
+
+    /**
      * Is the current subscription active?
      *
      * @return bool
@@ -138,32 +161,17 @@ class StripeSubscription extends DataObject implements Subscription {
         }
     }
 
-    public function upgraded(StripeSubscription $newSub) {
+    /**
+     * Mark the subscription as upgraded
+     *
+     * @param Subscription $newSub
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function upgraded(Subscription $newSub) {
         $this->upgraded_at = Carbon::now();
         $this->upgraded_id = $newSub->getId();
         $this->status = 'inactive';
     }
 
-    /**
-     * Get the date in which the user upgraded their account. This date
-     * being present ensures that the current row in the database is old
-     *
-     * @return Carbon
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    public function getUpgradedDate() {
-        return $this->upgraded_at;
-    }
-
-    /**
-     * Get the id of the plan in which the user updated to
-     *
-     * @return int
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    public function getUpgradedPlanId() {
-        return $this->upgraded_id;
-    }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\stripe\StripeSubscription;
+use redhotmayo\billing\Subscription;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\dao\BillingStripeDAO;
 use redhotmayo\dataaccess\repository\dao\sql\BillingStripeSQL;
@@ -117,19 +118,19 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      * Upgrade the users subscription
      *
      * @param int $oldId
-     * @param StripeSubscription $current
-     * @param StripeSubscription $subscription
+     * @param Subscription $currentSub
+     * @param Subscription $newSub
      * @return mixed
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function upgrade($oldId, StripeSubscription $current, StripeSubscription $subscription) {
+    public function upgrade($oldId, Subscription $currentSub, Subscription $newSub) {
         DB::beginTransaction();
 
-        $this->save($subscription);
-        $current->setId($oldId);
-        $current->upgraded($subscription);
-        $this->save($current);
+        $this->save($newSub);
+        $currentSub->setId($oldId);
+        $currentSub->upgraded($newSub);
+        $this->save($currentSub);
 
         DB::commit();
     }
