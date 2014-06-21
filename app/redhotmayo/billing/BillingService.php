@@ -5,7 +5,8 @@ use redhotmayo\model\User;
 
 interface BillingService {
     public function getUsersSubscription(User $user);
-    public function subscribe(User $user, BillingPlan $plan, $token);
+    public function subscribe(User $user);
+    public function setBillingToken($token);
 
     //TODO implement these
 //    public function change();

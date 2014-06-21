@@ -48,4 +48,12 @@ interface ZipcodeRepository extends Repository {
      */
     public function getLocationInformation($array);
 
+    /**
+     * @param array $zipcodes
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPopulationForZipcodes(array $zipcodes);
+
 }

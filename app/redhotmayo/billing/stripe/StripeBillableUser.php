@@ -1,6 +1,7 @@
 <?php  namespace redhotmayo\billing\stripe;
 
 use redhotmayo\billing\Billable;
+use redhotmayo\billing\exception\BillingException;
 use redhotmayo\model\User;
 
 class StripeBillableUser implements Billable {
@@ -8,10 +9,14 @@ class StripeBillableUser implements Billable {
     private $billingToken;
     private $customerToken;
 
-    public function __construct(User $user, $billingToken) {
+    public function __construct(User $user, $billingToken=null, $customerToken=null) {
+        if (!isset($billingToken) && !isset($customerToken)) {
+            throw new BillingException("Either BillingToken or CustomerToken must be set");
+        }
+
         $this->user = $user;
         $this->billingToken = $billingToken;
-        $this->customerToken = null;
+        $this->customerToken = $customerToken;
     }
 
     /**

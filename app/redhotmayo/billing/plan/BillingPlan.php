@@ -8,11 +8,6 @@ class BillingPlan {
     /** Config path to grab plan data */
     const ALL_PLANS = 'billing.plans';
 
-    /** Index information for plans within config data */
-    const UNSUBSCRIBED = 0;
-    const BASIC        = 1;
-    const PREMIUM      = 2;
-
     /** array fields for plans within config data */
     const PLAN_ID                = 'id';
     const PLAN_NAME              = 'name';
@@ -25,6 +20,17 @@ class BillingPlan {
     private $price;
     private $subscriptionTerm;
     private $trialPeriod;
+
+    /**
+     * @param int $population
+     *
+     * @return BillingPlan
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public static function CreateFromPopulation($population) {
+        return self::CreateFromId(PlanMapper::Map($population));
+    }
 
     /**
      * Load the given $planId's plan and return a new object with the plan details.
@@ -135,8 +141,6 @@ class BillingPlan {
      *
      * @throws \redhotmayo\exception\NullArgumentException
      * @author Craig Giles < craig@gilesc.com >
-     *
-     * TODO: create some sort of utility object / type checker?
      */
     private function filterNull($value) {
         if (!isset($value)) {

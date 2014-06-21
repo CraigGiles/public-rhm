@@ -1,12 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\exception\BillingException;
-use redhotmayo\billing\plan\BillingPlan;
 
 class BillingController extends RedHotMayoWebController {
     const BILLING_TOKEN = 'stripeToken';
@@ -18,25 +16,29 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function index() {
+        $user  = $this->getAuthedUser();
+        $this->billingService->getUsersSubscription($user);
         return View::make('billing.index');
     }
 
     public function store() {
         try {
-            $user = $this->getAuthedUser();
+            $user  = $this->getAuthedUser();
             $token = $this->getBillingToken();
 
-            $plan = BillingPlan::CreateFromId(BillingPlan::PREMIUM);
-
-            $this->billingService->subscribe($user, $plan, $token);
+            $this->billingService->setBillingToken($token);
+            $this->billingService->subscribe($user);
 
             return "Billed... Change me!";
         } catch (BillingException $billException) {
             Log::error("BillingException: {$billException->getMessage()}");
-            $this->redirectWithErrors($billException->getErrors());
+            return $this->redirectWithErrors($billException->getErrors());
         } catch (\redhotmayo\exception\Exception $ex) {
             Log::error("Generic Exception: {$ex->getMessage()}");
-            $this->redirectWithErrors($ex->getErrors());
+            return $this->redirectWithErrors($ex->getErrors());
+        } catch (Exception $genericException) {
+            Log::error("Generic Exception: {$genericException->getMessage()}");
+            return $this->redirectWithErrors($genericException->getMessage());
         }
     }
 
@@ -47,11 +49,11 @@ class BillingController extends RedHotMayoWebController {
             $this->redirectWithErrors('Billing Token Not Found');
         }
 
-       return $token;
+        return $token;
     }
 
-    private function redirectWithErrors($message, $input=[]) {
-        Redirect::action('BillingController@index')
+    private function redirectWithErrors($message, $input = []) {
+        return Redirect::action('BillingController@index')
                 ->withInput($input)
                 ->withErrors($message);
     }

@@ -3,12 +3,16 @@
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\BillingRepository;
+use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\model\User;
 
 class StripeBillingService implements BillingService {
     const PRIVATE_API_KEY        = 'stripe.private_key';
     const UNKNOWN_CUSTOMER_TOKEN = '';
+
+    private $billingToken;
 
     /** @var \redhotmayo\billing\stripe\StripeGateway $gateway */
     private $gateway;
@@ -16,15 +20,31 @@ class StripeBillingService implements BillingService {
     /** @var \redhotmayo\dataaccess\repository\BillingRepository $billingRepo */
     private $billingRepo;
 
+    /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subRepo */
+    private $subRepo;
+
+    /** @var \redhotmayo\dataaccess\repository\ZipcodeRepository $zipRepo */
+    private $zipRepo;
+
     /** @var \redhotmayo\dataaccess\repository\UserRepository $userRepo */
     private $userRepo;
 
     public function __construct(
-        BillingRepository $billingRepository, UserRepository $userRepo, StripeGateway $gateway
+        BillingRepository $billingRepository,
+        UserRepository $userRepo,
+        StripeGateway $gateway,
+        SubscriptionRepository $subRepo,
+        ZipcodeRepository $zipRepo
     ) {
         $this->userRepo    = $userRepo;
         $this->gateway     = $gateway;
         $this->billingRepo = $billingRepository;
+        $this->subRepo     = $subRepo;
+        $this->zipRepo     = $zipRepo;
+    }
+
+    public function setBillingToken($token) {
+        $this->billingToken = $token;
     }
 
     /**
@@ -40,12 +60,47 @@ class StripeBillingService implements BillingService {
         //if all else fails, return the Unsubscribed subscription
     }
 
-    public function subscribe(User $user, BillingPlan $plan, $token) {
-        $stripeUser = new StripeBillableUser($user, $token);
+    public function subscribe(User $user) {
+        $plan       = $this->createBillingPlan($user);
+        $customerToken = $this->billingRepo->getCustomerToken($user);
+        $stripeUser = new StripeBillableUser($user, $this->billingToken, $customerToken);
         $current    = $this->getActiveSubscription($stripeUser);
 
-        isset($current) ? $this->updateExistingSubscription($stripeUser, $plan, $current) :
+        isset($current) ?
+            $this->updateExistingSubscription($stripeUser, $plan, $current) :
             $this->createNewSubscription($stripeUser, $plan);
+    }
+
+    /** 
+     * Swaps out the current billing plan for a new billing plan based on 
+     * the users subscribed population
+     *
+     * @param User $user
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function swap(User $user) {
+//        $plan = $this->createBillingPlan($user);
+//        $customerToken = $this->billingRepo->getCustomerToken($user);
+//        $stripeUser = $
+//
+//        $billable = new Billing($user);
+//        $billable->subscription($plan->getStripeId())
+//            ->swap();
+    }
+
+    /**
+     * Creates a new billing plan based on the users subscribed population
+     *
+     * @param User $user
+     * @return BillingPlan
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function createBillingPlan(User $user) {
+        $userZips   = $this->subRepo->getAllZipcodesForUser($user);
+        $population = $this->zipRepo->getPopulationForZipcodes($userZips);
+        return BillingPlan::CreateFromPopulation($population);
     }
 
     /**
@@ -55,23 +110,16 @@ class StripeBillingService implements BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     private function getActiveSubscription(StripeBillableUser $user) {
-        $active        = null;
         $subCollection = $this->gateway->getActiveSubscriptions($user);
-        $iter          = $subCollection->getIterator();
+        $active        = null;
 
         // continue until you find an active subscription, then return that subscription
-        while ($iter->valid()) {
-            /** @var StripeSubscription $sub */
-            $sub = $iter->current();
-
-            if (!$sub->isActive()) {
-                $iter->next();
-                continue;
+        /** @var StripeSubscription $sub */
+        foreach ($subCollection as $sub) {
+            if ($sub->isActive()) {
+                $active = $sub;
+                break;
             }
-
-            // TODO: this will currently only give you the first active subscription. If the user has multiple active subscriptions, this wont give them all back
-            $active = $sub;
-            break;
         }
 
         return $active;

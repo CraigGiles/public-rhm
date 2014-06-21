@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 use Illuminate\Support\Facades\DB;
+use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\dao\BillingStripeDAO;
@@ -93,5 +94,22 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
         }
 
         return $subscriptions;
+    }
+
+    /**
+     * Gets the users current billing plan
+     *
+     * @param User $user
+     * @return BillingPlan
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPlanForUser(User $user) {
+        $planId = (int)DB::table(BillingStripeSQL::TABLE_NAME)
+                         ->select(BillingStripeSQL::C_PLAN_ID)
+                         ->where(BillingStripeSQL::C_ID, '=', $user->getStripeBillingId())
+                         ->first();
+
+        return BillingPlan::CreateFromId($planId);
     }
 }
