@@ -2,6 +2,7 @@
 
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\plan\BillingPlan;
+use redhotmayo\billing\Subscription;
 use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
@@ -50,14 +51,13 @@ class StripeBillingService implements BillingService {
     /**
      * @param User $user
      *
+     * @return null|Subscription
+     *
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getUsersSubscription(User $user) {
-        $tmp = $this->billingRepo->find(['id' => $user->getStripeBillingId()]);
-
-        //get the users current plan_id from the table and return the subscription information
-        //if the result doesn't exist, attempt to get the information from stripe
-        //if all else fails, return the Unsubscribed subscription
+        $stripeUser = new StripeBillableUser($user);
+        return $this->getActiveSubscription($stripeUser);
     }
 
     public function subscribe(User $user) {
