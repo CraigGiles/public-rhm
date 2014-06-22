@@ -1,7 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use redhotmayo\billing\Billable;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\billing\Subscription;
@@ -134,5 +134,29 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
         $this->save($currentSub);
 
         DB::commit();
+    }
+
+    public function getSubscriptionForUser(User $user) {
+        $result = (array)DB::table(BillingStripeSQL::TABLE_NAME)
+            ->where(BillingStripeSQL::C_ID, '=', $user->getStripeBillingId())
+            ->first();
+
+        $decrypted = $this->dao->decrypt($result);
+
+        $cancelAtEnd = (bool)$decrypted[BillingStripeSQL::C_AUTO_RENEW] ? false : true;
+        $subEndsAt = isset($decrypted[BillingStripeSQL::C_SUBSCRIPTION_ENDS_AT]) ? Carbon::createFromFormat('Y-m-d H:i:s', $decrypted[BillingStripeSQL::C_SUBSCRIPTION_ENDS_AT]) : null;
+        $trialEndsAt = isset($decrypted[BillingStripeSQL::C_TRIAL_END]) ? Carbon::createFromFormat('Y-m-d H:i:s', $decrypted[BillingStripeSQL::C_TRIAL_END]) : null;
+        $canceledAt = isset($decrypted[BillingStripeSQL::C_CANCELED_AT]) ? Carbon::createFromFormat('Y-m-d H:i:s', $decrypted[BillingStripeSQL::C_CANCELED_AT]) : null;
+
+        return new StripeSubscription([
+            StripeSubscription::ID                          => $decrypted[BillingStripeSQL::C_ID],
+            StripeSubscription::PLAN_ID                     => $decrypted[BillingStripeSQL::C_PLAN_ID],
+            StripeSubscription::STRIPE_STATUS               => $decrypted[BillingStripeSQL::C_STATUS],
+            StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $decrypted[BillingStripeSQL::C_CUSTOMER_TOKEN],
+            StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $cancelAtEnd,
+            StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $subEndsAt,
+            StripeSubscription::STRIPE_TRIAL_END            => $trialEndsAt,
+            StripeSubscription::STRIPE_CANCELED_AT          => $canceledAt,
+        ]);
     }
 }

@@ -1,6 +1,8 @@
 <?php namespace redhotmayo\model;
 
 abstract class DataObject {
+    const ID = 'id';
+
     private $id;
 
     /**

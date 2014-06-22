@@ -1,3 +1,5 @@
+@extends('layouts.errors')
+
 <form action="" method="POST">
     <script
         src="https://checkout.stripe.com/checkout.js" class="stripe-button"

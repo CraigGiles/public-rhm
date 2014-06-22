@@ -51,13 +51,12 @@ class StripeBillingService implements BillingService {
     /**
      * @param User $user
      *
-     * @return null|Subscription
+     * @return Subscription
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function getUsersSubscription(User $user) {
-        $stripeUser = new StripeBillableUser($user);
-        return $this->getActiveSubscription($stripeUser);
+    public function getSubscriptionForUser(User $user) {
+        return $this->billingRepo->getSubscriptionForUser($user);
     }
 
     public function subscribe(User $user) {

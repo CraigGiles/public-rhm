@@ -17,7 +17,8 @@ class BillingController extends RedHotMayoWebController {
 
     public function index() {
         $user  = $this->getAuthedUser();
-        $this->billingService->getUsersSubscription($user);
+        $result = $this->billingService->getSubscriptionForUser($user);
+        dd($result);
         return View::make('billing.index');
     }
 

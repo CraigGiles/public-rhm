@@ -175,6 +175,7 @@ class StripeSubscription extends DataObject implements Subscription {
     }
 
     private function parse(array $data) {
+        $this->setId(Arrays::GetValue($data, self::ID, null));
         $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
         $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
         $this->customer             = Arrays::GetValue($data, self::STRIPE_CUSTOMER_TOKEN, '');

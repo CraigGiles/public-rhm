@@ -142,7 +142,8 @@ class StripeGateway {
     private function getStripeCustomer(StripeBillableUser $user) {
         $customerToken = $user->getCustomerToken();
 
-        return isset($customerToken) ? StripeCustomer::retrieve($customerToken, $this->getApiKey()) :
+        return (isset($customerToken) && !empty($customerToken)) ?
+            StripeCustomer::retrieve($customerToken, $this->getApiKey()) :
             $this->createStripeCustomer($user);
     }
 
