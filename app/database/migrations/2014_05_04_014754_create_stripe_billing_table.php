@@ -15,7 +15,7 @@ class CreateStripeBillingTable extends Migration {
 		Schema::create('billing_stripe', function(Blueprint $table)
 		{
 			$table->increments('id');
-
+            $table->unsignedInteger('upgraded_id')->nullable();
             $table->integer('plan_id')->unsigned();
             $table->string('current_status', 15);
             $table->string('customer_token', 255);
@@ -23,6 +23,7 @@ class CreateStripeBillingTable extends Migration {
             $table->timestamp('subscription_ends_at');
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
+            $table->timestamp('upgraded_at')->nullable();
 
 			$table->timestamps();
 		});
