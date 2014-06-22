@@ -67,7 +67,11 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function isActive() {
-        return 'active' === $this->status;
+        // This will result to true in two ways:
+        // - if the status is 'active'
+        // - if the current_period_end is in the future
+        return 'active' === $this->status ||
+            (($this->current_period_end instanceof Carbon) && $this->current_period_end->isFuture());
     }
 
     /**
@@ -147,6 +151,29 @@ class StripeSubscription extends DataObject implements Subscription {
         return $this->canceled_at;
     }
 
+    /**
+     * Mark the subscription as upgraded
+     *
+     * @param Subscription $newSub
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function upgraded(Subscription $newSub) {
+        $this->upgraded_at = Carbon::now();
+        $this->upgraded_id = $newSub->getId();
+        $this->status = 'inactive';
+    }
+
+    /**
+     * Mark the subscription as canceled
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function cancel() {
+        //canceled_at is set via stripe's API, do not re-set it here
+        $this->status = 'inactive';
+    }
+
     private function parse(array $data) {
         $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
         $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
@@ -159,19 +186,6 @@ class StripeSubscription extends DataObject implements Subscription {
         if (!isset($this->planId) || !isset($this->current_period_end)) {
             throw new NullArgumentException('Subscription data is invalid');
         }
-    }
-
-    /**
-     * Mark the subscription as upgraded
-     *
-     * @param Subscription $newSub
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    public function upgraded(Subscription $newSub) {
-        $this->upgraded_at = Carbon::now();
-        $this->upgraded_id = $newSub->getId();
-        $this->status = 'inactive';
     }
 
 }

@@ -96,4 +96,21 @@ interface Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getUpgradedPlanId();
+
+
+    /**
+     * Mark the subscription as upgraded
+     *
+     * @param Subscription $newSub
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function upgraded(Subscription $newSub);
+
+    /**
+     * Mark the subscription as canceled
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function cancel();
 }

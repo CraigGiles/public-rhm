@@ -58,15 +58,20 @@ class StripeGateway {
         }
     }
 
+    public function cancel(StripeBillableUser $user) {
+        $customer = $this->getStripeCustomer($user);
+
+        // let the user go until the current subscription runs out
+        $result = $customer->cancelSubscription([
+            "at_period_end" => true,
+        ]);
+
+        return isset($result->cancel_at_period_end) ? $result->cancel_at_period_end : false;
+    }
+
     public function updateExistingSubscription(StripeBillableUser $user, BillingPlan $newPlan) {
         $customer = $this->getStripeCustomer($user);
         $id = $newPlan->getId();
-        /**
-         * $cu = Stripe_Customer::retrieve("cus_4GRkHrmIMMbKi9");
-         * $subscription = $cu->subscriptions->retrieve("sub_4GSuy2BOhcBcXK");
-         * $subscription->plan = "basic";
-         * $subscription->save();
-         */
 
         $result = $customer->updateSubscription([
             "plan" => $id

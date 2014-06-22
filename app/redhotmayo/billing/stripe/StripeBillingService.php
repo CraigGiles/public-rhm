@@ -71,22 +71,19 @@ class StripeBillingService implements BillingService {
             $this->createNewSubscription($stripeUser, $plan);
     }
 
-    /** 
-     * Swaps out the current billing plan for a new billing plan based on 
-     * the users subscribed population
-     *
-     * @param User $user
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    public function swap(User $user) {
-//        $plan = $this->createBillingPlan($user);
-//        $customerToken = $this->billingRepo->getCustomerToken($user);
-//        $stripeUser = $
-//
-//        $billable = new Billing($user);
-//        $billable->subscription($plan->getStripeId())
-//            ->swap();
+    public function cancel(User $user) {
+        $customerToken = $this->billingRepo->getCustomerToken($user);
+        $stripeUser = new StripeBillableUser($user, $this->billingToken, $customerToken);
+        $current = $this->getActiveSubscription($stripeUser);
+        $result = $this->gateway->cancel($stripeUser);
+
+        if ($result) {
+            $current->setId($user->getStripeBillingId());
+            $current->cancel();
+            $this->billingRepo->save($current);
+        }
+
+        return $result;
     }
 
     /**
@@ -145,5 +142,6 @@ class StripeBillingService implements BillingService {
         $rhmUser->setStripeBillingId($subscription->getId());
         $this->userRepo->save($rhmUser);
     }
+
 }
 

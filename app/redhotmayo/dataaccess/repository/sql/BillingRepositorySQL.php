@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\dataaccess\repository\sql;
 
 use Illuminate\Support\Facades\DB;
+use redhotmayo\billing\Billable;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\billing\Subscription;

@@ -42,6 +42,12 @@ class BillingController extends RedHotMayoWebController {
         }
     }
 
+    public function cancel() {
+        $user = $this->getAuthedUser();
+        $this->billingService->cancel($user);
+        return "Canceled...";
+    }
+
     private function getBillingToken() {
         $token = Input::get(self::BILLING_TOKEN);
 
