@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\exception\BillingException;
 
@@ -16,9 +15,6 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function index() {
-        $user  = $this->getAuthedUser();
-        $result = $this->billingService->getSubscriptionForUser($user);
-        dd($result);
         return View::make('billing.index');
     }
 
@@ -33,13 +29,13 @@ class BillingController extends RedHotMayoWebController {
             return "Billed... Change me!";
         } catch (BillingException $billException) {
             Log::error("BillingException: {$billException->getMessage()}");
-            return $this->redirectWithErrors($billException->getErrors());
+            return Redirect::back()->withErrors($billException->getErrors());
         } catch (\redhotmayo\exception\Exception $ex) {
             Log::error("Generic Exception: {$ex->getMessage()}");
-            return $this->redirectWithErrors($ex->getErrors());
+            return Redirect::back()->withErrors($ex->getErrors());
         } catch (Exception $genericException) {
             Log::error("Generic Exception: {$genericException->getMessage()}");
-            return $this->redirectWithErrors($genericException->getMessage());
+            return Redirect::back()->withErrors($genericException->getMessage());
         }
     }
 
