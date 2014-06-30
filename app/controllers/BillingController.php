@@ -19,6 +19,7 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function store() {
+        dd('hi there');
         try {
             $user  = $this->getAuthedUser();
             $token = $this->getBillingToken();
