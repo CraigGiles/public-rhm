@@ -1,8 +1,9 @@
 @extends('layouts.master')
 
-@include('partials.errors')
-
 @section('content')
+    @include('partials.errors')
+    @include('partials.billing.total')
+
     {{ Form::open(['url' => 'billing']) }}
         <script
             src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -13,7 +14,4 @@
             data-image="/128x128.png">
         </script>
     {{ Form::close() }}
-
-    @include('partials.billing.total')
-
 @stop
