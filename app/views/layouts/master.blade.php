@@ -10,15 +10,7 @@
   </head>
 <body>
 
-
-
-<!--  @if (Session::get('flash_message'))-->
-<!--    <div class="flash">-->
-<!--      {{ Session::get('flash_message') }}-->
-<!--    </div>-->
-<!--  @endif-->
-
-    @include('partials.banner')
+    @include('partials.unauth-banner')
 
 
   <div class="container">
