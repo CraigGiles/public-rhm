@@ -1,5 +1,6 @@
 <?php  namespace redhotmayo\billing;
 
+use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\model\User;
 
 interface BillingService {
@@ -50,11 +51,12 @@ interface BillingService {
     public function getSubscriptionForUser(User $user);
 
     /**
-     * Obtain the cost per period charged for the subscription
+     * Creates a new billing plan based on the users subscribed population
      *
-     * @return double
+     * @param User $user
+     * @return BillingPlan
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function getPlanCost(User $user);
+    public function createBillingPlanForUser(User $user);
 }

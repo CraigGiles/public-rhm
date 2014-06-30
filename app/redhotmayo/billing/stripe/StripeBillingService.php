@@ -82,10 +82,10 @@ class StripeBillingService implements BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function subscribe(User $user) {
-        $plan       = $this->createBillingPlan($user);
+        $plan          = $this->createBillingPlanForUser($user);
         $customerToken = $this->billingRepo->getCustomerToken($user);
-        $stripeUser = new StripeBillableUser($user, $this->billingToken, $customerToken);
-        $current    = $this->getActiveSubscription($stripeUser);
+        $stripeUser    = new StripeBillableUser($user, $this->billingToken, $customerToken);
+        $current       = $this->getActiveSubscription($stripeUser);
 
         isset($current) ?
             $this->updateExistingSubscription($stripeUser, $plan, $current) :
@@ -103,9 +103,9 @@ class StripeBillingService implements BillingService {
      */
     public function cancel(User $user) {
         $customerToken = $this->billingRepo->getCustomerToken($user);
-        $stripeUser = new StripeBillableUser($user, $this->billingToken, $customerToken);
-        $current = $this->getActiveSubscription($stripeUser);
-        $result = $this->gateway->cancel($stripeUser);
+        $stripeUser    = new StripeBillableUser($user, $this->billingToken, $customerToken);
+        $current       = $this->getActiveSubscription($stripeUser);
+        $result        = $this->gateway->cancel($stripeUser);
 
         if ($result) {
             $current->setId($user->getStripeBillingId());
@@ -124,22 +124,11 @@ class StripeBillingService implements BillingService {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    public function createBillingPlan(User $user) {
+    public function createBillingPlanForUser(User $user) {
         $userZips   = $this->subRepo->getAllZipcodesForUser($user);
         $population = $this->zipRepo->getPopulationForZipcodes($userZips);
-        return BillingPlan::CreateFromPopulation($population);
-    }
 
-    /**
-     * Obtain the cost per period charged for the subscription
-     *
-     * @return double
-     *
-     * @author Craig Giles < craig@gilesc.com >
-     */
-    public function getPlanCost(User $user) {
-        $plan = $this->billingRepo->getPlanForUser($user);
-        return $plan->getPrice();
+        return BillingPlan::CreateFromPopulation($population);
     }
 
     /**
@@ -174,8 +163,8 @@ class StripeBillingService implements BillingService {
     }
 
     private function updateExistingSubscription(
-        StripeBillableUser $user, BillingPlan $plan, StripeSubscription $current)
-    {
+        StripeBillableUser $user, BillingPlan $plan, StripeSubscription $current
+    ) {
         $subscription = $this->gateway->updateExistingSubscription($user, $plan);
         $rhmUser      = $user->getUserObject();
 

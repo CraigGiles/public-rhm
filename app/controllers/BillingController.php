@@ -15,17 +15,16 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function index() {
-        $amount = $this->billingService->getPlanCost($this->getAuthedUser());
-
-        $name         = "Red Hot MAYO";
-        $description  = "Subscription Total";
-        $image        = "128x128.png";
+        $plan        = $this->billingService->createBillingPlanForUser($this->getAuthedUser());
+        $name        = "Red Hot MAYO";
+        $description = "Subscription Total";
+        $image       = "128x128.png";
 
         $params = [
-            'name' => $name,
+            'name'        => $name,
             'description' => $description,
-            'amount' => $amount,
-            'image' => $image,
+            'price'       => $plan->getPrice(),
+            'image'       => $image,
         ];
 
         return View::make('billing.index', $params);
