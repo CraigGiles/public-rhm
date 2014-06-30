@@ -48,4 +48,13 @@ interface BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getSubscriptionForUser(User $user);
+
+    /**
+     * Obtain the cost per period charged for the subscription
+     *
+     * @return double
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPlanCost(User $user);
 }

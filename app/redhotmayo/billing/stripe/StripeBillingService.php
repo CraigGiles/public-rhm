@@ -131,6 +131,18 @@ class StripeBillingService implements BillingService {
     }
 
     /**
+     * Obtain the cost per period charged for the subscription
+     *
+     * @return double
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPlanCost(User $user) {
+        $plan = $this->billingRepo->getPlanForUser($user);
+        return $plan->getPrice();
+    }
+
+    /**
      * @param StripeBillableUser $user
      * @return StripeSubscription|null
      *

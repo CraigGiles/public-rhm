@@ -15,10 +15,11 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function index() {
-        $amount      = "9000";
-        $name        = "RedHotMAYO";
-        $description = "Subscription Total";
-        $image       = "128x128.png";
+        $amount = $this->billingService->getPlanCost($this->getAuthedUser());
+
+        $name         = "Red Hot MAYO";
+        $description  = "Subscription Total";
+        $image        = "128x128.png";
 
         $params = [
             'name' => $name,

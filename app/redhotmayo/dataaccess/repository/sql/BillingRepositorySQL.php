@@ -107,12 +107,13 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getPlanForUser(User $user) {
-        $planId = (int)DB::table(BillingStripeSQL::TABLE_NAME)
+        $planId = DB::table(BillingStripeSQL::TABLE_NAME)
                          ->select(BillingStripeSQL::C_PLAN_ID)
                          ->where(BillingStripeSQL::C_ID, '=', $user->getStripeBillingId())
                          ->first();
 
-        return BillingPlan::CreateFromId($planId);
+        $planId = json_decode(json_encode($planId), true);
+        return BillingPlan::CreateFromId($planId[BillingStripeSQL::C_PLAN_ID]);
     }
 
     /**
