@@ -1,3 +1,4 @@
+@extends('layouts.master')
 @extends('layouts.errors')
 
 <form action="" method="POST">
