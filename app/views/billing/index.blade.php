@@ -2,7 +2,10 @@
 
 @section('content')
     @include('partials.errors')
-    @include('partials.billing.total')
+
+    <h2>Billing Summary</h2>
+    @include('billing.partials.total', ['price' => $price])
+    <br />
 
     {{ Form::open(['url' => 'billing']) }}
         <script
