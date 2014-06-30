@@ -49,15 +49,9 @@ class BillingController extends RedHotMayoWebController {
         $token = Input::get(self::BILLING_TOKEN);
 
         if (!isset($token)) {
-            $this->redirectWithErrors('Billing Token Not Found');
+            Redirect::back()->withErrors('Billing token not found');
         }
 
         return $token;
-    }
-
-    private function redirectWithErrors($message, $input = []) {
-        return Redirect::action('BillingController@index')
-                ->withInput($input)
-                ->withErrors($message);
     }
 }

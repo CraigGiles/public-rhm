@@ -45,6 +45,13 @@ interface BillingRepository extends Repository {
      */
     public function upgrade($oldId, Subscription $currentSub, Subscription $newSub);
 
-
+    /**
+     * Obtains the users subscription
+     *
+     * @param User $user
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function getSubscriptionForUser(User $user);
 }

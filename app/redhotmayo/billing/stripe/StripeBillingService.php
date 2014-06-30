@@ -44,13 +44,22 @@ class StripeBillingService implements BillingService {
         $this->zipRepo     = $zipRepo;
     }
 
+    /**
+     * Set the users billing token. If the user is a new user, this
+     * MUST be triggered before any subscribe calls.
+     *
+     * @param $token
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function setBillingToken($token) {
         $this->billingToken = $token;
     }
 
     /**
-     * @param User $user
+     * Get the active subscription
      *
+     * @param User $user
      * @return Subscription
      *
      * @author Craig Giles < craig@gilesc.com >
@@ -59,6 +68,19 @@ class StripeBillingService implements BillingService {
         return $this->billingRepo->getSubscriptionForUser($user);
     }
 
+    /**
+     * Subscribe a user to our billing system. If the client is new than
+     * a new customer record will be constructed. If the client is
+     * existing, than our billing records will be updated with
+     * the new subscription.
+     *
+     * @see setBillingToken
+     *
+     * @param User $user
+     * @return Subscription
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function subscribe(User $user) {
         $plan       = $this->createBillingPlan($user);
         $customerToken = $this->billingRepo->getCustomerToken($user);
@@ -70,6 +92,15 @@ class StripeBillingService implements BillingService {
             $this->createNewSubscription($stripeUser, $plan);
     }
 
+    /**
+     * Cancel a users billing subscription. The user will continue to enjoy
+     * the product until the current billing subscription expires.
+     *
+     * @param User $user
+     * @return bool
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
     public function cancel(User $user) {
         $customerToken = $this->billingRepo->getCustomerToken($user);
         $stripeUser = new StripeBillableUser($user, $this->billingToken, $customerToken);
