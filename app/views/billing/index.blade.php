@@ -4,6 +4,7 @@
     @include('partials.errors')
 
     <h2>Billing Summary</h2>
+    Price is calculated based on the population of territories:
     @include('billing.partials.total', ['price' => $price])
     <br />
 
