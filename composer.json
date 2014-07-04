@@ -6,6 +6,7 @@
 	"require": {
 		"laravel/framework": "4.1.*",
         "PHPOffice/PHPExcel": "*",
+        "stripe/stripe-php": "v1.13.0",
         "codesleeve/asset-pipeline": "dev-master"
 	},
     "require-dev": {

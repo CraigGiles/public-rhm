@@ -1,9 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-<!--<div class="page-header">-->
-<!--  <h1>Registration <small>Account Creation</small></h1>-->
-<!--</div>-->
 
 @if($errors->has())
 @foreach ($errors->all() as $error)

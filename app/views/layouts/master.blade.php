@@ -10,27 +10,9 @@
   </head>
 <body>
 
+    @include('partials.unauth-banner')
 
 
-<!--  @if (Session::get('flash_message'))-->
-<!--    <div class="flash">-->
-<!--      {{ Session::get('flash_message') }}-->
-<!--    </div>-->
-<!--  @endif-->
-
-
-  <div class="banner">
-    <div class="container banner-image">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="logo">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-      </div>
-    </div>
-  </div>
   <div class="container">
     <div id="warnings"></div>
     @yield('content')

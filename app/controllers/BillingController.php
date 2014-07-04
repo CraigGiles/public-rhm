@@ -2,49 +2,79 @@
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
-use redhotmayo\billing\BillingManager;
+use redhotmayo\billing\BillingService;
 use redhotmayo\billing\exception\BillingException;
-use redhotmayo\model\Billing;
+use redhotmayo\billing\Subscription;
 
-class BillingController extends BaseController {
+class BillingController extends RedHotMayoWebController {
     const BILLING_TOKEN = 'stripeToken';
 
-    private $billingManager;
+    private $billingService;
 
-    function __construct(BillingManager $billingManager) {
-        $this->billingManager = $billingManager;
+    function __construct(BillingService $billingService) {
+        $this->billingService = $billingService;
     }
 
     public function index() {
-        return View::make('billing.index');
+        $plan        = $this->billingService->createBillingPlanForUser($this->getAuthedUser());
+        $population  = $this->billingService->getPopulationCountForUser($this->getAuthedUser());
+        $name        = "Red Hot MAYO";
+        $description = "Subscription Total";
+        $image       = "128x128.png";
+
+        $params = [
+            'name'         => $name,
+            'description'  => $description,
+            'population'   => $population,
+            'price'        => $plan->getPrice() / 100,
+            'image'        => $image,
+            'billingToken' => Config::get('stripe.public_key')
+        ];
+
+        return View::make('billing.index', $params);
     }
 
     public function store() {
         try {
+            $user  = $this->getAuthedUser();
             $token = $this->getBillingToken();
-            $user = Auth::user();
 
-            $this->billingManager->addBasicSubscription($user, $token);
+            $this->billingService->setBillingToken($token);
+            $this->billingService->subscribe($user);
+
+            /** @var Subscription $sub $sub */
+            $sub = $this->billingService->getSubscriptionForUser($user);
+
+            $params = [
+                'endDate' => $sub->getSubscriptionEndDate()->format('M d, Y'),
+            ];
+
+            return View::make('billing.receipt', $params);
         } catch (BillingException $billException) {
             Log::error("BillingException: {$billException->getMessage()}");
-            $this->redirectWithErrors($billException->getErrors());
+            return Redirect::back()->withErrors($billException->getErrors());
+        } catch (\redhotmayo\exception\Exception $ex) {
+            Log::error("Generic Exception: {$ex->getMessage()}");
+            return Redirect::back()->withErrors($ex->getErrors());
+        } catch (Exception $genericException) {
+            Log::error("Generic Exception: {$genericException->getMessage()}");
+            return Redirect::back()->withErrors($genericException->getMessage());
         }
+    }
+
+    public function cancel() {
+        $user = $this->getAuthedUser();
+        $this->billingService->cancel($user);
+        return View::make('billing.cancel');
     }
 
     private function getBillingToken() {
         $token = Input::get(self::BILLING_TOKEN);
 
         if (!isset($token)) {
-            $this->redirectWithErrors('Billing Token Not Found');
+            Redirect::back()->withErrors('Billing token not found');
         }
 
-       return $token;
-    }
-
-    private function redirectWithErrors($message, $input=[]) {
-        Redirect::action('BillingController@index')
-                ->withInput($input)
-                ->withErrors($message);
+        return $token;
     }
 }

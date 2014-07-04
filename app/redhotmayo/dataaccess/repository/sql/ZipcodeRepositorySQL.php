@@ -195,4 +195,30 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
 
         return $zipcodes;
     }
+
+    /**
+     * @param array $zipcodes
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPopulationForZipcodes(array $zipcodes) {
+        return (int)DB::table(self::TABLE_NAME)
+                      ->whereIn(self::C_ZIPCODE, $zipcodes)
+                      ->sum(self::C_POPULATION);
+    }
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    protected function filter(array $values) {
+        return $values;
+    }
 }

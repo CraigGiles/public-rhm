@@ -2,5 +2,5 @@
 
 use redhotmayo\exception\Exception;
 
-class BillingException extends Exception {
+class CardErrorException extends Exception {
 } 

@@ -164,4 +164,42 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
     function getColumns() {
         return SubscriptionSQL::GetColumns();
     }
+
+    /**
+     * @param User $user
+     * @return array
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getAllZipcodesForUser(User $user) {
+
+        $zipcodes = DB::table(SubscriptionSQL::TABLE_NAME)
+                      ->select(SubscriptionSQL::C_ZIP_CODE)
+                      ->where(SubscriptionSQL::C_USER_ID, '=', $user->getUserId())
+                      ->get();
+
+        $zipcodes = json_decode(json_encode($zipcodes), true);
+
+        $return = [];
+        foreach ($zipcodes as $value) {
+            $return[] = $value[SubscriptionSQL::C_ZIP_CODE];
+        }
+
+        return array_unique($return);
+    }
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    protected function filter(array $values) {
+        //todo: convert this properly
+        return $values;
+    }
 }
