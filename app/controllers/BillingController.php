@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\exception\BillingException;
+use redhotmayo\billing\Subscription;
 
 class BillingController extends RedHotMayoWebController {
     const BILLING_TOKEN = 'stripeToken';
@@ -41,7 +42,14 @@ class BillingController extends RedHotMayoWebController {
             $this->billingService->setBillingToken($token);
             $this->billingService->subscribe($user);
 
-            return View::make('billing.receipt');
+            /** @var Subscription $sub $sub */
+            $sub = $this->billingService->getSubscriptionForUser($user);
+
+            $params = [
+                'endDate' => $sub->getSubscriptionEndDate()->format('M d, Y'),
+            ];
+
+            return View::make('billing.receipt', $params);
         } catch (BillingException $billException) {
             Log::error("BillingException: {$billException->getMessage()}");
             return Redirect::back()->withErrors($billException->getErrors());
