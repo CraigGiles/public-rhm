@@ -13,7 +13,6 @@ interface BillingRepository extends Repository {
      */
     public function getCustomerToken(User $user);
 
-
     /**
      * Gets the users current billing plan
      *

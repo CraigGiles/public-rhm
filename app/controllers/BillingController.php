@@ -41,7 +41,7 @@ class BillingController extends RedHotMayoWebController {
             $this->billingService->setBillingToken($token);
             $this->billingService->subscribe($user);
 
-            return "Billed... Change me!";
+            return View::make('billing.receipt');
         } catch (BillingException $billException) {
             Log::error("BillingException: {$billException->getMessage()}");
             return Redirect::back()->withErrors($billException->getErrors());
@@ -57,7 +57,7 @@ class BillingController extends RedHotMayoWebController {
     public function cancel() {
         $user = $this->getAuthedUser();
         $this->billingService->cancel($user);
-        return "Canceled...";
+        return View::make('billing.cancel');
     }
 
     private function getBillingToken() {

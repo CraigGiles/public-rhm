@@ -22,7 +22,6 @@ interface SubscriptionRepository extends Repository {
      */
     public function getAllUserIdsSubscribedToZipcode($zipcode);
 
-
     /**
      * Return true if the subscription is already recorded, false otherwise
      *
@@ -30,7 +29,6 @@ interface SubscriptionRepository extends Repository {
      * @return bool
      */
     function isSubscriptionRecorded(Subscription $subscription);
-
 
     /**
      * @param User $user
