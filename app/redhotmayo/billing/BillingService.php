@@ -59,4 +59,14 @@ interface BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function createBillingPlanForUser(User $user);
+
+    /**
+     * Obtains the current population count for the users subscribed territories
+     *
+     * @param User $user
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPopulationCountForUser(User $user);
 }

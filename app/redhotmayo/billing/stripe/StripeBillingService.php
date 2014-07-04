@@ -125,10 +125,21 @@ class StripeBillingService implements BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function createBillingPlanForUser(User $user) {
-        $userZips   = $this->subRepo->getAllZipcodesForUser($user);
-        $population = $this->zipRepo->getPopulationForZipcodes($userZips);
-
+        $population = $this->getPopulationCountForUser($user);
         return BillingPlan::CreateFromPopulation($population);
+    }
+
+    /**
+     * Obtains the current population count for the users subscribed territories
+     *
+     * @param User $user
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPopulationCountForUser(User $user) {
+        $userZips   = $this->subRepo->getAllZipcodesForUser($user);
+        return $this->zipRepo->getPopulationForZipcodes($userZips);
     }
 
     /**
