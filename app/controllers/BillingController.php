@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use redhotmayo\billing\BillingService;
+use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\exception\BillingException;
 use redhotmayo\billing\Subscription;
 
@@ -16,6 +17,10 @@ class BillingController extends RedHotMayoWebController {
     }
 
     public function index() {
+        $user = $this->getAuthedUser();
+        /** @var Subscription $currentSub */
+        $currentSub  = $this->billingService->getSubscriptionForUser($user);
+        $currentPlan = BillingPlan::CreateFromId($currentSub->getPlanId());
         $plan        = $this->billingService->createBillingPlanForUser($this->getAuthedUser());
         $population  = $this->billingService->getPopulationCountForUser($this->getAuthedUser());
         $name        = "Red Hot MAYO";
@@ -26,6 +31,7 @@ class BillingController extends RedHotMayoWebController {
             'name'         => $name,
             'description'  => $description,
             'population'   => $population,
+            'currentPrice' => $currentPlan->getPrice() / 100,
             'price'        => $plan->getPrice() / 100,
             'image'        => $image,
             'billingToken' => Config::get('stripe.public_key')
