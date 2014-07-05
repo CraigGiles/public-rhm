@@ -150,7 +150,7 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
         $data = [];
 
         foreach ($subscriptions as $sub) {
-            $result = $this->zipcodeRepository->getLocationInformation([ZipcodeRepositorySQL::C_ZIPCODE => $sub->zipCode]);
+            $result = $this->zipcodeRepository->getLocationInformation([ZipcodeRepositorySQL::C_ZIPCODE => $sub['zipCode']]);
             $data[] = SubscriptionLocation::FromStdClass($result);
         }
 
