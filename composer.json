@@ -7,7 +7,8 @@
 		"laravel/framework": "4.2.*",
         "PHPOffice/PHPExcel": "*",
         "stripe/stripe-php": "v1.13.0",
-        "codesleeve/asset-pipeline": "dev-master"
+        "codesleeve/asset-pipeline": "dev-master",
+		"guzzlehttp/guzzle": "4.*"
 	},
     "require-dev": {
         "phpunit/phpunit": "4.0.*@dev",

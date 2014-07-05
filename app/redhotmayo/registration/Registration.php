@@ -54,11 +54,12 @@ class Registration {
             $registered = $this->userRepository->save($user);
         }
 
-        //TODO: once we have mailgun support, add mail
-//        //send user an email
-//        if ($registered && isset($user)) {
-//            $this->mailer->welcome($user);
-//        }
+        //send user an email
+        if (App::environment() != 'local' &&
+            App::environment() != 'testing' &&
+            $registered && isset($user)) {
+            $this->mailer->welcome($user);
+        }
 
         if ($registered) {
            $throttle->decrementMax($input);
