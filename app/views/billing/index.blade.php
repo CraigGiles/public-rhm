@@ -14,7 +14,7 @@
         <div class="billing-total">
         New subscription total:
             <li>Population Total: {{ $population }} </li>
-            <li>Price per month: ${{ $price }}</li>
+            <li>Price per month: ${{ $priceInDollars }}</li>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
             src="https://checkout.stripe.com/checkout.js"
             class="stripe-button"
             data-key="{{ $billingToken }}"
-            data-amount="{{ $price }}"
+            data-amount="{{ $priceInPennies }}"
             data-name="{{ $name }}"
             data-description="{{ $description }}"
             data-image="/{{ $image }}">

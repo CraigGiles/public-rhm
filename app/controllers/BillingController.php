@@ -28,13 +28,14 @@ class BillingController extends RedHotMayoWebController {
         $image       = "128x128.png";
 
         $params = [
-            'name'         => $name,
-            'description'  => $description,
-            'population'   => $population,
-            'currentPrice' => $currentPlan->getPrice() / 100,
-            'price'        => $plan->getPrice() / 100,
-            'image'        => $image,
-            'billingToken' => Config::get('stripe.public_key')
+            'name'           => $name,
+            'description'    => $description,
+            'population'     => $population,
+            'currentPrice'   => $currentPlan->getPrice() / 100,
+            'priceInDollars' => $plan->getPrice() / 100,
+            'priceInPennies' => $plan->getPrice(),
+            'image'          => $image,
+            'billingToken'   => Config::get('stripe.public_key')
         ];
 
         return View::make('billing.index', $params);
