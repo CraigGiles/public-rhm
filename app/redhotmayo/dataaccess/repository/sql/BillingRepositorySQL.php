@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use redhotmayo\billing\NullSubscription;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\stripe\StripeSubscription;
 use redhotmayo\billing\Subscription;
@@ -143,6 +144,9 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
             ->first();
 
         $decrypted = $this->dao->decrypt($result);
+        if (is_array($decrypted) && empty($decrypted)) {
+            return new NullSubscription();
+        }
 
         $cancelAtEnd = (bool)$decrypted[BillingStripeSQL::C_AUTO_RENEW] ? false : true;
         $subEndsAt = isset($decrypted[BillingStripeSQL::C_SUBSCRIPTION_ENDS_AT]) ? Carbon::createFromFormat('Y-m-d H:i:s', $decrypted[BillingStripeSQL::C_SUBSCRIPTION_ENDS_AT]) : null;
