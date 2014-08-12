@@ -15,7 +15,7 @@
 <div class="form-group row">
   <div class="col-lg-12">
     {{ Form::button("Submit", ["type" => "submit", "class" => "btn btn-primary btn-lg"]) }}
-    {{ link_to_route('password_resets.create', 'Forgot your password') }}
+    {{ link_to_route('password_resets.create', 'Forgot your password', null, ["class" => "btn pull-right"]) }}
   </div>
 </div>
 
