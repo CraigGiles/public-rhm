@@ -48,7 +48,6 @@ class PasswordResetsController extends \BaseController {
             'password' => Input::get('password'),
             'password_confirmation' => Input::get('password_confirmation'),
         ];
-        $user = $this->userRepo->find(['email' => $creds['email']]);
 
         $something = Password::reset($creds, function ($user, $password) use ($creds) {
             $user->setPassword(Hash::make($password));
@@ -65,7 +64,6 @@ class PasswordResetsController extends \BaseController {
             if (count($creds['password'] < 6)) { $message = 'Password must be at lesat 6 characters'; }
             return Redirect::back()->with('flash_message', $message)->withInput();
         }
-
 
         return Redirect::route('login')->with('flash_message', 'Your credentials have been updated');
     }
