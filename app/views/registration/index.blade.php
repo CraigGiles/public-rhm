@@ -12,7 +12,6 @@
     <div id="forms_part">
       <ul class="nav nav-tabs" id="tabs">
         <li class="active"><a href="#create" data-toggle="tab">Create an Account</a></li>
-        <li><a href="#signin" data-toggle="tab">Sign In</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -65,10 +64,6 @@
           {{ Form::close() }}
         </div>
 
-        <div class="tab-pane" id="signin">
-          <br>
-          @include('layouts.login')
-        </div>
       </div>
     </div>
 
@@ -84,12 +79,6 @@
         </p>
       </div>
     </div>
-    <div id="signin_confirmation" style="display: none">
-      <div class="jumbotron">
-        <h1>Accounts Updated!</h1>
-        <p>You will start seeing your new accounts on your mobile device shortly.</p>
-      </div>
-    </div>
   </div>
 
   <div class="col-md-5">
@@ -102,18 +91,11 @@
 @section('javascript')
 <script>
   $(document).ready(function() {
-
     window.onpopstate = function(event) {
       console.log(event);
       if (event.state === null) {
         $('#registration_confirmation').hide();
-        $('#signin_confirmation').hide();
         $('#forms_part').show();
-      }
-
-      else if (event.state.elm === 'signin_confirmation') {
-        $('#forms_part').hide();
-        $('#signin_confirmation').show();
       }
 
       else if (event.state.elm === 'registration_confirmation') {
@@ -121,12 +103,6 @@
         $('#registration_confirmation').show();
       }
     }
-
-
-    $('#tabs a').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
 
     var usernameLength = 5;
     var passwordLength = 8;
@@ -205,54 +181,6 @@
             }
 
             handleResponse(data);
-          }
-        });
-      }
-    });
-
-
-
-
-
-    /**
-     * Signin Form validation
-     */
-    $('#signin_form').bootstrapValidator({
-      fields: {
-        username: {
-          validators: {
-            notEmpty: {
-              message: 'This field is required and cannot be empty'
-            }
-          }
-        },
-        password: {
-          validators: {
-            notEmpty: {
-              message: 'This field is required and cannot be empty'
-            }
-          }
-        }
-      },
-      submitHandler: function(validator, form, submitButton) {
-
-        $.ajax({
-          url: $('#signin_form').attr('action'),
-          type: $('#signin_form').attr('method'),
-          data: form.serialize(),
-          beforeSend: function() {
-            beforeAjax();
-          },
-          complete: function(data) {
-            $('#signin_submit').prop('disabled', false);
-            if (data.status === 200) {
-//              history.pushState({ elm: "signin_confirmation" }, "Signin Confirmation", "signin_confirmation");
-//              $('#forms_part').hide();
-//              $('#signin_confirmation').show()
-              handleResponse(data);
-            } else {
-              handleResponse(data, false);
-            }
           }
         });
       }
