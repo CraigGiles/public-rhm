@@ -118,6 +118,7 @@ class UserSQL implements UserDAO {
 
     private function getValues(User $user, $updating = false) {
         $emailVerified = (bool)$user->getEmailVerified();
+        $password = $user->getPassword();
 
         $values = [
             self::C_USER_NAME         => $user->getUsername(),
@@ -127,6 +128,10 @@ class UserSQL implements UserDAO {
             self::C_PERMISSIONS       => $user->getPermissions(),
             self::C_UPDATED_AT        => Carbon::now(),
         ];
+
+        if ($updating && isset($password)) {
+            $values[self::C_PASSWORD] = $password;
+        }
 
         if (!$updating) {
             $values[self::C_PASSWORD]   = Hash::make($user->getPassword());

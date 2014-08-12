@@ -44,11 +44,11 @@ class PasswordResetsController extends \BaseController {
     public function update($token) {
         $creds = [
             'token' => $token,
-            'username' => 'testuser',
             'email' => Input::get('email'),
             'password' => Input::get('password'),
             'password_confirmation' => Input::get('password_confirmation'),
         ];
+        $user = $this->userRepo->find(['email' => $creds['email']]);
 
         $something = Password::reset($creds, function ($user, $password) use ($creds) {
             $user->setPassword(Hash::make($password));
