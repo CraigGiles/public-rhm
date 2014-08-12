@@ -18,3 +18,4 @@ local/*
 *.un~
 *.*~
 _ide_helper.php
+services.php
