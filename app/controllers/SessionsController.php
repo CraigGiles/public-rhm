@@ -61,8 +61,4 @@ class SessionsController extends RedHotMayoWebController {
         Auth::logout();
         return Redirect::to('/');
     }
-
-    public function confirmation() {
-        return View::make('sessions.confirmation');
-    }
 }

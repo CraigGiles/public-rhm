@@ -47,7 +47,6 @@ Route::group(['before' => 'csrf'], function(){
 });
 
 Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@create']);
-Route::get('login/confirmation', 'SessionsController@confirmation');
 Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@destroy']);
 Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
