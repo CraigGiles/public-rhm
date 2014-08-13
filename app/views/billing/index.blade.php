@@ -20,15 +20,26 @@
 
     <br />
 
-    {{ Form::open(['url' => 'billing']) }}
-        <script
-            src="https://checkout.stripe.com/checkout.js"
-            class="stripe-button"
-            data-key="{{ $billingToken }}"
-            data-amount="{{ $priceInPennies }}"
-            data-name="{{ $name }}"
-            data-description="{{ $description }}"
-            data-image="/{{ $image }}">
-        </script>
-    {{ Form::close() }}
+    <div class="row">
+        <div class="col-lg-1">
+        {{ Form::button("Cancel", ["class" => "btn btn-primary pull-left"]) }}
+        </div>
+        <div class="col-lg-4">
+        {{ Form::open(['url' => 'billing']) }}
+            <script
+                src="https://checkout.stripe.com/checkout.js"
+                class="stripe-button"
+                data-label="Subscribe"
+                data-panel-label="Subscribe"
+                data-email="{{ $email }}"
+                data-key="{{ $billingToken }}"
+                data-amount="{{ $priceInPennies }}"
+                data-name="{{ $name }}"
+                data-description="{{ $description }}"
+                data-image="/{{ $image }}">
+            </script>
+        {{ Form::close() }}
+        </div>
+
+    </div>
 @stop

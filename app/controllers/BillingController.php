@@ -18,20 +18,24 @@ class BillingController extends RedHotMayoWebController {
 
     public function index() {
         $user = $this->getAuthedUser();
+        $showCurrentSubscription = false;
+
         /** @var Subscription $currentSub */
         $currentSub  = $this->billingService->getSubscriptionForUser($user);
         $currentPlan = BillingPlan::CreateFromId($currentSub->getPlanId());
+
         if ($currentPlan->getId() != '00') {
             $showCurrentSubscription = true;
         }
 
         $plan        = $this->billingService->createBillingPlanForUser($this->getAuthedUser());
-        $name        = "Red Hot MAYO";
+        $name        = "redhotMAYO";
         $description = "Subscription Total";
-        $image       = "128x128.png";
+        $image       = "assets/peppers.png";
 
         $params = [
             'name'           => $name,
+            'email'          => $user->getEmail(),
             'description'    => $description,
             'showCurrentSubscription' => $showCurrentSubscription,
             'currentPrice'   => $currentPlan->getPrice() / 100,
