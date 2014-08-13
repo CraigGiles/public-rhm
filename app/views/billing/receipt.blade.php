@@ -8,5 +8,5 @@
        </p>
     </div>
 
-    {{ link_to_route('billing.index', 'Continue', null, ["class" => "btn btn-primary"]) }}
+    {{ link_to_route('dashboard', 'Continue', null, ["class" => "btn btn-primary"]) }}
 @stop
