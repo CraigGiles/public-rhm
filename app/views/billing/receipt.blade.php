@@ -1,8 +1,12 @@
 @extends('layouts.master')
 
 @section('content')
-    Thank you for your purchase.
+    <b>Thank you for your purchase.</b><br>
     <div>
-        Your current subscription will automatically renew on: {{ $endDate }}
+       <p>
+       Your current subscription will automatically renew on: {{ $endDate }}
+       </p>
     </div>
+
+    {{ link_to_route('billing.index', 'Continue', null, ["class" => "btn btn-primary"]) }}
 @stop
