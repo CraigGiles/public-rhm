@@ -4,7 +4,7 @@ use Illuminate\Support\MessageBag;
 use redhotmayo\exception\Exception;
 
 class ThrottleException extends Exception {
-    const MESSAGE = 'Registration limited to invited guests. Please try back at a later date.';
+    const MESSAGE = "Invalid or Expired Promo Code";
 
     private $token;
 
