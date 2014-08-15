@@ -4,9 +4,6 @@
 
 <div class="page-header">
     @include('partials.errors')
-    <h1>
-        Log In
-    </h1>
 </div>
 
 
