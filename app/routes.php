@@ -32,6 +32,7 @@ Route::group(array('before' => 'api.auth'), function() {
 //--------------------------------------------------
 // Web System
 //--------------------------------------------------
+Route::resource('dashboard', 'DashboardController', ['only' => ['index']]);
 
 // Subscription
 Route::get('geography/search', 'GeographyController@search');
