@@ -82,7 +82,7 @@ class BillingController extends RedHotMayoWebController {
         
         /** @var Subscription $sub */
         $sub = $this->billingService->getSubscriptionForUser($user);
-
+        
         $params = [
             'endDate' => $sub->getSubscriptionEndDate()->format('M d, Y')
         ];

@@ -56,8 +56,8 @@ Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
 Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 
 Route::group(['before' => 'auth'], function() {
+    Route::get('billing/cancel', 'BillingController@cancel');
     Route::resource('billing', 'BillingController');
-    Route::get('cancel', 'BillingController@cancel');
 });
 
 
