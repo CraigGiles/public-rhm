@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <title>Red Hot Mayo</title>
-    {{ javascript_include_tag() }}
-    @yield('javascript')
 
     {{ stylesheet_link_tag() }}
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -25,5 +23,7 @@
   </div>
 
 
+    {{ javascript_include_tag() }}
+    @yield('javascript')
 </body>
 </html>
