@@ -1,3 +1,4 @@
+
 var warning_template_src =  '<div class="alert alert-{{type}}">' +
                               '<strong>Uh oh...</strong>' +
                               '{{#each message}}' +
@@ -7,7 +8,6 @@ var warning_template_src =  '<div class="alert alert-{{type}}">' +
                               '{{/each}}' +
                             '</div>';
 var warning_template = Handlebars.compile(warning_template_src);
-
 
 function handleResponse(data, redirect) {
   /**
