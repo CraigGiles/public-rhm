@@ -7,6 +7,7 @@ use redhotmayo\dataaccess\repository\BillingRepository;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
+use redhotmayo\model\Region;
 use redhotmayo\model\User;
 
 class StripeBillingService implements BillingService {
@@ -185,5 +186,32 @@ class StripeBillingService implements BillingService {
         $this->userRepo->save($rhmUser);
     }
 
+    /**
+     * Given an array of regions, output the proposed total for each billing cycle
+     *
+     * @param array $regions
+     * @return int
+     */
+    public function getProposedTotalForRegions(array $regions) {
+        $zipcodes = [];
+
+        foreach ($regions as $region) {
+            if (!$region instanceof Region) {
+                throw new \InvalidArgumentException("Region must be instanceof Region class");
+            }
+
+            $zips = $this->zipRepo->getZipcodesFromCity($region->getCity(), $region->getState());
+            $zipcodes = array_merge($zipcodes, $zips);
+        }
+
+        if (empty($zipcodes)) {
+            return 0;
+        }
+
+        $population = $this->zipRepo->getPopulationForZipcodes($zipcodes);
+        $plan = BillingPlan::CreateFromPopulation($population);
+
+        return $plan->getPrice();
+    }
 }
 

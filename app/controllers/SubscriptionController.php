@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,7 @@ use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
+use redhotmayo\model\Region;
 use redhotmayo\model\User;
 
 class SubscriptionController extends RedHotMayoWebController {
@@ -102,21 +104,15 @@ class SubscriptionController extends RedHotMayoWebController {
 
     public function total() {
         try {
-            $zipcodes = [];
-            $regions = Input::json(self::REGIONS);
+            $regions = new Collection();
+            $regionsAsArray = Input::json(self::REGIONS);
 
-            foreach($regions as $region) {
-                $zips = $this->zipcodeRepository->getZipcodesFromCity($region['city'], $region['state']);
-                $zipcodes = array_merge($zipcodes, $zips);
+            foreach ($regionsAsArray as $array) {
+                $regions->push(Region::createWithData($array));
             }
 
-            if (empty($zipcodes)) {
-                return $this->respondWithTotal(0);
-            }
-
-            $population = $this->zipcodeRepository->getPopulationForZipcodes($zipcodes);
-            $plan = BillingPlan::CreateFromPopulation($population);
-            return $this->respondWithTotal($plan->getPrice());
+            $price = $this->billingService->getProposedTotalForRegions($regions->toArray());
+            return $this->respondWithTotal($price);
         } catch (Exception $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondWithUnknownError($ex->getMessage());

@@ -69,4 +69,12 @@ interface BillingService {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getPopulationCountForUser(User $user);
+
+    /**
+     * Given an array of regions, output the proposed total for each billing cycle
+     *
+     * @param array $regions
+     * @return int
+     */
+    public function getProposedTotalForRegions(array $regions);
 }
