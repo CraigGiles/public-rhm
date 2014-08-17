@@ -15,6 +15,7 @@
 <div class="page-header">
   <h1>
     Select your coverage area to get pricing.<br>
+    <div class="md-3 pull-right" id="total"></div>
     <small>Sign up now to be part of redhotMAYO’s FREE “Limited Release”</small>
   </h1>
 </div>
@@ -22,7 +23,9 @@
 
 
 
+
 <div class="row">
+
   <div id="selections" class="col-md-8">
     <div class="row">
       <div class="col-md-6 state-selection">
@@ -345,6 +348,7 @@
       button.addClass('active');
       elm.addClass('selected');
       updateSelectedRegionTemplate();
+      updateTotal();
       //updateRegionsTemplate();
 
     }
@@ -357,6 +361,7 @@
     regions_cache[selected_regions[index].state][selected_regions[index].id].selected = undefined;
     selected_regions.splice(index, 1);
 
+      updateTotal();
     updateSelectedRegionTemplate();
     updateRegionsTemplate();
   }
@@ -374,6 +379,22 @@
   }
   function updateSelectedRegionTemplate(){
     $('#selected-regions').html(selected_regions_template({regions:selected_regions}));
+  }
+
+  function updateTotal() {
+    $.ajax({
+        url:'subscribe/price',
+        type: 'POST',
+        dataType: 'json',
+        data: JSON.stringify({regions:selected_regions}),
+        cache: true,
+        complete: function(data) {
+            console.log(data.responseJSON);
+            var price = data.responseJSON.message;
+            console.log(price);
+            $("#total").html("Projected Total: $" + parseInt(data.responseJSON.message)/100);
+        }
+    });
   }
 
 

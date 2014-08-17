@@ -34,9 +34,14 @@ Route::group(array('before' => 'api.auth'), function() {
 //--------------------------------------------------
 Route::resource('dashboard', 'DashboardController', ['only' => ['index']]);
 
-// Subscription
+//// Subscription
+//Route::get('update', function() {
+//    return View::make('subscriptions.update', ['states' => ['something', 'wicked', 'this', 'way', 'comes']]);
+//});
+
 Route::get('geography/search', 'GeographyController@search');
 Route::get('subscribe', 'SubscriptionController@index');
+Route::post('subscribe/price', 'SubscriptionController@total');
 Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'store']]);
 
 // Registration

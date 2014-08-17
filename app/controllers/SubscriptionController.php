@@ -6,15 +6,18 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use redhotmayo\billing\BillingService;
+use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
 use redhotmayo\model\User;
 
 class SubscriptionController extends RedHotMayoWebController {
     const TEMP_ID = 'temp_id';
-    const DATA = 'regions';
+    const REGIONS = 'regions';
     const ONE_DAY = 1440;
 
     /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subscriptionRepository */
@@ -26,13 +29,23 @@ class SubscriptionController extends RedHotMayoWebController {
     /** @var \redhotmayo\distribution\AccountSubscriptionManager $subscriptionManager */
     private $subscriptionManager;
 
+    /** @var \redhotmayo\dataaccess\repository\ZipcodeRepository $zipcodeRepository */
+    private $zipcodeRepository;
+
+    /** @var \redhotmayo\billing\BillingService $billingService */
+    private $billingService;
+
     public function __construct(SubscriptionRepository $subscriptionRepository,
                                 UserRepository $userRepository,
-                                AccountSubscriptionManager $subscriptionManager
+                                ZipcodeRepository $zipcodeRepository,
+                                AccountSubscriptionManager $subscriptionManager,
+                                BillingService $billingService
     ) {
         $this->subscriptionManager = $subscriptionManager;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
+        $this->zipcodeRepository = $zipcodeRepository;
+        $this->billingService = $billingService;
     }
 
     /**
@@ -72,7 +85,7 @@ class SubscriptionController extends RedHotMayoWebController {
      */
     public function store() {
         try {
-            $data = Input::json(self::DATA);
+            $data = Input::json(self::REGIONS);
             $user = $this->getAuthedUser();
 
             if (!isset($user)) {
@@ -87,10 +100,40 @@ class SubscriptionController extends RedHotMayoWebController {
         }
     }
 
+    public function total() {
+        try {
+            $zipcodes = [];
+            $regions = Input::json(self::REGIONS);
+
+            foreach($regions as $region) {
+                $zips = $this->zipcodeRepository->getZipcodesFromCity($region['city'], $region['state']);
+                $zipcodes = array_merge($zipcodes, $zips);
+            }
+
+            if (empty($zipcodes)) {
+                return $this->respondWithTotal(0);
+            }
+
+            $population = $this->zipcodeRepository->getPopulationForZipcodes($zipcodes);
+            $plan = BillingPlan::CreateFromPopulation($population);
+            return $this->respondWithTotal($plan->getPrice());
+        } catch (Exception $ex) {
+            Log::error("AccountSubscriptionException: {$ex->getMessage()}");
+            return $this->respondWithUnknownError($ex->getMessage());
+        }
+    }
+
     private function respondAccountSubscriptionException(AccountSubscriptionException $ex) {
         $this->setStatusCode(Response::HTTP_CONFLICT);
         $this->setMessages($ex->getErrors());
         $this->setRedirect('subscription');
+
+        return $this->respond();
+    }
+
+    private function respondWithTotal($total) {
+        $this->setStatusCode(Response::HTTP_OK);
+        $this->setMessages($total);
 
         return $this->respond();
     }
