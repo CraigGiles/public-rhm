@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('javascript')
-{{ HTML::script('assets/dashboard/index.js') }}
 {{ HTML::script('assets/billing/index.js') }}
 @endsection
 
