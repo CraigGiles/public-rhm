@@ -13,9 +13,11 @@
 
 @section('content')
 <div class="page-header">
+    <h2>
+        <div class="md-3 pull-right" id="total"></div>
+    </h2>
   <h1>
     Select your coverage area to get pricing.<br>
-    <div class="md-3 pull-right" id="total"></div>
     <small>Sign up now to be part of redhotMAYO’s FREE “Limited Release”</small>
   </h1>
 </div>
@@ -83,6 +85,7 @@
             <option value="WY">Wyoming</option>
         </select>
       </div>
+
     </div>
     <div class="row">
       <div class="col-md-6 region-picker">
@@ -173,6 +176,7 @@
     $('.region-list').height(potentialHeight-extra);
     $('.selected-regions').height(potentialHeight-extra);
     $('.region-filtered').height(potentialHeight-extra-42);
+      updateTotal();
   });
 
 
@@ -392,7 +396,7 @@
             console.log(data.responseJSON);
             var price = data.responseJSON.message;
             console.log(price);
-            $("#total").html("Projected Total: $" + parseInt(data.responseJSON.message)/100);
+            $("#total").html("Total: $" + parseInt(data.responseJSON.message)/100);
         }
     });
   }

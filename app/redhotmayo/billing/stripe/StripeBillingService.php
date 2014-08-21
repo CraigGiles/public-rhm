@@ -199,8 +199,10 @@ class StripeBillingService implements BillingService {
             if (!$region instanceof Region) {
                 throw new \InvalidArgumentException("Region must be instanceof Region class");
             }
+            $type = $region->getType();
+            $zips = $type == Region::COUNTY ? $this->zipRepo->getZipcodesFromCounty($region->getCounty(), $region->getState())
+                                            : $this->zipRepo->getZipcodesFromCity($region->getCity(), $region->getState());
 
-            $zips = $this->zipRepo->getZipcodesFromCity($region->getCity(), $region->getState());
             $zipcodes = array_merge($zipcodes, $zips);
         }
 
