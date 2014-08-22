@@ -13,7 +13,7 @@
         </div>
 
         <div class="dropdown">
-            <button class="btn btn-default btn-lg dropdown-toggle " type="button" id="dropdownMenu1" data-toggle="dropdown">
+            <button class="btn btn-default btn-lg dropdown-toggle " type="button" data-toggle="dropdown">
                 Select a State...
                 <span class="caret"></span>
             </button>
@@ -22,13 +22,13 @@
                 <? //Search bar inside the dropdown menu for filtering states?>
                 {{ Form::open(['class' => 'navbar-form navbar-left', 'role' => 'search']) }}
                   <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input id="dropdown-states" type="text" class="form-control" placeholder="Search">
                   </div>
                 {{ Form::close() }}
 
                 <? //poplate the dropdown menu with all the available states ?>
                 @foreach($states as $state)
-                    <li role="presentation"><a role="menuitem">{{{ $state }}}</a></li>
+                    <li role="presentation"><a id="state-item" role="menuitem">{{{ $state }}}</a></li>
                 @endforeach
             </ul>
 
