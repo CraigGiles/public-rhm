@@ -36,6 +36,13 @@ interface ZipcodeRepository extends Repository {
     public function getAllCounties($conditions);
 
     /**
+     * Obtain a list of all states
+     *
+     * @return array
+     */
+    public function getAllStates();
+
+    /**
      * Obtain the City, State, County, Zipcode and Population information for the
      * given constraints.
      *

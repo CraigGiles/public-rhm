@@ -22,12 +22,7 @@
   </h1>
 </div>
 
-
-
-
-
 <div class="row">
-
   <div id="selections" class="col-md-8">
     <div class="row">
       <div class="col-md-6 state-selection">

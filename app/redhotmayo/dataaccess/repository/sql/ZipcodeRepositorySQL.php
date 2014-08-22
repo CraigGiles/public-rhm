@@ -17,6 +17,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const C_COUNTY = 'county';
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
+    const C_STATE_FULL_NAME = 'stateFullName';
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
@@ -115,6 +116,27 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
         return $counties;
     }
 
+    /**
+     * Obtain a list of all states in the form of
+     * [ 'CA' => 'California' ]
+     *
+     * @return array
+     */
+    public function getAllStates() {
+        $states = [];
+        $values = DB::table(self::TABLE_NAME)
+            ->select([self::C_STATE, self::C_STATE_FULL_NAME])
+            ->distinct()
+            ->where('region', '!=', " ")
+            ->orderBy(self::C_STATE)
+            ->get();
+
+        foreach ($values as $value) {
+            $states[$value->state] = $value->stateFullName;
+        }
+
+        return $states;
+    }
     /**
      * Obtain a list of zipcodes for the given city
      *
