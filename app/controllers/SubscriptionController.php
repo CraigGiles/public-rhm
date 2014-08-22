@@ -166,6 +166,8 @@ class SubscriptionController extends RedHotMayoWebController {
 
     public function update() {
         $states = $this->zipcodeRepository->getAllStates();
-        return View::make('subscriptions.update', ['states' => $states]);
+        $counties = $this->zipcodeRepository->getAllCounties();
+        dd($counties);
+        return View::make('subscriptions.update', ['states' => $states, 'counties' => []]);
     }
 }
