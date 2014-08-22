@@ -12,47 +12,22 @@
           </h1>
         </div>
 
-        <div class="dropdown">
-            <button class="btn btn-default btn-lg dropdown-toggle " type="button" data-toggle="dropdown">
-                Select a State...
-                <span class="caret"></span>
-            </button>
+        <h4>Select a state to reveal its cities / counties</h4>
+        @include('subscriptions.partials.dropdown', [
+            'items' => $states,
+            'dropdown_id' => 'dropdown-states',
+            'label' => 'Select a State',
+            'item_id' => "state-item"
+        ])
+        <br />
 
-            <ul class="dropdown-menu" role="menu">
-                <? //Search bar inside the dropdown menu for filtering states?>
-                {{ Form::open(['class' => 'navbar-form navbar-left', 'role' => 'search']) }}
-                  <div class="form-group">
-                    <input id="dropdown-states" type="text" class="form-control" placeholder="Search">
-                  </div>
-                {{ Form::close() }}
+        <h4>Filter city selection by county</h4>
+        @include('subscriptions.partials.dropdown', [
+            'items' => $counties,
+            'dropdown_id' => 'dropdown-counties',
+            'label' => 'Filter by County',
+            'item_id' => "county-item"
+        ])
 
-                <? //poplate the dropdown menu with all the available states ?>
-                @foreach($states as $state)
-                    <li role="presentation"><a id="state-item" role="menuitem">{{{ $state }}}</a></li>
-                @endforeach
-            </ul>
-        </div>
-
-        <div class="dropdown">
-            <button class="btn btn-default btn-lg dropdown-toggle " type="button" data-toggle="dropdown">
-                Select a County...
-                <span class="caret"></span>
-            </button>
-
-            <ul class="dropdown-menu" role="menu">
-                <? //Search bar inside the dropdown menu for filtering states?>
-                {{ Form::open(['class' => 'navbar-form navbar-left', 'role' => 'search']) }}
-                  <div class="form-group">
-                    <input id="dropdown-counties" type="text" class="form-control" placeholder="Search">
-                  </div>
-                {{ Form::close() }}
-
-                <? //poplate the dropdown menu with all the available states ?>
-                @foreach($counties as $county)
-                    <li role="presentation"><a id="county-item" role="menuitem">{{{ $county }}}</a></li>
-                @endforeach
-            </ul>
-
-        </div>
     @endsection
 @stop
