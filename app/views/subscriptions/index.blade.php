@@ -360,9 +360,9 @@
     regions_cache[selected_regions[index].state][selected_regions[index].id].selected = undefined;
     selected_regions.splice(index, 1);
 
-      updateTotal();
     updateSelectedRegionTemplate();
     updateRegionsTemplate();
+    updateTotal();
   }
   function removeSelectedRegionByGlobalID(index) {
     for (var i=0 ; i<selected_regions.length ; i++) {
@@ -375,6 +375,7 @@
 
     updateSelectedRegionTemplate();
     updateRegionsTemplate();
+    updateTotal();
   }
   function updateSelectedRegionTemplate(){
     $('#selected-regions').html(selected_regions_template({regions:selected_regions}));
