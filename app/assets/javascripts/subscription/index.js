@@ -13,7 +13,14 @@ RHM.App.Subscription = {
 
     stateItemClick: function() {
         $('.state-item').click(function() {
-            RHM.App.Subscription.loadCountiesForState($(this).text());
+            var sub = RHM.App.Subscription;
+            var state = RHM.App.Subscription.state = $(this).text();
+            var element = $('#dropdown-states-button');
+
+            sub.loadCountiesForState(state);
+            
+            element.text(state);
+            element.append(' <span class="caret"></span>');
         });
     },
 
