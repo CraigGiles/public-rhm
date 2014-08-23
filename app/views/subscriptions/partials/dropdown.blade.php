@@ -4,7 +4,7 @@
         <span class="caret"></span>
     </button>
 
-    <ul class="dropdown-menu " role="menu">
+    <ul class="dropdown-menu" id="{{ $dropdown_id }}-list" role="menu">
         <? //Search bar inside the dropdown menu for filtering?>
         {{ Form::open(['class' => 'navbar-form navbar-left', 'role' => 'search']) }}
           <div class="form-group">
