@@ -3,21 +3,23 @@ RHM.App = RHM.App || {}
 
 RHM.App.Subscription = {
     statesFilter: function() {
-        $('#dropdown-states').keyup(function() {
-            RHM.App.Subscription.filter($(this));
+        var element = 'dropdown-states';
+        $('.' + element).keyup(function() {
+            console.log('#search-'+ element);
+            RHM.App.Subscription.filter(element, $('#search-'+ element));
         });
     },
 
     countyFilter: function() {
-        $('#dropdown-counties').keyup(function() {
-            RHM.App.Subscription.filter($(this));
+        var element = 'dropdown-counties';
+        $('.' + element).keyup(function() {
+            RHM.App.Subscription.filter(element, $('#search-'+ element));
         });
     },
 
-    filter: function(object) {
+    filter: function(element, object) {
         var valThis = object.val();
-
-        $( "li" ).each(function() {
+        $('.' + element + ' li').each(function() {
             var text = $(this).text().toLowerCase();
             (text.indexOf(valThis) > -1) ? $(this).show() : $(this).hide();
         });
