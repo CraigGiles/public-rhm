@@ -1,5 +1,6 @@
 @extends('layouts.master')
     @section("javascript")
+        {{ HTML::script('assets/string-helper.js'); }}
         {{ HTML::script('assets/subscription/index.js'); }}
     @endsection
 

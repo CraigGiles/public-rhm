@@ -52,7 +52,11 @@ RHM.App.Subscription = {
             var county = json[index].county;
             var type = json[index].type;
             if (type == "county") {
-                $('#dropdown-counties-list').append('<li role="presentation"><a class="county-item" role="menuitem">' + RHM.App.Subscription.toTitleCase(county) + '</a></li>');
+                $('#dropdown-counties-list')
+                    .append(
+                        '<li role="presentation"><a class="county-item" role="menuitem">'
+                            + RHM.Utils.StringHelper.toTitleCase(county) + '</a></li>'
+                    );
             }
         });
     },
