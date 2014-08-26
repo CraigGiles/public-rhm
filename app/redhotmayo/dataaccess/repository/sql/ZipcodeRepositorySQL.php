@@ -79,7 +79,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_CITY)
                         ->distinct()
-                        ->whereRaw('state=?', [$conditions['state']])
+                        ->whereRaw('state=? OR stateFullName=?', [$conditions['state'], $conditions['state']])
                         ->get();
 
             foreach ($values as $value) {
@@ -105,7 +105,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_COUNTY)
                         ->distinct()
-                        ->whereRaw('state=?', [$state])
+                        ->whereRaw('state=? OR stateFullName=?', [$state, $state])
                         ->get();
 
             foreach ($values as $value) {
