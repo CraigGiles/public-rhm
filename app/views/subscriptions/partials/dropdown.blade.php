@@ -1,7 +1,6 @@
-<div class="dropdown {{ $dropdown_id }}">
-    <button class="btn btn-default btn-lg dropdown-toggle " type="button" data-toggle="dropdown">
-        {{ $label }}
-        <span class="caret"></span>
+<div class="dropdown {{ $dropdown_id }} ">
+    <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+        <div id="{{$dropdown_id}}-button">{{ $label }}  <span class="caret"></span></div>
     </button>
 
     <ul class="dropdown-menu" id="{{ $dropdown_id }}-list" role="menu">
