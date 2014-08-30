@@ -56,15 +56,15 @@
                     <h4><span class="badge alert-success">4</span> You have selected the following regions</h4>
                     {{ Form::open() }}
                     <div class="selected-regions">
-                        @include('subscriptions.partials.region_item', [
-                            'class' => 'region-item',
-                            'searchTerm' => 'Search Term Here',
-                            'buttonText' => '-',
-                            'buttonColor' => 'danger',
-                            'type' => 'city',
-                            'state' => 'CA'
-                        ])
 
+                        {{ Form::open() }}
+                        @foreach($subscriptions as $sub)
+                            <div class="region">
+                                {{ Form::checkbox($sub->getCity()) }} City: {{ $sub->getCity() }}
+                            </div>
+                        @endforeach
+                        {{ Form::submit('Unsubscribe', ['class' => 'btn btn-lg btn-primary pull-right']) }}
+                        {{ Form::close() }}
                     </div>
                     <br />
 
