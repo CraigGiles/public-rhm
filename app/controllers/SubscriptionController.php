@@ -164,14 +164,32 @@ class SubscriptionController extends RedHotMayoWebController {
         return $response;
     }
 
+    /**
+     * auth filter applied before the execution of this function described in the routes file
+     *
+     * @return mixed
+     */
     public function update() {
+
         $states = $this->zipcodeRepository->getAllStates();
         $user = $this->getAuthedUser();
         $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         $data = $this->filterUnique($data);
-        return View::make('subscriptions.update', ['subscriptions' => $data, 'states' => $states, 'counties' => ['something', 'wicked', 'this', 'way', 'comes']]);
+        return View::make('subscriptions.update', ['subscriptions' => $data, 'states' => $states, 'counties' => []]);
     }
 
+    public function region_item_partial() {
+        $data = [
+            'class' => 'region-item',
+            'searchTerm' => 'Search Term Here',
+            'buttonText' => '+',
+            'buttonColor' => 'success',
+            'regionType' => 'city',
+            'regionItemAddOrRemove' => 'region-item-add',
+            'state' => 'CA'
+        ];
+        return View::make('subscriptions.partials.region_item', $data);
+    }
 
     private function filterUnique(array $data) {
         $cities = [];

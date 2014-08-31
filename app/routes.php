@@ -44,6 +44,7 @@ Route::get('subscribe', 'SubscriptionController@index');
 Route::post('subscribe/price', 'SubscriptionController@total');
 Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'store']]);
 Route::get('subscribe/update', 'SubscriptionController@update')->before('auth');
+Route::get('subscribe/region_item_partial', 'SubscriptionController@region_item_partial')->before('auth');
 
 // Registration
 Route::get('registration', 'RegistrationController@index');

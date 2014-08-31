@@ -4,10 +4,8 @@ RHM.App = RHM.App || {}
 RHM.App.Subscription = {
     registerClickEvents: function() {
         RHM.App.Subscription.stateItemClick();
-
-        $('#available-regions').on(function() {
-            alert('changed');
-        });
+        RHM.App.Subscription.countyItemClick();
+        RHM.App.Subscription.regionItemButtonClick();
     },
 
     registerFilterEvents: function() {
@@ -25,6 +23,25 @@ RHM.App.Subscription = {
 
             element.text(state);
             element.append(' <span class="caret"></span>');
+        });
+    },
+
+    countyItemClick: function() {
+        $('.county-item').click(function() {
+            var sub     = RHM.App.Subscription;
+            var county   = RHM.App.Subscription.county = $(this).text();
+            var element = $('#dropdown-counties-button');
+
+            sub.filterCitiesByCounty(county);
+
+            element.text(county);
+            element.append(' <span class="caret"></span>');
+        });
+    },
+
+    regionItemButtonClick: function(btn) {
+        $('.region-item-button').click(function() {
+
         });
     },
 
@@ -46,14 +63,22 @@ RHM.App.Subscription = {
         });
     },
 
+    filterCitiesByCounty: function(county) {
+        var element = $('#available-regions');
+        var county = RHM.App.Subscription.county;
+
+        element.children().each(function() {
+            var elm = $(this);
+            if (elm.find('.search-term').text().toLowerCase() != county.toLowerCase()) {
+                elm.hide();
+            }
+        });
+    },
+
     setAvailableRegions: function(json) {
         var element = $('#available-regions');
         var state = RHM.App.Subscription.state;
         element.html('');
-
-        //var regions_template = Handlebars.compile($('#regions_template').html());
-        //$('#selected-regions').html(regions_template({regions:json.toArray()}));
-        console.log("state info: " + state);
 
         $.each(json, function(index) {
             var type = json[index].type;
@@ -64,15 +89,15 @@ RHM.App.Subscription = {
     },
 
     getRegionItem: function(text, type, state, buttonText) {
-        return '<div class="region-item">' +
-                    '<button ' +
-                        'type="button" ' +
-                        'class="btn btn-success">'
-                            + buttonText +
-                    '</button>' +
-                    text +
-                    '<small class="type text-muted">' + type + ', ' + state + '</small>' +
-                '</div>';
+        var p = RHM.App.Subscription.regionItemTemplate;
+        var titleCaseText = RHM.Utils.StringHelper.toTitleCase(text);
+
+        p.find('.search-term').text(titleCaseText);
+        p.find('.region-type').text(type + ", " + state);
+        p.find('.region-item-button').text(buttonText);
+        p.selected = false;
+
+        return p.clone();
     },
 
     setCountiesDropdown: function(json) {
@@ -93,6 +118,9 @@ RHM.App.Subscription = {
                     );
             }
         });
+
+        RHM.App.Subscription.registerClickEvents();
+        RHM.App.Subscription.registerFilterEvents();
     },
 
     statesSearchBoxFilter: function() {
@@ -119,6 +147,8 @@ RHM.App.Subscription = {
 }
 
 $(document).ready(function (){
+    RHM.App.Subscription.regionItemTemplate = $(this).load('/subscribe/region_item_partial').find('.region-item-template');
+
     RHM.App.Subscription.registerClickEvents();
     RHM.App.Subscription.registerFilterEvents();
 });

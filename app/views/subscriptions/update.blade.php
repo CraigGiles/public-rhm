@@ -15,7 +15,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h4><span class="badge alert-success">1</span> Select a state to reveal its cities / counties</h4>
+                    <h4><span class="badge alert-success">1</span> Select a state to reveal its regions</h4>
                     @include('subscriptions.partials.dropdown', [
                         'items' => $states,
                         'dropdown_id' => 'dropdown-states',
@@ -24,7 +24,7 @@
                     ])
                 </div>
                 <div class="col-md-6">
-                    <h4><span class="badge alert-success">2</span> Further filter city selection by county</h4>
+                    <h4><span class="badge alert-success">2</span> Further filter regional options by county</h4>
                     @include('subscriptions.partials.dropdown', [
                         'items' => $counties,
                         'dropdown_id' => 'dropdown-counties',
@@ -39,28 +39,27 @@
                 <div class="col-md-6">
                     <h4><span class="badge alert-success">3</span> Select your desired regions</h4>
                     <div class="selected-regions" id="available-regions">
-                    {{ Form::open() }}
                         @include('subscriptions.partials.region_item', [
                             'class' => 'region-item',
                             'searchTerm' => 'Search Term Here',
                             'buttonText' => '+',
                             'buttonColor' => 'success',
-                            'type' => 'city',
+                            'regionType' => 'city',
+                            'regionItemAddOrRemove' => 'region-item-add',
                             'state' => 'CA'
                         ])
-                    {{ Form::close() }}
                     </div>
                     <br>
                 </div>
                 <div class="col-md-6">
-                    <h4><span class="badge alert-success">4</span> You have selected the following regions</h4>
+                    <h4><span class="badge alert-success">4</span> Your new subscription list</h4>
                     {{ Form::open() }}
                     <div class="selected-regions">
 
                         {{ Form::open() }}
                         @foreach($subscriptions as $sub)
                             <div class="region">
-                                {{ Form::checkbox($sub->getCity()) }} City: {{ $sub->getCity() }}
+                                {{ Form::button('x', ['class' => 'btn btn-primary region-item-remove']) }} {{ Str::title($sub->getCity()) }}
                             </div>
                         @endforeach
                         {{ Form::submit('Unsubscribe', ['class' => 'btn btn-lg btn-primary pull-right']) }}
