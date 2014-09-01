@@ -11,6 +11,7 @@ use redhotmayo\model\Account;
 use redhotmayo\model\Subscription;
 use redhotmayo\model\SubscriptionLocation;
 use redhotmayo\model\User;
+use redhotmayo\utility\Arrays;
 
 class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRepository {
     const SERVICE = '\redhotmayo\dataaccess\repository\sql\SubscriptionRepositorySQL';
@@ -151,6 +152,7 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
 
         foreach ($subscriptions as $sub) {
             $result = $this->zipcodeRepository->getLocationInformation([ZipcodeRepositorySQL::C_ZIPCODE => $sub['zipCode']]);
+            $result->userId = Arrays::GetValue($sub, 'userId', null);
             $data[] = SubscriptionLocation::FromStdClass($result);
         }
 
