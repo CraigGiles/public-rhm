@@ -170,12 +170,23 @@ class SubscriptionController extends RedHotMayoWebController {
      * @return mixed
      */
     public function update() {
-
         $states = $this->zipcodeRepository->getAllStates();
         $user = $this->getAuthedUser();
         $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         $data = $this->filterUnique($data);
-        return View::make('subscriptions.update', ['subscriptions' => $data, 'states' => $states, 'counties' => []]);
+
+        $counties = [];
+        $activeState = 'California';
+        $activeCounty = 'Sacramento';
+
+        $sidebar = [
+            'states' => $states,
+            'counties' => $counties,
+            'state' => $activeState,
+            'county' => $activeCounty,
+        ];
+
+        return View::make('subscriptions.update', ['sidebar' => $sidebar, 'subscriptions' => $data, 'states' => $states, 'counties' => []]);
     }
 
     public function region_item_partial() {

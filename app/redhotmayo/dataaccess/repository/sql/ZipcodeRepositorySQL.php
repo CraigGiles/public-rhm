@@ -109,7 +109,8 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
                         ->get();
 
             foreach ($values as $value) {
-                $counties[] = $value->county;
+                $county = ucwords(strtolower($value->county));
+                $counties[$county] = $county;
             }
         }
 
