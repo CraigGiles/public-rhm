@@ -173,6 +173,7 @@ class SubscriptionController extends RedHotMayoWebController {
         /** @var User $user */
         $user = $this->getAuthedUser();
         $states = $this->zipcodeRepository->getAllStates();
+        $counties = $this->zipcodeRepository->getAllCounties(['state' => array_values($states)[0]]);
         $subscriptionLocations = [];
 
         if (isset($user)) {
@@ -185,7 +186,9 @@ class SubscriptionController extends RedHotMayoWebController {
 
         $subscriptionLocations = $this->filterUnique($subscriptionLocations);
 
-        return View::make('subscriptions.update', ['subscriptions' => $subscriptionLocations, 'states' => $states]);
+        return View::make('subscriptions.update', [
+            'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
+        ]);
     }
 
     public function region_item_partial() {
@@ -198,6 +201,7 @@ class SubscriptionController extends RedHotMayoWebController {
             'regionItemAddOrRemove' => 'region-item-add',
             'state' => 'CA'
         ];
+
         return View::make('subscriptions.partials.region_item', $data);
     }
 
