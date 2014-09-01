@@ -5,12 +5,43 @@ RHM.App.Subscription = {
     registerClickEvents: function() {
         //RHM.App.Subscription.stateItemClick();
         //RHM.App.Subscription.countyItemClick();
-        //RHM.App.Subscription.regionItemButtonClick();
+        RHM.App.Subscription.regionItemButtonClick();
     },
 
     registerFilterEvents: function() {
         RHM.App.Subscription.statesSearchBoxFilter();
         RHM.App.Subscription.countySearchBoxFilter();
+    },
+
+    regionItemButtonClick: function() {
+        $('.region-item-button-add').click(function() {
+            var oldItem = $(this).closest('li');
+            var city = oldItem.find('.region-city').text();
+            var state = oldItem.find('.region-state').text();
+            var item = RHM.App.Subscription.getNewRegionItem(city, state, 'region-item-button-remove', '-');
+;
+            RHM.App.Subscription.selectedRegions.append(item.html());
+            RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', function() {
+                $(this).closest('li').detach();
+            });
+        });
+
+        $('.region-item-button-remove').click(function() {
+            $(this).closest('li').detach();
+        });
+    },
+
+    getNewRegionItem: function(city, state, className, buttonText) {
+        var p = RHM.App.Subscription.regionItemTemplate.clone();
+        var fCity = RHM.Utils.StringHelper.toTitleCase(city);
+
+        p.find('.region-city').text(fCity);
+        p.find('.region-state').text(state.toUpperCase());
+        p.find('.btn').removeClass('region-item-button-add');
+        p.find('.btn').addClass(className);
+        p.find('.btn').text(buttonText);
+
+        return p;
     },
 
     //stateItemClick: function() {
@@ -175,13 +206,21 @@ RHM.App.Subscription = {
             var text = $(this).text().toLowerCase();
             (text.indexOf(valThis) > -1) ? $(this).show() : $(this).hide();
         });
+    },
+
+    init: function() {
+        RHM.App.Subscription.registerClickEvents();
+        RHM.App.Subscription.registerFilterEvents();
     }
+
 }
 
 $(document).ready(function (){
-    RHM.App.Subscription.regionItemTemplate = $(this).load('/subscribe/region_item_partial').find('.region-item-template');
+    RHM.App.Subscription.regionItemTemplate = $('#region-item-template');
+    RHM.App.Subscription.selectedRegions = $('#selected-regions-container');
+    //console.log(RHM.App.Subscription.selectedRegions.html());
 
-    RHM.App.Subscription.registerClickEvents();
-    RHM.App.Subscription.registerFilterEvents();
+    //RHM.App.Subscription.selectedRegions.append(newItem.html());
+    RHM.App.Subscription.init();
 });
 

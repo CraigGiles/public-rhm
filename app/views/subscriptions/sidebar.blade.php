@@ -1,8 +1,7 @@
-@section("javascript")
-    {{ HTML::script('assets/string-helper.js'); }}
-    {{ HTML::script('assets/subscription/index.js'); }}
-@endsection
-
+<div class="panel-title" style="text-align: center">
+    <h4>State Selection</h4>
+</div>
+<hr>
 {{ Form::open(['url' => '/subscribe/update', 'method' => 'post']) }}
     <div class="sidebar-module ">
         <h5><span class="badge alert-success">1</span> Select a state</h5>
