@@ -46,7 +46,7 @@ Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'sto
 
 Route::get('subscribe/region_item_partial', 'SubscriptionController@region_item_partial')->before('auth');
 
-Route::get('subscribe/update', 'SubscriptionUpdateController@update')->before('auth');
+Route::get('subscribe/update', 'SubscriptionController@update')->before('auth');
 Route::post('subscribe/update', 'SubscriptionUpdateController@posted')->before('auth');
 
 // Registration

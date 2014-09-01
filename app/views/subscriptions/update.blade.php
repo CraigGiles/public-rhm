@@ -11,7 +11,7 @@
         <div class="price-list"></div>
       </h1>
     </div>
-        @include('subscriptions.v2.sidebar.sidebar', $sidebar)
+        @include('subscriptions.v2.sidebar.sidebar', $states)
 
 
     @endsection

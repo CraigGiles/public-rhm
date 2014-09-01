@@ -170,23 +170,22 @@ class SubscriptionController extends RedHotMayoWebController {
      * @return mixed
      */
     public function update() {
-        $states = $this->zipcodeRepository->getAllStates();
+        /** @var User $user */
         $user = $this->getAuthedUser();
-        $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
-        $data = $this->filterUnique($data);
+        $states = $this->zipcodeRepository->getAllStates();
+        $subscriptionLocations = [];
 
-        $counties = [];
-        $activeState = 'California';
-        $activeCounty = 'Sacramento';
+        if (isset($user)) {
+            $subscriptionLocations = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+        } else if (Cookie::get(self::TEMP_ID)) {
+            //the user has a temporary id which means they've picked up some subscription data.
+            //pass that data back to the view
+            $subscriptionLocations = Session::get(self::TEMP_ID);
+        }
 
-        $sidebar = [
-            'states' => $states,
-            'counties' => $counties,
-            'state' => $activeState,
-            'county' => $activeCounty,
-        ];
+        $subscriptionLocations = $this->filterUnique($subscriptionLocations);
 
-        return View::make('subscriptions.update', ['sidebar' => $sidebar, 'subscriptions' => $data, 'states' => $states, 'counties' => []]);
+        return View::make('subscriptions.update', ['subscriptions' => $subscriptionLocations, 'states' => $states]);
     }
 
     public function region_item_partial() {

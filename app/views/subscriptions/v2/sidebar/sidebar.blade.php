@@ -8,13 +8,13 @@
     <div class="sidebar-module ">
         <div class="state-dropdown"><h5><span class="badge alert-success">1</span> Select a state</h5></div>
         <div class="col-lg-offset-1" >
-            {{ Form::select('states', $states, $state, ['class' => 'btn btn-default btn-lg dropdown-toggle', 'style' => 'width: 100%']) }}
+            {{ Form::select('states', $states, null, ['class' => 'btn btn-default btn-lg dropdown-toggle', 'style' => 'width: 100%']) }}
         </div>
 
         <br>
         <div class="county-dropdown"><h5><span class="badge alert-success">2</span> Select a county</h5></div>
         <div class="col-lg-offset-1" >
-            {{ Form::select('counties', $counties, $county, ['class' => 'btn btn-default btn-lg dropdown-toggle', 'style' => 'width: 100%']) }}
+            {{ Form::select('counties', [], null, ['class' => 'btn btn-default btn-lg dropdown-toggle', 'style' => 'width: 100%']) }}
         </div>
     </div>
 
