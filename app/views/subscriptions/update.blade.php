@@ -33,6 +33,7 @@
                  'buttonColor' => 'success',
                  'addOrRemove' => 'add',
                  'city' => 'cityName',
+                 'county' => 'countyName',
                  'state' => 'stateName',
              ])
         </div>

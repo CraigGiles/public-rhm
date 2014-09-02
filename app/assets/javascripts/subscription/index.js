@@ -3,9 +3,28 @@ RHM.App = RHM.App || {}
 
 RHM.App.Subscription = {
     registerClickEvents: function() {
-        //RHM.App.Subscription.stateItemClick();
-        //RHM.App.Subscription.countyItemClick();
         RHM.App.Subscription.regionItemButtonClick();
+        RHM.App.Subscription.submitRegionInfoClick();
+    },
+
+    submitRegionInfoClick: function() {
+        $('#submit-region-info').click(function() {
+            var state = RHM.App.Subscription.currentState;
+            var county = RHM.App.Subscription.currentCounty;
+
+            console.log('state: ' + state + ' - county: ' + county);
+            $.ajax({
+                dataType: "json",
+                url: '../geography/search?state=' + state + '&county=' + county,
+                cache: true,
+                complete: function (data) {
+                    if (data.status === 200) {
+                        var json = data.responseJSON;
+                        RHM.App.Subscription.setAvailableRegions(json);
+                    }
+                }
+            });
+        });
     },
 
     registerFilterEvents: function() {
@@ -16,10 +35,13 @@ RHM.App.Subscription = {
     regionItemButtonClick: function() {
         $('.region-item-button-add').click(function() {
             var oldItem = $(this).closest('li');
+
             var city = oldItem.find('.region-city').text();
+            var county = oldItem.find('.region-county').text();
             var state = oldItem.find('.region-state').text();
-            var item = RHM.App.Subscription.getNewRegionItem(city, state, 'region-item-button-remove', '-');
-;
+
+            var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove', '+');
+
             RHM.App.Subscription.selectedRegions.append(item.html());
             RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', function() {
                 $(this).closest('li').detach();
@@ -31,13 +53,16 @@ RHM.App.Subscription = {
         });
     },
 
-    getNewRegionItem: function(city, state, className, buttonText) {
+    getNewRegionItem: function(city, county, state, className, buttonText) {
         var p = RHM.App.Subscription.regionItemTemplate.clone();
         var fCity = RHM.Utils.StringHelper.toTitleCase(city);
+        var fCounty = RHM.Utils.StringHelper.toTitleCase(county);
 
         p.find('.region-city').text(fCity);
+        p.find('.region-county').text(fCounty);
         p.find('.region-state').text(state.toUpperCase());
         p.find('.btn').removeClass('region-item-button-add');
+        p.find('.btn').removeClass('region-item-button-remove');
         p.find('.btn').addClass(className);
         p.find('.btn').text(buttonText);
 
@@ -105,17 +130,42 @@ RHM.App.Subscription = {
     //        }
     //    });
     //},
+
+    setAvailableRegions: function(json) {
+        var element = RHM.App.Subscription.availableRegions;
+        var state = RHM.App.Subscription.currentState;
+        var county = RHM.App.Subscription.currentCounty;
+        element.html('');
+
+        $.each(json, function(index) {
+            var type = json[index].type;
+
+            if (type == "city") {
+                var search_by = json[index].search_by;
+                var newRegionItem = RHM.App.Subscription.getNewRegionItem(search_by, county, state, 'region-item-button-add', '+');
+
+                $(element).append(newRegionItem.html());
+            }
+        });
+
+        element.on('click', '.region-item-button-add', RHM.App.Subscription.regionItemButtonClick());
+    },
+
+    //loadCountiesForState: function(state) {
+    //    $.ajax({
+    //        dataType: "json",
+    //        url: '../geography/search?state=' + state,
+    //        cache: true,
+    //        complete: function (data) {
+    //            if (data.status === 200) {
+    //                var json = data.responseJSON;
+    //                // set the regions to the JSON from the API
+    //                RHM.App.Subscription.setAvailableRegions(json);
     //
-    //setAvailableRegions: function(json) {
-    //    var element = $('#available-regions');
-    //    var state = RHM.App.Subscription.state;
-    //    element.html('');
-    //
-    //    $.each(json, function(index) {
-    //        var type = json[index].type;
-    //        var search_by = json[index].search_by;
-    //
-    //        $(element).append(RHM.App.Subscription.getRegionItem(search_by, type, state, '+'));
+    //                // set the counties to the correct values
+    //                RHM.App.Subscription.setCountiesDropdown(json);
+    //            }
+    //        }
     //    });
     //},
     //
@@ -164,12 +214,10 @@ RHM.App.Subscription = {
     countySearchBoxFilter: function() {
         $("#county-dropdown").change(function() {
             RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').text();
-            //RHM.App.Subscription.populateAvailableCities();
         });
     },
 
     populateCountyDropdown: function(state) {
-        console.log(state);
         $.ajax({
             dataType: "json",
             url: '../geography/search?state=' + state,
@@ -181,21 +229,20 @@ RHM.App.Subscription = {
                 }
             }
         });
-
-        //populate counties dropdown
-        //reinitialize the click / listen / events
     },
 
     setCountiesDropdown: function(json) {
-        var dropdown = $('#county-dropdown select');
-        dropdown.html('');
+        var countyDropdown = $('#county-dropdown select');
+        countyDropdown.html('');
 
         // add new counties
         $.each(json, function(index) {
             var county = json[index].county;
             var type = json[index].type;
+
             if (type == "county") {
-                dropdown.append('<option value="'+ county +'">'+ county +'</option>');
+                countyDropdown.append('<option value="'+ county +'">'+ county +'</option>');
+
             }
         });
     },
@@ -218,9 +265,11 @@ RHM.App.Subscription = {
 $(document).ready(function (){
     RHM.App.Subscription.regionItemTemplate = $('#region-item-template');
     RHM.App.Subscription.selectedRegions = $('#selected-regions-container');
-    //console.log(RHM.App.Subscription.selectedRegions.html());
+    RHM.App.Subscription.availableRegions = $('#available-regions-container');
 
-    //RHM.App.Subscription.selectedRegions.append(newItem.html());
+    RHM.App.Subscription.currentState = $('#state-dropdown :selected').text();
+    RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').text();
+
     RHM.App.Subscription.init();
 });
 

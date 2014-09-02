@@ -8,9 +8,10 @@
 <ul id="selected-regions-container" style="width: 100%; min-height: 450px; height: 100%; list-style-type: none">
     @foreach($activeSubscriptions as $reg)
     @include('subscriptions.partials.region_item', [
-             'buttonColor' => 'danger',
+             'buttonColor' => 'success',
              'addOrRemove' => 'remove',
              'city' => $reg->getCity(),
+             'county' => $reg->getCounty(),
              'state' => $reg->getState(),
          ])
     @endforeach

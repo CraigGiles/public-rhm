@@ -75,11 +75,22 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     public function getAllCities($conditions) {
         $cities = [];
 
-        if (isset($conditions['state'])) {
+        $state = Arrays::GetValue($conditions, 'state', null);
+        $county = Arrays::GetValue($conditions, 'county', null);
+
+        $where = 'state=? OR stateFullName=?';
+        $conditionals = [$state, $state];
+
+        if (isset($county)) {
+            $where .= ' AND county=?';
+            $conditionals[] = $county;
+        }
+
+        if (isset($state)) {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_CITY)
                         ->distinct()
-                        ->whereRaw('state=? OR stateFullName=?', [$conditions['state'], $conditions['state']])
+                        ->whereRaw($where, $conditionals)
                         ->get();
 
             foreach ($values as $value) {

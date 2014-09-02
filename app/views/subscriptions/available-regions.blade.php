@@ -7,14 +7,7 @@
 <hr>
 
 <ul id="available-regions-container" style="width: 100%; min-height: 450px; height: 100%; list-style-type: none">
-    @foreach($activeSubscriptions as $reg)
-    @include('subscriptions.partials.region_item', [
-             'buttonColor' => 'success',
-             'addOrRemove' => 'add',
-             'city' => $reg->getCity(),
-             'state' => $reg->getState(),
-         ])
-    @endforeach
+    Select a State / County to see regional information.
 </ul>
 </div>
 
