@@ -44,8 +44,20 @@ RHM.App.Subscription = {
 
             RHM.App.Subscription.selectedRegions.append(item.html());
             RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', function() {
-                $(this).closest('li').detach();
-                this.updateTotal();
+                var p = $(this).closest('li').detach();
+
+                var newItem = {};
+                newItem.city = p.find('.region-city').text();
+                newItem.county = p.find('.region-county').text();
+                newItem.state = p.find('.region-state').text();
+                console.log(newItem);
+
+                RHM.App.Subscription.region_items = jQuery.grep(RHM.App.Subscription.region_items, function(value) {
+                    return value.city != newItem.city && value.county != newItem.county && value.state != newItem.state;
+                });
+
+
+                RHM.App.Subscription.updateTotal();
             });
 
             var region = {city: city, state: state, type:"city", county: county};
@@ -55,7 +67,18 @@ RHM.App.Subscription = {
         });
 
         $('.region-item-button-remove').click(function() {
-            $(this).closest('li').detach();
+            var p = $(this).closest('li').detach();
+
+            var newItem = {};
+            newItem.city = p.find('.region-city').text();
+            newItem.county = p.find('.region-county').text();
+            newItem.state = p.find('.region-state').text();
+            console.log(newItem);
+
+            RHM.App.Subscription.region_items = jQuery.grep(RHM.App.Subscription.region_items, function(value) {
+                return value.city != newItem.city && value.county != newItem.county && value.state != newItem.state;
+            });
+
             this.updateTotal();
         });
     },
