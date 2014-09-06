@@ -2,9 +2,17 @@ var RHM = RHM || {}
 RHM.App = RHM.App || {}
 
 RHM.App.Subscription = {
+    /**
+     * Registers click events for all clickable elements on the page
+     */
     registerClickEvents: function() {
         RHM.App.Subscription.regionItemButtonClick();
         RHM.App.Subscription.submitRegionInfoClick();
+    },
+
+    regionItemButtonClick: function() {
+        $('.region-item-button-add').click(RHM.App.Subscription.addItemToSelectedRegions);
+        $('.region-item-button-remove').click(RHM.App.Subscription.removeFromSelectedRegions);
     },
 
     submitRegionInfoClick: function() {
@@ -12,7 +20,6 @@ RHM.App.Subscription = {
             var state = RHM.App.Subscription.currentState;
             var county = RHM.App.Subscription.currentCounty;
 
-            console.log('state: ' + state + ' - county: ' + county);
             $.ajax({
                 dataType: "json",
                 url: '../geography/search?state=' + state + '&county=' + county,
@@ -28,59 +35,49 @@ RHM.App.Subscription = {
     },
 
     registerFilterEvents: function() {
-        RHM.App.Subscription.statesSearchBoxFilter();
-        RHM.App.Subscription.countySearchBoxFilter();
+        RHM.App.Subscription.stateDropdownChangeEvent();
+        RHM.App.Subscription.countyDropdownChangeEvent();
     },
 
-    regionItemButtonClick: function() {
-        $('.region-item-button-add').click(function() {
-            var oldItem = $(this).closest('li');
+    removeFromSelectedRegions: function() {
+        var p = $(this).closest('li').detach();
 
-            var city = oldItem.find('.region-city').text();
-            var county = oldItem.find('.region-county').text();
-            var state = oldItem.find('.region-state').text();
+        var newItem = {};
+        newItem.city = p.find('.region-city').text();
+        newItem.county = p.find('.region-county').text();
+        newItem.state = p.find('.region-state').text();
+
+        RHM.App.Subscription.region_items = jQuery.grep(RHM.App.Subscription.region_items, function(value) {
+            return value.city != newItem.city && value.county != newItem.county && value.state != newItem.state;
+        });
+
+        RHM.App.Subscription.updateTotal();
+    },
+
+    addItemToSelectedRegions: function() {
+        var oldItem = $(this).closest('li');
+
+        var city = oldItem.find('.region-city').text();
+        var county = oldItem.find('.region-county').text();
+        var state = oldItem.find('.region-state').text();
+        var region = {city: city, state: state, type:"city", county: county};
+
+        // if region wasn't found, add it
+        var newArr = $.grep(RHM.App.Subscription.region_items, function(obj) {
+            return obj.city === city && obj.county === county && obj.state === state;
+        });
+
+        if(newArr.length === 0) {
+            console.log("ADDED: " + region);
+            RHM.App.Subscription.region_items.push(region);
 
             var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove', '+');
 
             RHM.App.Subscription.selectedRegions.append(item.html());
-            RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', function() {
-                var p = $(this).closest('li').detach();
+            RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', RHM.App.Subscription.removeFromSelectedRegions);
+        }
 
-                var newItem = {};
-                newItem.city = p.find('.region-city').text();
-                newItem.county = p.find('.region-county').text();
-                newItem.state = p.find('.region-state').text();
-                console.log(newItem);
-
-                RHM.App.Subscription.region_items = jQuery.grep(RHM.App.Subscription.region_items, function(value) {
-                    return value.city != newItem.city && value.county != newItem.county && value.state != newItem.state;
-                });
-
-
-                RHM.App.Subscription.updateTotal();
-            });
-
-            var region = {city: city, state: state, type:"city", county: county};
-            RHM.App.Subscription.region_items.push(region);
-
-            RHM.App.Subscription.updateTotal();
-        });
-
-        $('.region-item-button-remove').click(function() {
-            var p = $(this).closest('li').detach();
-
-            var newItem = {};
-            newItem.city = p.find('.region-city').text();
-            newItem.county = p.find('.region-county').text();
-            newItem.state = p.find('.region-state').text();
-            console.log(newItem);
-
-            RHM.App.Subscription.region_items = jQuery.grep(RHM.App.Subscription.region_items, function(value) {
-                return value.city != newItem.city && value.county != newItem.county && value.state != newItem.state;
-            });
-
-            this.updateTotal();
-        });
+        RHM.App.Subscription.updateTotal();
     },
 
     getNewRegionItem: function(city, county, state, className, buttonText) {
@@ -98,68 +95,6 @@ RHM.App.Subscription = {
 
         return p;
     },
-
-    //stateItemClick: function() {
-    //    $('.state-item').click(function() {
-    //        var sub     = RHM.App.Subscription;
-    //        var state   = RHM.App.Subscription.state = $(this).text();
-    //        var element = $('#dropdown-states-button');
-    //
-    //        sub.loadCountiesForState(state);
-    //
-    //        element.text(state);
-    //        element.append(' <span class="caret"></span>');
-    //    });
-    //},
-    //
-    //countyItemClick: function() {
-    //    $('.county-item').click(function() {
-    //        var sub     = RHM.App.Subscription;
-    //        var county   = RHM.App.Subscription.county = $(this).text();
-    //        var element = $('#dropdown-counties-button');
-    //
-    //        sub.filterCitiesByCounty(county);
-    //
-    //        element.text(county);
-    //        element.append(' <span class="caret"></span>');
-    //    });
-    //},
-    //
-    //regionItemButtonClick: function(btn) {
-    //    $('.region-item-button').click(function() {
-    //
-    //    });
-    //},
-    //
-    //loadCountiesForState: function(state) {
-    //    $.ajax({
-    //        dataType: "json",
-    //        url: '../geography/search?state=' + state,
-    //        cache: true,
-    //        complete: function (data) {
-    //            if (data.status === 200) {
-    //                var json = data.responseJSON;
-    //                // set the regions to the JSON from the API
-    //                RHM.App.Subscription.setAvailableRegions(json);
-    //
-    //                // set the counties to the correct values
-    //                RHM.App.Subscription.setCountiesDropdown(json);
-    //            }
-    //        }
-    //    });
-    //},
-    //
-    //filterCitiesByCounty: function(county) {
-    //    var element = $('#available-regions');
-    //    var county = RHM.App.Subscription.county;
-    //
-    //    element.children().each(function() {
-    //        var elm = $(this);
-    //        if (elm.find('.search-term').text().toLowerCase() != county.toLowerCase()) {
-    //            elm.hide();
-    //        }
-    //    });
-    //},
 
     setAvailableRegions: function(json) {
         var element = RHM.App.Subscription.availableRegions;
@@ -181,67 +116,14 @@ RHM.App.Subscription = {
         element.on('click', '.region-item-button-add', RHM.App.Subscription.regionItemButtonClick());
     },
 
-    //loadCountiesForState: function(state) {
-    //    $.ajax({
-    //        dataType: "json",
-    //        url: '../geography/search?state=' + state,
-    //        cache: true,
-    //        complete: function (data) {
-    //            if (data.status === 200) {
-    //                var json = data.responseJSON;
-    //                // set the regions to the JSON from the API
-    //                RHM.App.Subscription.setAvailableRegions(json);
-    //
-    //                // set the counties to the correct values
-    //                RHM.App.Subscription.setCountiesDropdown(json);
-    //            }
-    //        }
-    //    });
-    //},
-    //
-    //getRegionItem: function(text, type, state, buttonText) {
-    //    var p = RHM.App.Subscription.regionItemTemplate;
-    //    var titleCaseText = RHM.Utils.StringHelper.toTitleCase(text);
-    //
-    //    p.find('.search-term').text(titleCaseText);
-    //    p.find('.region-type').text(type + ", " + state);
-    //    p.find('.region-item-button').text(buttonText);
-    //    p.selected = false;
-    //
-    //    return p.clone();
-    //},
-    //
-    //setCountiesDropdown: function(json) {
-    //    // clear counties
-    //    $('.dropdown-counties li').each(function() {
-    //        $(this).remove();
-    //    });
-    //
-    //    // add new counties
-    //    $.each(json, function(index) {
-    //        var county = json[index].county;
-    //        var type = json[index].type;
-    //        if (type == "county") {
-    //            $('#dropdown-counties-list')
-    //                .append(
-    //                    '<li role="presentation"><a class="county-item" role="menuitem">'
-    //                        + RHM.Utils.StringHelper.toTitleCase(county) + '</a></li>'
-    //                );
-    //        }
-    //    });
-    //
-    //    RHM.App.Subscription.registerClickEvents();
-    //    RHM.App.Subscription.registerFilterEvents();
-    //},
-
-    statesSearchBoxFilter: function() {
+    stateDropdownChangeEvent: function() {
         $("#state-dropdown").change(function() {
             RHM.App.Subscription.currentState = $('#state-dropdown :selected').val();
             RHM.App.Subscription.populateCountyDropdown(RHM.App.Subscription.currentState);
         });
     },
 
-    countySearchBoxFilter: function() {
+    countyDropdownChangeEvent: function() {
         $("#county-dropdown").change(function() {
             RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
         });
@@ -277,18 +159,9 @@ RHM.App.Subscription = {
         });
     },
 
-    searchBoxFilter: function(element, object) {
-        var valThis = object.val();
-        $('.' + element + ' li').each(function() {
-            var text = $(this).text().toLowerCase();
-            (text.indexOf(valThis) > -1) ? $(this).show() : $(this).hide();
-        });
-    },
-
     updateTotal: function() {
         var regions = $('#selected-regions-container').html();
         var subRegion = RHM.App.Subscription.totalRegion;
-        console.log("REGION ITEMS: " + JSON.stringify({regions:RHM.App.Subscription.region_items}));
 
         $.ajax({
             url:'/subscribe/price',
@@ -297,11 +170,16 @@ RHM.App.Subscription = {
             data: JSON.stringify({regions:RHM.App.Subscription.region_items}),
             cache: true,
             complete: function(data) {
-                console.log(data.responseJSON);
-                var price = data.responseJSON.message;
-                console.log(price);
                 subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
             }
+        });
+    },
+
+    searchBoxFilter: function(element, object) {
+        var valThis = object.val();
+        $('.' + element + ' li').each(function() {
+            var text = $(this).text().toLowerCase();
+            (text.indexOf(valThis) > -1) ? $(this).show() : $(this).hide();
         });
     },
 
