@@ -78,8 +78,8 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
         $state = Arrays::GetValue($conditions, 'state', null);
         $county = Arrays::GetValue($conditions, 'county', null);
 
-        $where = 'state=? OR stateFullName=?';
-        $conditionals = [$state, $state];
+        $where = 'state=?';
+        $conditionals = [$state];
 
         if (isset($county)) {
             $where .= ' AND county=?';

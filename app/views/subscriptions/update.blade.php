@@ -8,7 +8,7 @@
         <div class="page-header">
             <h1>
                 Select your coverage area to get pricing.
-                <div class="price-list pull-right">Total: $49.99</div>
+                <div class="pull-right" id="subscription-total"></div>
             </h1>
         </div>
 

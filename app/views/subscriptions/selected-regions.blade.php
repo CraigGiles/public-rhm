@@ -1,7 +1,7 @@
 <div class="well well-sm">
 
 <div class="panel-title" style="text-align: center">
-    <h4>Active Regions</h4>
+    <h4>Selected Regions</h4>
 </div>
 <hr>
 

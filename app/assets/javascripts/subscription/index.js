@@ -45,11 +45,18 @@ RHM.App.Subscription = {
             RHM.App.Subscription.selectedRegions.append(item.html());
             RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', function() {
                 $(this).closest('li').detach();
+                this.updateTotal();
             });
+
+            var region = {city: city, state: state, type:"city", county: county};
+            RHM.App.Subscription.region_items.push(region);
+
+            RHM.App.Subscription.updateTotal();
         });
 
         $('.region-item-button-remove').click(function() {
             $(this).closest('li').detach();
+            this.updateTotal();
         });
     },
 
@@ -206,14 +213,14 @@ RHM.App.Subscription = {
 
     statesSearchBoxFilter: function() {
         $("#state-dropdown").change(function() {
-            RHM.App.Subscription.currentState = $('#state-dropdown :selected').text();
+            RHM.App.Subscription.currentState = $('#state-dropdown :selected').val();
             RHM.App.Subscription.populateCountyDropdown(RHM.App.Subscription.currentState);
         });
     },
 
     countySearchBoxFilter: function() {
         $("#county-dropdown").change(function() {
-            RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').text();
+            RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
         });
     },
 
@@ -255,9 +262,32 @@ RHM.App.Subscription = {
         });
     },
 
+    updateTotal: function() {
+        var regions = $('#selected-regions-container').html();
+        var subRegion = RHM.App.Subscription.totalRegion;
+        console.log("REGION ITEMS: " + JSON.stringify({regions:RHM.App.Subscription.region_items}));
+
+        $.ajax({
+            url:'/subscribe/price',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify({regions:RHM.App.Subscription.region_items}),
+            cache: true,
+            complete: function(data) {
+                console.log(data.responseJSON);
+                var price = data.responseJSON.message;
+                console.log(price);
+                subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
+            }
+        });
+    },
+
     init: function() {
         RHM.App.Subscription.registerClickEvents();
         RHM.App.Subscription.registerFilterEvents();
+
+        RHM.App.Subscription.region_items = [];
+        this.updateTotal();
     }
 
 }
@@ -266,9 +296,10 @@ $(document).ready(function (){
     RHM.App.Subscription.regionItemTemplate = $('#region-item-template');
     RHM.App.Subscription.selectedRegions = $('#selected-regions-container');
     RHM.App.Subscription.availableRegions = $('#available-regions-container');
+    RHM.App.Subscription.totalRegion = $('#subscription-total');
 
-    RHM.App.Subscription.currentState = $('#state-dropdown :selected').text();
-    RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').text();
+    RHM.App.Subscription.currentState = $('#state-dropdown :selected').val();
+    RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
 
     RHM.App.Subscription.init();
 });
