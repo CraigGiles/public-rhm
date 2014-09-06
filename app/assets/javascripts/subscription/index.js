@@ -138,6 +138,7 @@ RHM.App.Subscription = {
                 if (data.status === 200) {
                     var json = data.responseJSON;
                     RHM.App.Subscription.setCountiesDropdown(json);
+                    RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
                 }
             }
         });
