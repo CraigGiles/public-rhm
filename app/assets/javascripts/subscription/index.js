@@ -68,7 +68,6 @@ RHM.App.Subscription = {
         });
 
         if(newArr.length === 0) {
-            console.log("ADDED: " + region);
             RHM.App.Subscription.region_items.push(region);
 
             var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove', '+');
@@ -184,14 +183,34 @@ RHM.App.Subscription = {
         });
     },
 
+    setRegionItems: function() {
+        RHM.App.Subscription.selectedRegions.find('li').each(function() {
+            var region = $(this);
+            var city = region.find('.region-city').text();
+            var county = region.find('.region-county').text();
+            var state = region.find('.region-state').text();
+            var item = {city: city, state: state, type:"city", county: county};
+
+            // if region wasn't found, add it
+            var newArr = $.grep(RHM.App.Subscription.region_items, function(obj) {
+                return obj.city === city && obj.county === county && obj.state === state;
+            });
+
+            if(newArr.length === 0) {
+                RHM.App.Subscription.region_items.push(item);
+            }
+        });
+
+        RHM.App.Subscription.updateTotal();
+    },
+
     init: function() {
         RHM.App.Subscription.registerClickEvents();
         RHM.App.Subscription.registerFilterEvents();
+        RHM.App.Subscription.setRegionItems();
 
-        RHM.App.Subscription.region_items = [];
         this.updateTotal();
     }
-
 }
 
 $(document).ready(function (){
@@ -202,6 +221,7 @@ $(document).ready(function (){
 
     RHM.App.Subscription.currentState = $('#state-dropdown :selected').val();
     RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
+    RHM.App.Subscription.region_items = [];
 
     RHM.App.Subscription.init();
 });
