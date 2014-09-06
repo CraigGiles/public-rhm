@@ -5,7 +5,7 @@
 </div>
 <hr>
 
-<ul id="selected-regions-container" style="width: 100%; min-height: 450px; height: 100%; list-style-type: none">
+<ul id="selected-regions-container" style="width: 100%; min-height: 450px; max-height: 450px; overflow-y: scroll; height: 100%; list-style-type: none">
     @foreach($activeSubscriptions as $reg)
     @include('subscriptions.partials.region_item', [
              'buttonColor' => 'success',

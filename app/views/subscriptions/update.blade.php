@@ -8,7 +8,7 @@
         <div class="page-header">
             <h1>
                 Select your coverage area to get pricing.
-                <div class="pull-right" id="subscription-total"></div>
+                <div class="pull-right" id="subscription-total" style="padding-right: 20px"></div>
             </h1>
         </div>
 

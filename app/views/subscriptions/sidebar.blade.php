@@ -2,7 +2,6 @@
     <h4>State Selection</h4>
 </div>
 <hr>
-{{ Form::open() }}
     <div class="sidebar-module ">
         <h5><span class="badge alert-success">1</span> Select a state</h5>
         <div class="col-lg-offset-1" id="state-dropdown" >
@@ -21,7 +20,7 @@
     </div>
 
     <br>
-    {{ Form::button('Submit', [
+    {{ Form::button('Get Available Regions', [
             'class' => 'btn btn-small btn-primary col-lg-offset-1', 'id' => 'submit-region-info', 'style' => 'width: 92%'
         ]) }}
 

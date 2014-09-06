@@ -6,7 +6,7 @@
 </div>
 <hr>
 
-<ul id="available-regions-container" style="width: 100%; min-height: 450px; height: 100%; list-style-type: none">
+<ul id="available-regions-container" style="width: 100%; min-height: 450px; max-height: 450px; overflow-y: scroll; height: 100%; list-style-type: none">
     Select a State / County to see regional information.
 </ul>
 </div>
