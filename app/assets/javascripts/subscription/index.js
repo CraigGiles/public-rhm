@@ -77,7 +77,6 @@ RHM.App.Subscription = {
             RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', RHM.App.Subscription.removeFromSelectedRegions);
         }
 
-        RHM.App.Subscription.debug();
         RHM.App.Subscription.updateTotal();
     },
 
@@ -222,20 +221,6 @@ RHM.App.Subscription = {
         RHM.App.Subscription.setRegionItems();
 
         this.updateTotal();
-    },
-
-    debug: function() {
-        console.log('SELECTED REGIONS');
-        var container = $('#selected-regions-container');
-        container.find('li').each(function() {
-            console.log($(this).html());
-        });
-
-
-        console.log('REGION ITEMS');
-        $.each(RHM.App.Subscription.region_items, function(item) {
-            console.log(item);
-        });
     }
 
 }
