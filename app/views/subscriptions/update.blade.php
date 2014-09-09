@@ -8,6 +8,7 @@
         <div class="page-header">
             <h1>
                 Select your coverage area to get pricing.
+                <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px">Subscribe</div>
                 <div class="pull-right" id="subscription-total" style="padding-right: 20px"></div>
             </h1>
         </div>

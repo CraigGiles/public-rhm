@@ -8,6 +8,7 @@ RHM.App.Subscription = {
     registerClickEvents: function() {
         RHM.App.Subscription.regionItemButtonClick();
         RHM.App.Subscription.submitRegionInfoClick();
+        RHM.App.Subscription.submitSubscriptionClick();
     },
 
     regionItemButtonClick: function() {
@@ -31,6 +32,12 @@ RHM.App.Subscription = {
                     }
                 }
             });
+        });
+    },
+
+    submitSubscriptionClick: function() {
+        $('#subscription-submit').click(function() {
+            var regions = RHM.App.Subscription.getSubscribedRegions();
         });
     },
 
@@ -160,9 +167,8 @@ RHM.App.Subscription = {
         });
     },
 
-    updateTotal: function() {
+    getSubscribedRegions: function() {
         var container = RHM.App.Subscription.selectedRegions;
-        var subRegion = RHM.App.Subscription.totalRegion;
         var items = [];
 
         container.find('li').each(function() {
@@ -173,6 +179,13 @@ RHM.App.Subscription = {
             var item = {city: city, state: state, type:"city", county: county};
             items.push(item);
         });
+
+        return items;
+    },
+
+    updateTotal: function() {
+        var subRegion = RHM.App.Subscription.totalRegion;
+        var items = RHM.App.Subscription.getSubscribedRegions();
 
         $.ajax({
             url:'/subscribe/price',
