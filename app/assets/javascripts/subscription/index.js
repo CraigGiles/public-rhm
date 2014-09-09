@@ -73,9 +73,11 @@ RHM.App.Subscription = {
             var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove', '+');
 
             RHM.App.Subscription.selectedRegions.append(item.html());
+            RHM.App.Subscription.selectedRegions.unbind('click', RHM.App.Subscription.removeFromSelectedRegions);
             RHM.App.Subscription.selectedRegions.on('click', '.region-item-button-remove', RHM.App.Subscription.removeFromSelectedRegions);
         }
 
+        RHM.App.Subscription.debug();
         RHM.App.Subscription.updateTotal();
     },
 
@@ -160,14 +162,29 @@ RHM.App.Subscription = {
     },
 
     updateTotal: function() {
+        var items = [];
         var regions = $('#selected-regions-container').html();
         var subRegion = RHM.App.Subscription.totalRegion;
+
+        console.log("UPDATE TOTAL:");
+        var container = $('#selected-regions-container');
+        container.find('li').each(function() {
+            var region = $(this);
+            var city = region.find('.region-city').text();
+            var county = region.find('.region-county').text();
+            var state = region.find('.region-state').text();
+            var item = {city: city, state: state, type:"city", county: county};
+            items.push(item);
+            console.log(item);
+        });
+
+
 
         $.ajax({
             url:'/subscribe/price',
             type: 'POST',
             dataType: 'json',
-            data: JSON.stringify({regions:RHM.App.Subscription.region_items}),
+            data: JSON.stringify({regions:items}),
             cache: true,
             complete: function(data) {
                 subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
@@ -210,7 +227,22 @@ RHM.App.Subscription = {
         RHM.App.Subscription.setRegionItems();
 
         this.updateTotal();
+    },
+
+    debug: function() {
+        console.log('SELECTED REGIONS');
+        var container = $('#selected-regions-container');
+        container.find('li').each(function() {
+            console.log($(this).html());
+        });
+
+
+        console.log('REGION ITEMS');
+        $.each(RHM.App.Subscription.region_items, function(item) {
+            console.log(item);
+        });
     }
+
 }
 
 $(document).ready(function (){
