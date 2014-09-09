@@ -162,12 +162,10 @@ RHM.App.Subscription = {
     },
 
     updateTotal: function() {
-        var items = [];
-        var regions = $('#selected-regions-container').html();
+        var container = RHM.App.Subscription.selectedRegions;
         var subRegion = RHM.App.Subscription.totalRegion;
+        var items = [];
 
-        console.log("UPDATE TOTAL:");
-        var container = $('#selected-regions-container');
         container.find('li').each(function() {
             var region = $(this);
             var city = region.find('.region-city').text();
@@ -175,10 +173,7 @@ RHM.App.Subscription = {
             var state = region.find('.region-state').text();
             var item = {city: city, state: state, type:"city", county: county};
             items.push(item);
-            console.log(item);
         });
-
-
 
         $.ajax({
             url:'/subscribe/price',
