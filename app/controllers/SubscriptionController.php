@@ -182,6 +182,7 @@ class SubscriptionController extends RedHotMayoWebController {
             //the user has a temporary id which means they've picked up some subscription data.
             //pass that data back to the view
             $subscriptionLocations = Session::get(self::TEMP_ID);
+            $subscriptionLocations = is_array($subscriptionLocations) ? $subscriptionLocations : [];
         }
 
         $subscriptionLocations = $this->filterUnique($subscriptionLocations);

@@ -38,6 +38,29 @@ RHM.App.Subscription = {
     submitSubscriptionClick: function() {
         $('#subscription-submit').click(function() {
             var regions = RHM.App.Subscription.getSubscribedRegions();
+
+            $.ajax({
+                url: '/subscribe',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify({_token: $('[name=_token]').val(), regions: regions}),
+                cache: true,
+                beforeSend: function () {
+//                    beforeAjax();
+//                    $('#submit').prop('disabled', true);
+                },
+                complete: function (data) {
+                    if (data.status === 401 || data.status === 200) {
+                        if (data.responseJSON.redirect) {
+                            window.location.href = "http://localhost:8000/" + data.responseJSON.redirect;
+                            alert(window.location.href);
+                        }
+                    } else {
+                        alert('status was bad!!!!');
+                        RHM.App.Subscription.errorHandler(data);
+                    }
+                }
+            });
         });
     },
 
@@ -234,7 +257,50 @@ RHM.App.Subscription = {
         RHM.App.Subscription.setRegionItems();
 
         this.updateTotal();
+    },
+
+
+    errorHandler: function (data, redirect) {
+        /**
+         * Handle redirection as long as the page is not where we are right now.
+         */
+        if (redirect !== false && data.responseJSON.redirect !== window.location.pathname.replace('/', '')) {
+            window.location.href = data.responseJSON.redirect;
+        }
+
+        /**
+         * make sure message value is an array of objects
+         */
+        if (typeof data.responseJSON.message === 'string') {
+            data.responseJSON.message = [
+                {err: data.responseJSON.message}
+            ];
+        }
+
+
+        /**
+         * 4xx Client Error
+         */
+        if (data.status >= 400 && data.status <= 499) {
+            var errors = data.responseJSON;
+            alert('Client Error');
+//            errors.type = 'warning';
+//            $('#warnings').html(warning_template(errors));
+//            $('#regions').empty();
+        }
+
+        /**
+         * 5xx Server Error
+         */
+        else if (data.status >= 500 && data.status <= 599) {
+            var errors = data.responseJSON;
+            alert('Server Error');
+//            errors.type = 'danger';
+//            $('#warnings').html(warning_template(errors));
+//            $('#regions').empty();
+        }
     }
+
 
 }
 
