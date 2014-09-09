@@ -61,20 +61,41 @@ class SubscriptionController extends RedHotMayoWebController {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function index() {
-        $data = [];
-
         /** @var User $user */
         $user = $this->getAuthedUser();
+        $states = $this->zipcodeRepository->getAllStates();
+        $counties = $this->zipcodeRepository->getAllCounties(['state' => array_values($states)[0]]);
+        $subscriptionLocations = [];
 
         if (isset($user)) {
-            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+            $subscriptionLocations = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         } else if (Cookie::get(self::TEMP_ID)) {
             //the user has a temporary id which means they've picked up some subscription data.
             //pass that data back to the view
-            $data = Session::get(self::TEMP_ID);
+            $subscriptionLocations = Session::get(self::TEMP_ID);
+            $subscriptionLocations = is_array($subscriptionLocations) ? $subscriptionLocations : [];
         }
 
-        return View::make('subscriptions.index', ['subscriptions' => $data] );
+        $subscriptionLocations = $this->filterUnique($subscriptionLocations);
+
+        return View::make('subscriptions.update', [
+            'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
+        ]);
+
+//        $data = [];
+//
+//        /** @var User $user */
+//        $user = $this->getAuthedUser();
+//
+//        if (isset($user)) {
+//            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+//        } else if (Cookie::get(self::TEMP_ID)) {
+//            //the user has a temporary id which means they've picked up some subscription data.
+//            //pass that data back to the view
+//            $data = Session::get(self::TEMP_ID);
+//        }
+//
+//        return View::make('subscriptions.index', ['subscriptions' => $data] );
     }
 
     /**
@@ -95,7 +116,7 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
-            return $this->respondSuccess('login/confirmation');
+            return $this->respondSuccess('dashboard');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondAccountSubscriptionException($ex);

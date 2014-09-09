@@ -52,8 +52,7 @@ RHM.App.Subscription = {
                 complete: function (data) {
                     if (data.status === 401 || data.status === 200) {
                         if (data.responseJSON.redirect) {
-                            window.location.href = "http://localhost:8000/" + data.responseJSON.redirect;
-                            alert(window.location.href);
+                            window.location.href = data.responseJSON.redirect;
                         }
                     } else {
                         alert('status was bad!!!!');
