@@ -71,32 +71,12 @@ class AccountSubscriptionManager {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function process(User $user, array $dataset) {
-        //get all zipcodes for 'type' in state 'state'
-        $zipcodes = $this->getZipcodesForRegions($dataset);
+        $zipcodes        = $this->getZipcodesForRegions($dataset);
+        $subscribedTo    = $this->subscriptionRepository->getAllZipcodesForUser($user);
+        $unsubscribeFrom = array_diff($subscribedTo, $zipcodes);
 
-        /**
-         * Does this stuff need to go here?
-         */
-//        //todo: calculate subscription value here (newSub - currentSub)
-//        //$subDifference = Billing->Calculate(userId, newSubs) ?
-//
-//        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
-//        //todo: save in session and redirect to billing
-//        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
-//
-//        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
-//        $subs = [];
-//        foreach ($data as $sub) {
-//            $subLocation = SubscriptionLocation::FromArray($sub);
-//            $subs[] = SubscriptionLocation::FromArray($sub);
-//        }
-
-
-        foreach ($zipcodes as $zip) {
-            $sub = new Subscription($user, $zip);
-            $this->subscriptionRepository->save($sub);
-            $this->backdate($user, $sub);
-        }
+        $this->subscriptionRepository->unsubscribeUserFromZipcodes($user, $unsubscribeFrom);
+        $this->backdateAllZipcodes($user, $zipcodes);
     }
 
     /**
@@ -159,6 +139,20 @@ class AccountSubscriptionManager {
         }
 
         return $zipcodes;
+    }
+
+    /**
+     * @param $user
+     * @param $zipcodes
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function backdateAllZipcodes($user, $zipcodes) {
+        foreach ($zipcodes as $zip) {
+            $sub = new Subscription($user, $zip);
+            $this->subscriptionRepository->save($sub);
+            $this->backdate($user, $sub);
+        }
     }
 
     /**

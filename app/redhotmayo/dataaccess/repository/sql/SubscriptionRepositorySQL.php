@@ -191,6 +191,25 @@ class SubscriptionRepositorySQL extends RepositorySQL implements SubscriptionRep
     }
 
     /**
+     * Update the users subscription to remove all zipcodes contained within the dataset
+     *
+     * @param \redhotmayo\model\User $user
+     * @param array $zipcodes
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function unsubscribeUserFromZipcodes(User $user, array $zipcodes) {
+        if (count($zipcodes) > 0) {
+            $raw = "" . SubscriptionSQL::C_USER_ID . "={$user->getUserId()} AND "
+                   . SubscriptionSQL::C_ZIP_CODE . " IN (" . implode(',', $zipcodes) . ")";
+
+            DB::table(SubscriptionSQL::TABLE_NAME)
+              ->whereRaw($raw)
+              ->delete();
+        }
+    }
+
+    /**
      * Prepares all values returned from the database to a format which can be
      * consumed by the application. Encrypted values will be unencrypted
      * prior to conversion.
