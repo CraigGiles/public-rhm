@@ -91,6 +91,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
                         ->select(self::C_CITY)
                         ->distinct()
                         ->whereRaw($where, $conditionals)
+                        ->orderBy(self::C_CITY)
                         ->get();
 
             foreach ($values as $value) {
