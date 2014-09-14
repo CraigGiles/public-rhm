@@ -29,6 +29,8 @@ RHM.App.Subscription = {
                     if (data.status === 200) {
                         var json = data.responseJSON;
                         RHM.App.Subscription.setAvailableRegions(json);
+                    } else {
+                        RHM.App.Subscription.errorHandler(data);
                     }
                 }
             });
@@ -163,6 +165,8 @@ RHM.App.Subscription = {
                     var json = data.responseJSON;
                     RHM.App.Subscription.setCountiesDropdown(json);
                     RHM.App.Subscription.currentCounty = $('#county-dropdown :selected').val();
+                } else {
+                    RHM.App.Subscription.errorHandler(data);
                 }
             }
         });
@@ -213,6 +217,8 @@ RHM.App.Subscription = {
             complete: function(data) {
                 if (data.status === 200) {
                     subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
+                } else {
+                    RHM.App.Subscription.errorHandler(data);
                 }
             }
         });
