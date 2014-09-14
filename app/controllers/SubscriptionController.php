@@ -61,21 +61,53 @@ class SubscriptionController extends RedHotMayoWebController {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function index() {
-        $data = [];
-
         /** @var User $user */
         $user = $this->getAuthedUser();
+        $states = $this->zipcodeRepository->getAllStates();
+        $counties = $this->zipcodeRepository->getAllCounties(['state' => array_values($states)[0]]);
+        $subscriptionLocations = [];
 
         if (isset($user)) {
-            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+            $subscriptionLocations = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         } else if (Cookie::get(self::TEMP_ID)) {
             //the user has a temporary id which means they've picked up some subscription data.
             //pass that data back to the view
-            $data = Session::get(self::TEMP_ID);
+            $subscriptionLocations = Session::get(self::TEMP_ID);
+            $subscriptionLocations = is_array($subscriptionLocations) ? $subscriptionLocations : [];
         }
 
-        return View::make('subscriptions.index', ['subscriptions' => $data] );
+        $subscriptionLocations = $this->filterUnique($subscriptionLocations);
+
+        return View::make('subscriptions.update', [
+            'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
+        ]);
     }
+//    /**
+//     * If the user is currently logged in, grab a list of zipcodes already subscribed by
+//     * the user and send it to the view. If the user has not registered but they've gone
+//     * through the subscription process, use the data in session to populate the view.
+//     * If there is no data for the user just send them to the view
+//     *
+//     * @return Response
+//     *
+//     * @author Craig Giles < craig@gilesc.com >
+//     */
+//    public function update() {
+//        $data = [];
+//
+//        /** @var User $user */
+//        $user = $this->getAuthedUser();
+//
+//        if (isset($user)) {
+//            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+//        } else if (Cookie::get(self::TEMP_ID)) {
+//            //the user has a temporary id which means they've picked up some subscription data.
+//            //pass that data back to the view
+//            $data = Session::get(self::TEMP_ID);
+//        }
+//
+//        return View::make('subscriptions.index', ['subscriptions' => $data] );
+//    }
 
     /**
      * Grab the subscription data filled out by the user and determine where to go from here.
@@ -95,7 +127,7 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
-            return $this->respondSuccess('login/confirmation');
+            return $this->respondSuccess('dashboard');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondAccountSubscriptionException($ex);
@@ -164,8 +196,56 @@ class SubscriptionController extends RedHotMayoWebController {
         return $response;
     }
 
-    public function update() {
-        $states = $this->zipcodeRepository->getAllStates();
-        return View::make('subscriptions.update', ['states' => $states, 'counties' => ['something', 'wicked', 'this', 'way', 'comes']]);
+//    /**
+//     * auth filter applied before the execution of this function described in the routes file
+//     *
+//     * @return mixed
+//     */
+//    public function index() {
+//        /** @var User $user */
+//        $user = $this->getAuthedUser();
+//        $states = $this->zipcodeRepository->getAllStates();
+//        $counties = $this->zipcodeRepository->getAllCounties(['state' => array_values($states)[0]]);
+//        $subscriptionLocations = [];
+//
+//        if (isset($user)) {
+//            $subscriptionLocations = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+//        } else if (Cookie::get(self::TEMP_ID)) {
+//            //the user has a temporary id which means they've picked up some subscription data.
+//            //pass that data back to the view
+//            $subscriptionLocations = Session::get(self::TEMP_ID);
+//            $subscriptionLocations = is_array($subscriptionLocations) ? $subscriptionLocations : [];
+//        }
+//
+//        $subscriptionLocations = $this->filterUnique($subscriptionLocations);
+//
+//        return View::make('subscriptions.update', [
+//            'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
+//        ]);
+//    }
+
+    public function region_item_partial() {
+        $data = [
+            'class' => 'region-item',
+            'searchTerm' => 'Search Term Here',
+            'buttonText' => '+',
+            'buttonColor' => 'success',
+            'regionType' => 'city',
+            'regionItemAddOrRemove' => 'region-item-add',
+            'state' => 'CA'
+        ];
+
+        return View::make('subscriptions.partials.region_item', $data);
+    }
+
+    private function filterUnique(array $data) {
+        $cities = [];
+
+        /** @var Region $d */
+        foreach ($data as $d) {
+            $cities[$d->getCity()] = $d;
+        }
+
+        return array_values($cities);
     }
 }

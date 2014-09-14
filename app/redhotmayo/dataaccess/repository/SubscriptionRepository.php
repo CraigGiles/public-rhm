@@ -37,6 +37,17 @@ interface SubscriptionRepository extends Repository {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getAllZipcodesForUser(User $user);
+
+    /**
+     * Update the users subscription to remove all zipcodes contained within the dataset
+     *
+     * @param \redhotmayo\model\User $user
+     * @param array $zipcodes
+     *
+     * @return
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function unsubscribeUserFromZipcodes(User $user, array $zipcodes);
 }
 
 
