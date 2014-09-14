@@ -67,11 +67,9 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function isActive() {
-        // This will result to true in two ways:
-        // - if the status is 'active'
-        // - if the current_period_end is in the future
-        return 'active' === $this->status ||
-            (($this->current_period_end instanceof Carbon) && $this->current_period_end->isFuture());
+        // This will result to true if the current_period_end is in the future
+        return ($this->current_period_end instanceof Carbon)
+                && $this->current_period_end->isFuture();
     }
 
     /**
