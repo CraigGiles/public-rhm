@@ -157,9 +157,11 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function upgraded(Subscription $newSub) {
-        $this->upgraded_at = Carbon::now();
-        $this->upgraded_id = $newSub->getId();
         $this->status = 'inactive';
+        $this->upgraded_id = $newSub->getId();
+        $this->upgraded_at = Carbon::now();
+        $this->cancel_at_period_end = true;
+        $this->canceled_at = Carbon::now();
     }
 
     /**
@@ -170,6 +172,8 @@ class StripeSubscription extends DataObject implements Subscription {
     public function cancel() {
         //canceled_at is set via stripe's API, do not re-set it here
         $this->status = 'inactive';
+        $this->canceled_at = Carbon::now();
+        $this->cancel_at_period_end = true;
     }
 
     private function parse(array $data) {

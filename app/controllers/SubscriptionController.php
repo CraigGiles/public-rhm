@@ -101,6 +101,7 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
+            $this->billingService->subscribe($user);
 
             return $this->respondSuccess('dashboard');
         } catch (AccountSubscriptionException $ex) {
