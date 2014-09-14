@@ -9,7 +9,8 @@ class ApiSubscriptionFilter extends SubscriptionFilter {
         if (!$active) {
             return [
                 'status' => $active,
-                'message' => self::MESSAGE];
+                'message' => self::MESSAGE
+            ];
         }
     }
 } 
