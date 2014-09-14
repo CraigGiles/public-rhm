@@ -45,17 +45,12 @@ RHM.App.Subscription = {
                 dataType: 'json',
                 data: JSON.stringify({_token: $('[name=_token]').val(), regions: regions}),
                 cache: true,
-                beforeSend: function () {
-//                    beforeAjax();
-//                    $('#submit').prop('disabled', true);
-                },
                 complete: function (data) {
                     if (data.status === 401 || data.status === 200) {
                         if (data.responseJSON.redirect) {
                             window.location.href = data.responseJSON.redirect;
                         }
                     } else {
-                        alert('status was bad!!!!');
                         RHM.App.Subscription.errorHandler(data);
                     }
                 }
@@ -216,7 +211,9 @@ RHM.App.Subscription = {
             data: JSON.stringify({regions:items}),
             cache: true,
             complete: function(data) {
-                subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
+                if (data.status === 200) {
+                    subRegion.text("Total: $" + parseFloat(data.responseJSON.message)/100);
+                }
             }
         });
     },
@@ -282,7 +279,6 @@ RHM.App.Subscription = {
          */
         if (data.status >= 400 && data.status <= 499) {
             var errors = data.responseJSON;
-            alert('Client Error');
 //            errors.type = 'warning';
 //            $('#warnings').html(warning_template(errors));
 //            $('#regions').empty();
@@ -293,7 +289,6 @@ RHM.App.Subscription = {
          */
         else if (data.status >= 500 && data.status <= 599) {
             var errors = data.responseJSON;
-            alert('Server Error');
 //            errors.type = 'danger';
 //            $('#warnings').html(warning_template(errors));
 //            $('#regions').empty();
