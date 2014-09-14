@@ -84,7 +84,7 @@ class NullSubscription implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getTrialEndDate() {
-
+        return Carbon::createFromDate(2000, 1, 1);
     }
 
     /**
@@ -95,7 +95,7 @@ class NullSubscription implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getCanceledDate() {
-
+        return Carbon::createFromDate(2000, 1, 1);
     }
 
     /**
