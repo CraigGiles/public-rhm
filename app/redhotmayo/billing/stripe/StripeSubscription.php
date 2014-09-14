@@ -172,6 +172,8 @@ class StripeSubscription extends DataObject implements Subscription {
     public function cancel() {
         //canceled_at is set via stripe's API, do not re-set it here
         $this->status = 'inactive';
+        $this->canceled_at = Carbon::now();
+        $this->cancel_at_period_end = true;
     }
 
     private function parse(array $data) {
