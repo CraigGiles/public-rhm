@@ -78,7 +78,7 @@ class SubscriptionController extends RedHotMayoWebController {
 
         $subscriptionLocations = $this->filterUnique($subscriptionLocations);
 
-        return View::make('subscriptions.update', [
+        return View::make('subscriptions.index', [
             'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
         ]);
     }
@@ -101,6 +101,7 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
+
             return $this->respondSuccess('dashboard');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
