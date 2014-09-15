@@ -28,7 +28,6 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
         return [
             self::TABLE_NAME .'.'. self::C_ID,
             self::TABLE_NAME .'.'. self::C_PLAN_ID,
-            self::TABLE_NAME .'.'. self::C_STATUS,
             self::TABLE_NAME .'.'. self::C_CUSTOMER_TOKEN,
             self::TABLE_NAME .'.'. self::C_SUBSCRIPTION_ENDS_AT,
             self::TABLE_NAME .'.'. self::C_AUTO_RENEW,
@@ -95,7 +94,6 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     protected function getValues(Subscription $billing, $updating = false) {
         $values = [
             self::C_PLAN_ID              => $billing->getPlanId(),
-            self::C_STATUS               => $billing->isActive(),
             self::C_CUSTOMER_TOKEN       => $billing->getCustomerToken(),
             self::C_SUBSCRIPTION_ENDS_AT => $billing->getSubscriptionEndDate(),
             self::C_AUTO_RENEW           => $billing->isSetToRenew(),
