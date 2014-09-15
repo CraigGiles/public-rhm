@@ -8,18 +8,14 @@ use redhotmayo\utility\Arrays;
 
 class StripeSubscription extends DataObject implements Subscription {
     const PLAN_ID                     = 'plan_id';
-    const STRIPE_STATUS               = 'current_status';
     const STRIPE_CUSTOMER_TOKEN       = 'customer';
     const STRIPE_CANCEL_AT_PERIOD_END = 'cancel_at_period_end';
     const STRIPE_CURRENT_PERIOD_END   = 'subscription_ends_at';
     const STRIPE_TRIAL_END            = 'trial_end';
     const STRIPE_CANCELED_AT          = 'canceled_at';
-
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
+    const USER_ID                     = 'user_id';
 
     private $planId;
-    private $status;
     private $customer;
     private $cancel_at_period_end;
     private $current_period_end;
@@ -27,6 +23,8 @@ class StripeSubscription extends DataObject implements Subscription {
     private $canceled_at;
     private $upgraded_at;
     private $upgraded_id;
+    private $previous_id;
+    private $user_id;
 
     public function __construct(array $data) {
         $this->parse($data);
@@ -67,11 +65,9 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function isActive() {
-        // This will result to true in two ways:
-        // - if the status is 'active'
-        // - if the current_period_end is in the future
-        return 'active' === $this->status ||
-            (($this->current_period_end instanceof Carbon) && $this->current_period_end->isFuture());
+        // This will result to true if the current_period_end is in the future
+        return ($this->current_period_end instanceof Carbon)
+                && $this->current_period_end->isFuture();
     }
 
     /**
@@ -159,11 +155,10 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function upgraded(Subscription $newSub) {
-        $this->status = 'inactive';
         $this->upgraded_id = $newSub->getId();
         $this->upgraded_at = Carbon::now();
-        $this->cancel_at_period_end = true;
         $this->canceled_at = Carbon::now();
+        $this->cancel_at_period_end = true;
     }
 
     /**
@@ -172,8 +167,6 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function cancel() {
-        //canceled_at is set via stripe's API, do not re-set it here
-        $this->status = 'inactive';
         $this->canceled_at = Carbon::now();
         $this->cancel_at_period_end = true;
     }
@@ -181,16 +174,30 @@ class StripeSubscription extends DataObject implements Subscription {
     private function parse(array $data) {
         $this->setId(Arrays::GetValue($data, self::ID, null));
         $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
-        $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
         $this->customer             = Arrays::GetValue($data, self::STRIPE_CUSTOMER_TOKEN, '');
         $this->cancel_at_period_end = Arrays::GetValue($data, self::STRIPE_CANCEL_AT_PERIOD_END, true);
         $this->current_period_end   = Arrays::GetValue($data, self::STRIPE_CURRENT_PERIOD_END, null);
         $this->trial_end            = Arrays::GetValue($data, self::STRIPE_TRIAL_END, null);
         $this->canceled_at          = Arrays::GetValue($data, self::STRIPE_CANCELED_AT, null);
+        $this->user_id              = Arrays::GetValue($data, self::USER_ID, null);
 
         if (!isset($this->planId) || !isset($this->current_period_end)) {
             throw new NullArgumentException('Subscription data is invalid');
         }
     }
 
+    /**
+     * Get the user's id that owns this subscription
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUserId() {
+        return $this->user_id;
+    }
+
+    public function setUserId($id) {
+        $this->user_id = $id;
+    }
 }

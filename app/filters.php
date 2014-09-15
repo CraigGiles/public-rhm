@@ -11,7 +11,9 @@
 |
 */
 
+use redhotmayo\filters\ApiSubscriptionFilter;
 use redhotmayo\filters\AuthApiFilter;
+use redhotmayo\filters\SubscriptionFilter;
 
 App::before(function($request)
 {
@@ -26,15 +28,15 @@ App::after(function($request, $response)
 
 /*
 |--------------------------------------------------------------------------
-| API Filters
+| Custom Filters
 |--------------------------------------------------------------------------
 |
-| The following filters are used when going through the API layer of
-| the RedHotMAYO application
+| The following filters are custom to our application
 |
 */
 
 Route::filter('api.auth', AuthApiFilter::FILTER);
+Route::filter('api.sub', ApiSubscriptionFilter::FILTER);
 
 /*
 |--------------------------------------------------------------------------

@@ -84,7 +84,7 @@ class NullSubscription implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getTrialEndDate() {
-
+        return Carbon::createFromDate(2000, 1, 1);
     }
 
     /**
@@ -95,7 +95,7 @@ class NullSubscription implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function getCanceledDate() {
-
+        return Carbon::createFromDate(2000, 1, 1);
     }
 
     /**
@@ -137,5 +137,28 @@ class NullSubscription implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function cancel() {
+    }
+
+    /**
+     * If the plan is updated from another subscription plan, what was the
+     * previous plans key in the database?
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPreviousId() {
+        return -1;
+    }
+
+    /**
+     * Get the user's id that owns this subscription
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUserId() {
+        return -1;
     }
 }

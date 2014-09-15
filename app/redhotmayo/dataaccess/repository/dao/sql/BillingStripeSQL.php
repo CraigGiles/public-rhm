@@ -21,6 +21,7 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     const C_UPDATED_AT           = 'updated_at';
     const C_UPGRADED_AT          = 'upgraded_at';
     const C_UPGRADED_ID          = 'upgraded_id';
+    const C_USER_ID              = 'user_id';
 
     const UNKNOWN_CUSTOMER_TOKEN = '';
 
@@ -28,7 +29,6 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
         return [
             self::TABLE_NAME .'.'. self::C_ID,
             self::TABLE_NAME .'.'. self::C_PLAN_ID,
-            self::TABLE_NAME .'.'. self::C_STATUS,
             self::TABLE_NAME .'.'. self::C_CUSTOMER_TOKEN,
             self::TABLE_NAME .'.'. self::C_SUBSCRIPTION_ENDS_AT,
             self::TABLE_NAME .'.'. self::C_AUTO_RENEW,
@@ -37,7 +37,8 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
             self::TABLE_NAME .'.'. self::C_CREATED_AT,
             self::TABLE_NAME .'.'. self::C_UPDATED_AT,
             self::TABLE_NAME .'.'. self::C_UPGRADED_AT,
-            self::TABLE_NAME .'.'. self::C_UPGRADED_ID
+            self::TABLE_NAME .'.'. self::C_UPGRADED_ID,
+            self::TABLE_NAME .'.'. self::C_USER_ID
         ];
     }
 
@@ -95,7 +96,6 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
     protected function getValues(Subscription $billing, $updating = false) {
         $values = [
             self::C_PLAN_ID              => $billing->getPlanId(),
-            self::C_STATUS               => $billing->isActive(),
             self::C_CUSTOMER_TOKEN       => $billing->getCustomerToken(),
             self::C_SUBSCRIPTION_ENDS_AT => $billing->getSubscriptionEndDate(),
             self::C_AUTO_RENEW           => $billing->isSetToRenew(),
@@ -103,6 +103,7 @@ class BillingStripeSQL extends EncryptedSQLTable implements BillingStripeDAO {
             self::C_CANCELED_AT          => $billing->getCanceledDate(),
             self::C_UPGRADED_AT          => $billing->getUpgradedDate(),
             self::C_UPGRADED_ID          => $billing->getUpgradedPlanId(),
+            self::C_USER_ID              => $billing->getUserId(),
             self::C_UPDATED_AT           => Carbon::now(),
         ];
 
