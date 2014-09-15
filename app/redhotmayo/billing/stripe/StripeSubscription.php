@@ -13,6 +13,7 @@ class StripeSubscription extends DataObject implements Subscription {
     const STRIPE_CURRENT_PERIOD_END   = 'subscription_ends_at';
     const STRIPE_TRIAL_END            = 'trial_end';
     const STRIPE_CANCELED_AT          = 'canceled_at';
+    const USER_ID                     = 'user_id';
 
     private $planId;
     private $customer;
@@ -22,6 +23,8 @@ class StripeSubscription extends DataObject implements Subscription {
     private $canceled_at;
     private $upgraded_at;
     private $upgraded_id;
+    private $previous_id;
+    private $user_id;
 
     public function __construct(array $data) {
         $this->parse($data);
@@ -176,9 +179,25 @@ class StripeSubscription extends DataObject implements Subscription {
         $this->current_period_end   = Arrays::GetValue($data, self::STRIPE_CURRENT_PERIOD_END, null);
         $this->trial_end            = Arrays::GetValue($data, self::STRIPE_TRIAL_END, null);
         $this->canceled_at          = Arrays::GetValue($data, self::STRIPE_CANCELED_AT, null);
+        $this->user_id              = Arrays::GetValue($data, self::USER_ID, null);
 
         if (!isset($this->planId) || !isset($this->current_period_end)) {
             throw new NullArgumentException('Subscription data is invalid');
         }
+    }
+
+    /**
+     * Get the user's id that owns this subscription
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUserId() {
+        return $this->user_id;
+    }
+
+    public function setUserId($id) {
+        $this->user_id = $id;
     }
 }

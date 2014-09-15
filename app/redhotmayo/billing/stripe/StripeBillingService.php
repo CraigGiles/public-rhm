@@ -168,6 +168,7 @@ class StripeBillingService implements BillingService {
     private function createNewSubscription(StripeBillableUser $user, BillingPlan $plan) {
         $subscription = $this->gateway->createNewSubscription($user, $plan);
         $rhmUser      = $user->getUserObject();
+        $subscription->setUserId($rhmUser->getId());
         $this->billingRepo->save($subscription);
 
         $rhmUser->setStripeBillingId($subscription->getId());
@@ -177,9 +178,9 @@ class StripeBillingService implements BillingService {
     private function updateExistingSubscription(
         StripeBillableUser $user, BillingPlan $plan, StripeSubscription $current
     ) {
-        $subscription = $this->gateway->updateExistingSubscription($user, $plan);
         $rhmUser      = $user->getUserObject();
-
+        $subscription = $this->gateway->updateExistingSubscription($user, $plan);
+        $subscription->setUserId($rhmUser->getId());
         $this->billingRepo->upgrade($rhmUser->getStripeBillingId(), $current, $subscription);
 
         $rhmUser->setStripeBillingId($subscription->getId());

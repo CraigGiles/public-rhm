@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePreviousBillingIdColumnInBillingTable extends Migration {
+class AddUserIdColumnToStripeBilling extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -14,7 +14,7 @@ class CreatePreviousBillingIdColumnInBillingTable extends Migration {
 	{
         Schema::table('billing_stripe', function(Blueprint $table)
         {
-            $table->unsignedInteger('previous_id')->nullable()->after('upgraded_id');
+            $table->unsignedInteger('user_id')->nullable()->after('upgraded_id');
         });
 	}
 
@@ -27,7 +27,7 @@ class CreatePreviousBillingIdColumnInBillingTable extends Migration {
 	{
         Schema::table('billing_stripe', function(Blueprint $table)
         {
-            $table->dropColumn('previous_id');
+            $table->dropColumn('user_id');
         });
 	}
 
