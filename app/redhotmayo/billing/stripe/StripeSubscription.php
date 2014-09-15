@@ -8,18 +8,13 @@ use redhotmayo\utility\Arrays;
 
 class StripeSubscription extends DataObject implements Subscription {
     const PLAN_ID                     = 'plan_id';
-    const STRIPE_STATUS               = 'current_status';
     const STRIPE_CUSTOMER_TOKEN       = 'customer';
     const STRIPE_CANCEL_AT_PERIOD_END = 'cancel_at_period_end';
     const STRIPE_CURRENT_PERIOD_END   = 'subscription_ends_at';
     const STRIPE_TRIAL_END            = 'trial_end';
     const STRIPE_CANCELED_AT          = 'canceled_at';
 
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
-
     private $planId;
-    private $status;
     private $customer;
     private $cancel_at_period_end;
     private $current_period_end;
@@ -157,11 +152,10 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function upgraded(Subscription $newSub) {
-        $this->status = 'inactive';
         $this->upgraded_id = $newSub->getId();
         $this->upgraded_at = Carbon::now();
-        $this->cancel_at_period_end = true;
         $this->canceled_at = Carbon::now();
+        $this->cancel_at_period_end = true;
     }
 
     /**
@@ -170,8 +164,6 @@ class StripeSubscription extends DataObject implements Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function cancel() {
-        //canceled_at is set via stripe's API, do not re-set it here
-        $this->status = 'inactive';
         $this->canceled_at = Carbon::now();
         $this->cancel_at_period_end = true;
     }
@@ -179,7 +171,6 @@ class StripeSubscription extends DataObject implements Subscription {
     private function parse(array $data) {
         $this->setId(Arrays::GetValue($data, self::ID, null));
         $this->planId               = Arrays::GetValue($data, self::PLAN_ID, null);
-        $this->status               = Arrays::GetValue($data, self::STRIPE_STATUS, 'inactive');
         $this->customer             = Arrays::GetValue($data, self::STRIPE_CUSTOMER_TOKEN, '');
         $this->cancel_at_period_end = Arrays::GetValue($data, self::STRIPE_CANCEL_AT_PERIOD_END, true);
         $this->current_period_end   = Arrays::GetValue($data, self::STRIPE_CURRENT_PERIOD_END, null);
@@ -190,5 +181,4 @@ class StripeSubscription extends DataObject implements Subscription {
             throw new NullArgumentException('Subscription data is invalid');
         }
     }
-
 }
