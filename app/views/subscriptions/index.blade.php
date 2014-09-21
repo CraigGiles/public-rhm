@@ -29,15 +29,14 @@
         </div>
 
         <div style="display: none">
-        <div id="region-item-template">
-            @include('subscriptions.partials.region_item', [
-                 'buttonColor' => 'success',
-                 'addOrRemove' => 'add',
-                 'city' => 'cityName',
-                 'county' => 'countyName',
-                 'state' => 'stateName',
-             ])
-        </div>
+            <div id="region-item-template">
+                <li style="padding: 2px 0px">
+                    {{ Form::button('+', ['class' => "btn btn-success region-item-button-add"]) }}
+                    {{ Form::label('region-city', "cityName", ['class' => 'region-city type']) }}
+                    ({{ Form::label('region-county', "countyName", ['class' => 'region-county text-muted small']) }},
+                    {{ Form::label('region-state', "STATENAME", ['class' => 'region-state text-muted small']) }})
+                </li>
+            </div>
         </div>
 
     @endsection
