@@ -7,6 +7,7 @@ use redhotmayo\utility\Arrays;
 class AuthorizationService {
     const USERNAME = 'username';
     const PASSWORD = 'password';
+    const SERVICE = '\redhotmayo\auth\AuthorizationService';
 
     /** @var \redhotmayo\dataaccess\repository\UserRepository $userRepo */
     private $userRepo;
