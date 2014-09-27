@@ -18,6 +18,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
     const C_STATE_FULL_NAME = 'stateFullName';
+    const C_PRIMARY_RECORD = 'PrimaryRecord';
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
@@ -239,6 +240,7 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
      */
     public function getPopulationForZipcodes(array $zipcodes) {
         return (int)DB::table(self::TABLE_NAME)
+                      ->where(self::C_PRIMARY_RECORD, '=', 'P')
                       ->whereIn(self::C_ZIPCODE, $zipcodes)
                       ->sum(self::C_POPULATION);
     }
