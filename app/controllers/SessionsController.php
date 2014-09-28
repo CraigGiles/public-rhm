@@ -42,7 +42,7 @@ class SessionsController extends RedHotMayoWebController {
             //TODO: set user's last logon to NOW()
 
             //redirect to intended page
-            return Redirect::intended('/')
+            return Redirect::intended('dashboard')
                            ->with('flash_message', 'You have been logged in');
         } else {
             return Redirect::to('login')
