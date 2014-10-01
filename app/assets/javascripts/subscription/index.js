@@ -41,6 +41,14 @@ RHM.App.Subscription = {
         $('#subscription-submit').click(function() {
             var regions = RHM.App.Subscription.getSubscribedRegions();
 
+            // Send a tracking event to Mixpanel with a property
+            //TODO: Get Amount Value
+            var total = RHM.App.Subscription.totalRegion.val();
+            mixpanel.track(
+                "Subscribe Completed",
+                { "Amount": total } //Get the amount from the "Total" fieldT
+            );
+
             $.ajax({
                 url: '/subscribe',
                 type: 'POST',
@@ -262,6 +270,16 @@ RHM.App.Subscription = {
     },
 
 
+    trackSubscription: function() {
+        /**
+        * Send an event to track the beginning of this user's registration process
+        */ 
+        mixpanel.track(
+            "Registration Initiated"
+        );
+    },
+
+
     errorHandler: function (data, redirect) {
         /**
          * Handle redirection as long as the page is not where we are right now.
@@ -315,5 +333,6 @@ $(document).ready(function (){
     RHM.App.Subscription.region_items = [];
 
     RHM.App.Subscription.init();
+    RHM.App.Subscription.trackSubscription();
 });
 
