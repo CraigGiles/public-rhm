@@ -48,7 +48,7 @@ class StripeGateway {
             throw new BillingException('Network connection with billing partner failed.');
         } catch (\Stripe_Error $stripeError) {
             $body    = $stripeError->getJsonBody();
-            $message = Arrays::GetValue($body, 'message', '');
+            $message = Arrays::GetValue($body['error'], 'message', '');
             Log::error($message);
             throw new BillingException('Error will billing. Please try again later.');
         } catch (\Exception $ex) {

@@ -74,7 +74,7 @@ class AccountSubscriptionManager {
         $unsubscribeFrom = array_diff($subscribedTo, $zipcodes);
 
         $this->subscriptionRepository->unsubscribeUserFromZipcodes($user, $unsubscribeFrom);
-        $this->backdateAllZipcodes($user, $zipcodes);
+        $this->subscribeToZipcodes($user, $zipcodes);
     }
 
     /**
@@ -145,7 +145,7 @@ class AccountSubscriptionManager {
      *
      * @author Craig Giles < craig@gilesc.com >
      */
-    private function backdateAllZipcodes($user, $zipcodes) {
+    private function subscribeToZipcodes($user, $zipcodes) {
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);

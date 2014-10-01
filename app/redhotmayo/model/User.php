@@ -232,4 +232,8 @@ class User extends DataObject implements UserInterface, RemindableInterface {
     public function getStripeBillingId() {
         return $this->stripeBillingId;
     }
+
+    public function isOnFreeTrial() {
+        return true;
+    }
 }
