@@ -72,9 +72,11 @@ class AccountSubscriptionManager {
         $zipcodes        = $this->getZipcodesForRegions($dataset);
         $subscribedTo    = $this->subscriptionRepository->getAllZipcodesForUser($user);
         $unsubscribeFrom = array_diff($subscribedTo, $zipcodes);
+        $newZipcodes     = array_diff($zipcodes, $subscribedTo);
 
         $this->subscriptionRepository->unsubscribeUserFromZipcodes($user, $unsubscribeFrom);
         $this->subscribeToZipcodes($user, $zipcodes);
+        $this->backdateZipcodes($user, $zipcodes);
     }
 
     /**
@@ -149,7 +151,6 @@ class AccountSubscriptionManager {
         foreach ($zipcodes as $zip) {
             $sub = new Subscription($user, $zip);
             $this->subscriptionRepository->save($sub);
-            $this->backdate($user, $sub);
         }
     }
 
@@ -169,6 +170,13 @@ class AccountSubscriptionManager {
                 $acct = Account::FromArray($account);
                 $this->accountRepository->subscribeAccountToUserId($acct, $user->getUserId());
             }
+        }
+    }
+
+    private function backdateZipcodes($user, $zipcodes) {
+        foreach ($zipcodes as $zip) {
+            $sub = new Subscription($user, $zip);
+            $this->backdate($user, $sub);
         }
     }
 }
