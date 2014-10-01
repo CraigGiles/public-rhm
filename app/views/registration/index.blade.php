@@ -1,6 +1,6 @@
 @extends('layouts.master')
     @section("javascript")
-        {{ HTML::script('assets/registration.js'); }}
+        {{ HTML::script('assets/registration/index.js'); }}
     @endsection
 
     @section('content')

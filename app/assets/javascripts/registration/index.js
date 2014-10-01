@@ -9,27 +9,20 @@ RHM.App.Registration = {
         RHM.App.Registration.submitRegistrationClick();
     },
 
-
     submitRegistrationClick: function() {
         $('#registration-submit').click(function() {
-
-            // Send a "Subscribe Pressed" event to Mixpanel with a property "Amount"
             mixpanel.track(
                 "Registration Completed",
                 { "User Name": "????" } //Get the user name
             );
-
+        });
     },
 
     init: function() {
-    
         RHM.App.Registration.registerClickEvents();
-
     }
-
 }
 
 $(document).ready(function (){
-
     RHM.App.Registration.init();
 });

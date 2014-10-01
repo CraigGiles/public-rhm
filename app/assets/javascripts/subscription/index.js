@@ -41,12 +41,12 @@ RHM.App.Subscription = {
         $('#subscription-submit').click(function() {
             var regions = RHM.App.Subscription.getSubscribedRegions();
 
-
             // Send a tracking event to Mixpanel with a property
             //TODO: Get Amount Value
+            var total = RHM.App.Subscription.totalRegion.val();
             mixpanel.track(
                 "Subscribe Completed",
-                { "Amount": "????" } //Get the amount from the "Total" fieldT
+                { "Amount": total } //Get the amount from the "Total" fieldT
             );
 
             $.ajax({
