@@ -34,7 +34,7 @@ class ApiSessionController extends BaseController {
 
             if ($user instanceof User) {
                 $info = $this->session->getSessionInformationForUser($user);
-                $array[self::TOKEN] = property_exists($info, 'token') ? $info->token : $this->session->create($user);
+                $array[self::TOKEN] = isset($info[self::TOKEN]) ? $info[self::TOKEN] : $this->session->create($user);
             } else {
                 //TODO: not sure i like throwing exceptions here or in the auth object.
                 throw new LoginException('Invalid username or password.');
@@ -45,7 +45,7 @@ class ApiSessionController extends BaseController {
             Log::info('Unsuccessful login attempt.');
             Log::info(Input::json()->all());
             $success = false;
-            $array[self::MESSAGE] = $e->getMessage();
+            $array[self::MESSAGE] = $le->getMessage();
         } catch (Exception $e) {
             Log::error('ApiSessionController Exception');
             Log::error($e->getTrace());

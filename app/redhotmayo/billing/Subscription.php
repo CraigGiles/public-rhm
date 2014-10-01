@@ -113,4 +113,13 @@ interface Subscription {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function cancel();
+
+    /**
+     * Get the user's id that owns this subscription
+     *
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getUserId();
 }

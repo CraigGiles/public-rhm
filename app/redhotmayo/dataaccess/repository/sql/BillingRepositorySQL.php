@@ -156,7 +156,6 @@ class BillingRepositorySQL extends RepositorySQL implements BillingRepository {
         return new StripeSubscription([
             StripeSubscription::ID                          => $decrypted[BillingStripeSQL::C_ID],
             StripeSubscription::PLAN_ID                     => $decrypted[BillingStripeSQL::C_PLAN_ID],
-            StripeSubscription::STRIPE_STATUS               => $decrypted[BillingStripeSQL::C_STATUS],
             StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $decrypted[BillingStripeSQL::C_CUSTOMER_TOKEN],
             StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $cancelAtEnd,
             StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $subEndsAt,

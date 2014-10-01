@@ -62,7 +62,7 @@ class RegistrationController extends RedHotMayoWebController {
             $user = $this->getAuthedUser();
             $this->subscriptionManager->processNewUsersData($user);
 
-            return Redirect::to('billing');
+            return Redirect::to('dashboard');
         } catch (ValidationException $validationException) {
             Log::info("Registration Failure due to validation exception. ");
             return Redirect::back()->withErrors($validationException->getErrors())->withInput();

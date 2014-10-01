@@ -28,7 +28,6 @@ class StripeGateway {
 
             $billing = new StripeSubscription([
                 StripeSubscription::PLAN_ID                     => $plan->getId(),
-                StripeSubscription::STRIPE_STATUS               => $result->status,
                 StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $result->customer,
                 StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $result->cancel_at_period_end,
                 StripeSubscription::STRIPE_CURRENT_PERIOD_END   => Carbon::createFromTimestampUTC($result->current_period_end),
@@ -49,7 +48,7 @@ class StripeGateway {
             throw new BillingException('Network connection with billing partner failed.');
         } catch (\Stripe_Error $stripeError) {
             $body    = $stripeError->getJsonBody();
-            $message = Arrays::GetValue($body, 'message', '');
+            $message = Arrays::GetValue($body['error'], 'message', '');
             Log::error($message);
             throw new BillingException('Error will billing. Please try again later.');
         } catch (\Exception $ex) {
@@ -82,7 +81,6 @@ class StripeGateway {
 
         $billing = new StripeSubscription([
             StripeSubscription::PLAN_ID                     => $id,
-            StripeSubscription::STRIPE_STATUS               => $result->status,
             StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $result->customer,
             StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $result->cancel_at_period_end,
             StripeSubscription::STRIPE_CURRENT_PERIOD_END   => Carbon::createFromTimestampUTC($result->current_period_end),
@@ -114,7 +112,6 @@ class StripeGateway {
                  new StripeSubscription(
                      [
                          StripeSubscription::PLAN_ID                     => $subscription->plan->id,
-                         StripeSubscription::STRIPE_STATUS               => $subscription->status,
                          StripeSubscription::STRIPE_CUSTOMER_TOKEN       => $subscription->customer,
                          StripeSubscription::STRIPE_CANCEL_AT_PERIOD_END => $subscription->cancel_at_period_end,
                          StripeSubscription::STRIPE_CURRENT_PERIOD_END   => $currentPeriodEnd,

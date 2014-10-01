@@ -101,9 +101,12 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
-            $this->billingService->subscribe($user);
 
-            return $this->respondSuccess('dashboard');
+            if (!$user->isOnFreeTrial()) {
+                $this->billingService->subscribe($user);
+            }
+
+            return $this->respondSuccess('/dashboard');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondAccountSubscriptionException($ex);
