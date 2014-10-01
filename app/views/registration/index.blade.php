@@ -1,7 +1,10 @@
 @extends('layouts.master')
+    @section("javascript")
+        {{ HTML::script('assets/registration.js'); }}
+    @endsection
 
     @section('content')
-    @include("partials.errors")
+
 
     <div class="row">
         <div class="col-md-7">
@@ -50,7 +53,7 @@
 
                 <div class="form-group row">
                     <div class="col-lg-12">
-                        {{ Form::button("Register", ["type" => "submit", "class" => "btn btn-primary btn-lg"]) }}
+                        {{ Form::button("Register", ["type" => "submit", "class" => "btn btn-primary btn-lg", "id" => "registration-submit"]) }}
                     </div>
                 </div>
 
