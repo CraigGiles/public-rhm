@@ -1,12 +1,16 @@
-  <div class="banner">
-    <div class="container banner-image">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="logo">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-      </div>
+<div id="topbg">
+    <div id="header">
+        <img src="assets/logo.jpg">
+        <img align="right" src="assets/hot_button.jpg">
     </div>
-  </div>
+
+    <div id="header">
+        <img src="assets/red-background.jpg">
+    </div>
+
+    <div id="header2">
+        Get a leg up on your competition with <font style="font-family:robotoblack;">NEW</font>
+        restaurant openings - <font style="font-family:robotoblack;">delivered straight <br>
+        to your smartphone or tablet</font> - as soon as they come out!
+    </div>
+</div>

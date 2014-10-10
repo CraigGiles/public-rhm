@@ -39,7 +39,6 @@
     <body>
         @include('partials.unauth-banner')
 
-
         <div class="container">
             <div id="warnings">
             </div>
