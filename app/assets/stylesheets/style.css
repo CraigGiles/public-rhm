@@ -257,7 +257,7 @@ form {
 	padding-left: 15px;
 }
 
-input[type="Username"] {
+input[type="username"] {
 	border-radius: 5px;
 	border: none;
 	height: 50px;
@@ -267,7 +267,7 @@ input[type="Username"] {
 	padding-left: 10px;
 }
 
-input[type="Password"] {
+input[type="password"] {
 	border-radius: 5px;
 	border: none;
 	height: 50px;
@@ -277,7 +277,7 @@ input[type="Password"] {
 	padding-left: 10px;
 }
 
-input[type="Passwordbig"] {
+input[type="passwordbig"] {
 	border-radius: 5px;
 	border: none;
 	height: 50px;
@@ -287,7 +287,7 @@ input[type="Passwordbig"] {
 	padding-left: 10px;
 }
 
-input[type="Promo"] {
+input[type="promo"] {
 	border-radius: 5px;
 	border: 1px;
 	border-color: black;
@@ -298,7 +298,7 @@ input[type="Promo"] {
 	padding-left: 10px;
 }
 
-input[type="Usernamebig"] {
+input[type="usernamebig"] {
 	border-radius: 5px;
 	border: none;
 	height: 50px;
@@ -308,7 +308,7 @@ input[type="Usernamebig"] {
 	padding-left: 10px;
 }
 
-input[type="Email"] {
+input[type="email"] {
 	border-radius: 5px;
 	border: none;
 	height: 50px;
