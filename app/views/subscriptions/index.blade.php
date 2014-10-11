@@ -4,13 +4,14 @@
         {{ HTML::script('assets/subscription/index.js'); }}
     @endsection
 
-@section('black-bar-text')
-SELECT YOUR COVERAGE AREA FOR PRICING:
-@endsection
+    @section('black-bar-text')
+        SELECT YOUR COVERAGE AREA FOR PRICING:
+    @endsection
+
     @section("content")
         <div class="row" style="padding-bottom: 10px; padding-right: 30px">
             <h1>
-                <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px">Subscribe</div>
+                <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px">Continue</div>
                 <div class="pull-right" id="subscription-total" style="padding-right: 20px"></div>
             </h1>
         </div>
