@@ -4,30 +4,18 @@
         {{ HTML::script('assets/subscription/index.js'); }}
     @endsection
 
+@section('black-bar-text')
+SELECT YOUR COVERAGE AREA FOR PRICING:
+@endsection
     @section("content")
-        
-    <div id="bodywrap">
-        <div id="nav">
-            SELECT YOUR COVERAGE AREA FOR PRICING: 
-        </div>
-
-        <div id="right-bar">
-                <img src="assets/tablets.png"><p>
-                <img src="assets/continue_button.jpg">
-        </div> 
-    </div>
-
-
-        <div class="page-header">
+        <div class="row" style="padding-bottom: 10px; padding-right: 30px">
             <h1>
-                Select your coverage area to get pricing.
                 <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px">Subscribe</div>
                 <div class="pull-right" id="subscription-total" style="padding-right: 20px"></div>
             </h1>
         </div>
 
         <div class="row">
-
             <div class="col-sm-3 sidebar-module well">
                 @include('subscriptions.sidebar', [$states, $counties])
             </div>

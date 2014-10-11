@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('header-two')
+@section('black-bar-text')
 Login to redhotMAYO below:
 @endsection
 

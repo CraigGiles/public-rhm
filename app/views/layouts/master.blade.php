@@ -41,7 +41,7 @@
 
         <div id="nav">
             <div style="padding-left: 15%">
-                @yield('header-two')
+                @yield('black-bar-text')
             </div>
         </div>
 
