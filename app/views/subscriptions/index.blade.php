@@ -5,6 +5,19 @@
     @endsection
 
     @section("content")
+        
+    <div id="bodywrap">
+        <div id="nav">
+            SELECT YOUR COVERAGE AREA FOR PRICING: 
+        </div>
+
+        <div id="right-bar">
+                <img src="assets/tablets.png"><p>
+                <img src="assets/continue_button.jpg">
+        </div> 
+    </div>
+
+
         <div class="page-header">
             <h1>
                 Select your coverage area to get pricing.
