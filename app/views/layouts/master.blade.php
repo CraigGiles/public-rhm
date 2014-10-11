@@ -39,12 +39,19 @@
     <body>
         @include('partials.unauth-banner')
 
-        <div class="container">
+        <div id="nav">
+            <div style="padding-left: 15%">
+                @yield('header-two')
+            </div>
+        </div>
+
+        <div class="container main-content">
             <div id="warnings">
             </div>
 
             @yield('content')
         </div>
+
 
         <div class="footer">
         </div>

@@ -109,9 +109,13 @@ body {
 	margin-right:auto;
 }
 
+.app-image {
+    margin-top: -30px;
+}
+
 #nav {
 	height: 40px;
-	width: 1024px;
+	width: 100%;
 	background-color: #333333;
 	padding-top: 15px;
 	color: white;
@@ -216,6 +220,7 @@ button {
 	border-radius: 6px;
 	font-size: 24px;
 	font-family: 'robotoregular';
+    margin-top: 10px;
 }
 
 .buttontiny {
@@ -264,6 +269,7 @@ input[type="username"] {
 	width: 336px;
 	font-size: 20px;
 	font-family: 'robotoregular';
+    margin-top: 10px;
 	padding-left: 10px;
 }
 
@@ -275,6 +281,7 @@ input[type="password"] {
 	font-size: 20px;
 	font-family: 'robotoregular';
 	padding-left: 10px;
+    margin-top: 10px;
 }
 
 input[type="passwordbig"] {
