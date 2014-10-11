@@ -104,7 +104,7 @@ RHM.App.Subscription = {
         if(newArr.length === 0) {
             RHM.App.Subscription.region_items.push(region);
 
-            var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove', '+');
+            var item = RHM.App.Subscription.getNewRegionItem(city, county, state, 'region-item-button-remove buttonunsubscribe', '+');
 
             RHM.App.Subscription.selectedRegions.append(item.html());
             RHM.App.Subscription.selectedRegions.unbind('click', RHM.App.Subscription.removeFromSelectedRegions);
@@ -124,6 +124,8 @@ RHM.App.Subscription = {
         p.find('.region-state').text(state.toUpperCase());
         p.find('.btn').removeClass('region-item-button-add');
         p.find('.btn').removeClass('region-item-button-remove');
+        p.find('.btn').removeClass('buttonsubscribe');
+        p.find('.btn').removeClass('buttonunsubscribe');
         p.find('.btn').addClass(className);
         p.find('.btn').text(buttonText);
 
@@ -141,7 +143,7 @@ RHM.App.Subscription = {
 
             if (type == "city") {
                 var search_by = json[index].search_by;
-                var newRegionItem = RHM.App.Subscription.getNewRegionItem(search_by, county, state, 'region-item-button-add', '+');
+                var newRegionItem = RHM.App.Subscription.getNewRegionItem(search_by, county, state, 'region-item-button-add buttonunsubscribe', '+');
 
                 $(element).append(newRegionItem.html());
             }
