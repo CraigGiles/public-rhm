@@ -1,6 +1,8 @@
 <div id="topbg">
     <div id="header">
-        <img src="assets/logo.jpg">
+        <a href="/">
+            <img src="assets/logo.jpg">
+        </a>
         <img align="right" src="assets/hot_button.jpg">
     </div>
 
