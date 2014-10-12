@@ -11,7 +11,7 @@
     @section("content")
         <div class="row" style="padding-bottom: 10px; padding-right: 30px">
             <h1>
-                <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px">Continue</div>
+                <div class="btn btn-lg btn-primary pull-right" id="subscription-submit" style="padding-right: 20px; margin-top: -7px;">Continue</div>
                 <div class="pull-right" id="subscription-total" style="padding-right: 20px"></div>
             </h1>
         </div>

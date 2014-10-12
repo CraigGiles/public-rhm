@@ -40,7 +40,7 @@
         @include('partials.unauth-banner')
 
         <div id="nav">
-            <div style="padding-left: 15%">
+            <div style="padding-left: 15%; margin-top: -6px;">
                 @yield('black-bar-text')
             </div>
         </div>
