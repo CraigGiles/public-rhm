@@ -1,9 +1,10 @@
 <div id="topbg">
     <div id="header">
         <a href="/">
-            <img src="assets/logo.jpg">
+            {{ HTML::image("assets/logo.jpg") }}
         </a>
-        <img align="right" src="assets/hot_button.jpg">
+        
+        {{ HTML::image("assets/hot_button.jpg", null, ['align' => 'right']) }}
     </div>
 
     <div id="header2">
