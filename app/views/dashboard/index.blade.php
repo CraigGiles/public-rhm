@@ -18,7 +18,7 @@
     	<br>
     	<br>
 	    <font style="color: #ffffff; font-family:robotoregular;">
-	        {{ link_to('billing/cancel', 'Cancel my Subscription', null, ["class" => "btn"]) }}
+	        {{ link_to('billing/cancel', 'Cancel my Subscription') }}
 	    </font>
 	
 	</div>
