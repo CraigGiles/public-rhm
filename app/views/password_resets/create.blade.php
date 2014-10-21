@@ -1,7 +1,10 @@
 @extends('layouts.master')
 
+    @section('black-bar-text')
+        Reset Password
+    @endsection
+
 @section('content')
-    <h1>Reset Password</h1>
 
     <p>
     Please enter your email address and we will send you instructions on how to reset your password.

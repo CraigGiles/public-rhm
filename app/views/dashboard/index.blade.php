@@ -1,15 +1,26 @@
 @extends('layouts.master')
 
+    @section('black-bar-text')
+        My Dashboard
+    @endsection
+
 @section('content')
     @include('partials.errors')
-    <h2>Dashboard</h2>
 
-    {{ link_to('subscribe', 'Update Regions', ['class' => 'btn btn-primary btn-lg']) }}
-    {{ link_to('billing/cancel', 'Cancel Subscription', ['class' => 'btn btn-primary btn-lg']) }}
+    <div style="margin-top: 30px; margin-left: 30px;">
+    	{{ link_to('subscribe', 'Update My Regions', ['class' => 'btn btn-primary btn-lg']) }}
+    	<!--{{ link_to('billing/cancel', 'Cancel Subscription', ['class' => 'btn btn-primary btn-lg']) }} -->
+    	<br>
+    	<br>
+	    <font style="color: #ffffff; font-family:robotoregular;">
+	        {{ link_to('billing/cancel', 'Cancel my Subscription', null, ["class" => "btn"]) }}
+	    </font>
+	
+	</div>
 
-<div class="col-md-4 pull-right app-image" style="margin-top: -80px">
-    <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
-</div>
+	<div class="col-md-4 pull-right app-image" style="margin-top: -140px">
+	    <img src="assets/tablets.png"/>
+	</div>
 
 @endsection
 

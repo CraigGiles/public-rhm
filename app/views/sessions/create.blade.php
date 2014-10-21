@@ -11,15 +11,17 @@ Login to redhotMAYO below:
     @include('layouts.login')
 </div>
 
-<div class="col-md-4 main-right">
-    <h1>Why <font color="#8dc73f">redhot</font><font color="#ff5050">MAYO</font>?</h1>
-    <p>redhotMAYO's new "HOT" module gives you the ability to integrate with suppliers and brokers in ways never before possible, including:<p>
-    <img src="assets/check.jpg"> Share key account details with partners to collaborate in tag-team selling<p>
-    <img src="assets/check.jpg"> Automate your sampling processes to get samples to operations and close new sales faster<p>
-    <img src="assets/check.jpg"> And much more!<p>
+<div class="col-md-4 main-right" style="margin-left:20px">
+    <h1>Stay Tuned!</h1>
+    <p>redhotMAYO continually improves our tools to help foodservice sales professionals succeed!<p>
+    <p>We strive to keep you informed; keep a lookout for the following new features in upcoming months:<p>
+    <img src="assets/check.jpg"> <strong>Add Your Accounts - </strong> Manually or import<p>
+    <img src="assets/check.jpg"> <strong>Proximity Search - </strong> Instantly fing accounts close to your current location<p>
+    <img src="assets/check.jpg"> <strong>Export - </strong> Select and export acounts to popular formats like xls and .pdf<p>
 </div>
 
-<div class="col-md-4 pull-right app-image">
-    <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
+<div id="right-bar-login">
+		<img src="assets/tablets.png">
 </div>
+
 @endsection

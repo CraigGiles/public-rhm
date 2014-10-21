@@ -24,7 +24,7 @@
     </div>
 
     <div class="col-md-4 pull-right app-image">
-        <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
+        <img src="assets/tablets.png""/>
     </div>
 
     {{ Form::close() }}
