@@ -3,7 +3,7 @@
         <a href="/">
             {{ HTML::image("assets/logo.jpg") }}
         </a>
-        
+
         {{ HTML::image("assets/hot_button.jpg", null, ['align' => 'right']) }}
     </div>
 
