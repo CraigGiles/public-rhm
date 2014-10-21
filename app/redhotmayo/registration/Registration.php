@@ -35,18 +35,9 @@ class Registration {
     public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
         $registered = false;
 
-        //validate input
-        $validated = $validator->validate($input, $validator->getCreationRules());
-
-        //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
         $throttle = $this->getThrottleRepository($throttle);
-
-        if (!$throttle->canUserRegister($input)) {
-            $key = Arrays::GetValue($input, 'key', 'UNKNOWN');
-            throw new ThrottleException($key);
-        }
-        //TODO: END WS-43 REMOVE
+        $validated = $validator->validate($input, $validator->getCreationRules());
 
         //save user
         if ($validated) {

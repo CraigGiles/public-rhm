@@ -62,6 +62,9 @@ Route::group(['before' => 'auth'], function() {
     Route::resource('billing', 'BillingController');
 });
 
+// Administration
+Route::get('administration', 'AdministrationController@index');
+Route::post('administration/upload', 'AdministrationController@upload');
 
 /**
  * Remove the folowing once done testing

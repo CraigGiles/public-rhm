@@ -1,5 +1,6 @@
 <?php  namespace redhotmayo\billing\stripe;
 
+use Illuminate\Support\Facades\Log;
 use redhotmayo\billing\BillingService;
 use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\billing\Subscription;
@@ -106,6 +107,12 @@ class StripeBillingService implements BillingService {
         $customerToken = $this->billingRepo->getCustomerToken($user);
         $stripeUser    = new StripeBillableUser($user, $this->billingToken, $customerToken);
         $current       = $this->getActiveSubscription($stripeUser);
+
+        if (!isset($current)) {
+            Log::info("user {$user->getId()} attempting to cancel sub without an active sub.");
+            return false;
+        }
+
         $result        = $this->gateway->cancel($stripeUser);
 
         if ($result) {
