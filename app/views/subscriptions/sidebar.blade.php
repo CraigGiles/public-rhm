@@ -1,5 +1,5 @@
 <div class="panel-title" style="text-align: center">
-    <h4>State Selection</h4>
+    <h4>Select Coverage Area</h4>
 </div>
 <hr>
     <div class="sidebar-module ">
