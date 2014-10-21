@@ -2,7 +2,7 @@
 <div class="well well-sm">
 
 <div class="panel-title" style="text-align: center">
-    <h4>Available Regions</h4>
+    <h4>Select Cities</h4>
 </div>
 <hr>
 
