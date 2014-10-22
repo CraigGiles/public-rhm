@@ -1,7 +1,11 @@
 @extends('layouts.master')
 
+@section('black-bar-text')
+    Reset Password
+@endsection
+
 @section('content')
-    <h1>Reset Password</h1>
+    @include('partials.errors')
 
     <p>
     Please enter your email address and we will send you instructions on how to reset your password.
@@ -21,9 +25,9 @@
     </div>
     {{ Form::close() }}
 
-@if (Session::has('error'))
-<p>{{ Session::get('reason') }}</p>
-@endif
+    @if (Session::has('error'))
+        <p>{{ Session::get('reason') }}</p>
+    @endif
 
-@stop
+@endsection
 
