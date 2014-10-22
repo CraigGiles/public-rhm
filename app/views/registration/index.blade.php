@@ -8,6 +8,7 @@
     @endsection
 
     @section('content')
+    @include("partials.errors")
     
     {{ Form::open(['url' => 'registration', 'autocomplete' => 'off', 'role'=>'form', 'id'=>'new_user']) }}
 
