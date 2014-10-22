@@ -10,9 +10,9 @@
 
     @section("content")
     <div id="bodywrap">
-        <div id="right-bar">
+        <div id="right-bar" style="background:transparent; pointer-events:none;">
             <img src="assets/tablets.png"><p>
-            <div class="btn btn-lg btn-primary" id="subscription-submit" style="padding-right: 20px; margin-top: -7px;">Continue</div>
+            <div class="btn btn-lg btn-primary" id="subscription-submit" style="padding-right: 20px; margin-top: -7px; pointer-events:auto">Continue</div>
         </div> 
 
         <div id="main-left">
@@ -42,18 +42,16 @@
             <!--  <ul id="available-regions-container" style="width: 100%; min-height: 450px; overflow-y: scroll; height: 100%; list-style-type: none"></ul> -->
         </div>
 
-        <div id="main-right" style="padding-top: 1px">
-            <p style="display: inline">
+        <div id="main-right" style="padding-top: 1px; white-space:nowrap;">
                 <h1>
-                    <font color="#fe504f" style="font-size:24px; font-family: 'robotoblack';">TOTAL:</font><strike><div id="subscription-total" style=""></div></strike> <font color="#8ec83e">FREE</font>
+                    <font color="#fe504f" style="font-size:24px; font-family: 'robotoblack';">TOTAL:&nbsp;</font><strike><span id="subscription-total"></span></strike> <font color="#8ec83e">FREE</font>
                 </h1>
-            </p>
             <div id="filterbox">
                 <p><h2>YOUR COVERAGE AREA(S)</h2><p>
 
-                <ul id="selected-regions-container" style="width: 100%; min-height: 450px; max-height: 450px; overflow-y: scroll; height: 100%; list-style-type: none">
+                <ul id="selected-regions-container" style="padding-left:0; width: 100%; min-height: 450px; max-height: 450px; overflow-y: scroll; height: 100%; list-style-type: none">
                     @foreach($activeSubscriptions as $reg)
-                         <li style="padding: 2px 0px">
+                         <li style="padding: 2px 0px;">
                              {{ Form::button('Unsubscribe', ['class' => "btn btn-success region-item-button-remove buttonunsubscribe"]) }}
                              {{ Form::label('region-city', Str::title($reg->getCity()), ['class' => 'region-city type']) }}
                              ({{ Form::label('region-county', Str::title($reg->getCounty()), ['class' => 'region-county text-muted small']) }},
