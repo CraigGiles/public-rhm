@@ -15,7 +15,7 @@
         {{ Form::button("Login", ["type" => "submit", "class" => "btn btn-primary btn-lg button2"]) }}
     </div>
 
-    <font style="color: #ffffff; position: relative; font-family:robotoregular;">
+    <font style="color: #ffffff; position: relative; font-family:roboto; font-weight: 400;">
         {{ link_to_route('password_resets.create', 'Forgot your password?', null, ["class" => "btn"]) }}
     </font>
     

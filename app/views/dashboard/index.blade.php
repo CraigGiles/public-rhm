@@ -17,7 +17,7 @@
 
     	<br>
     	<br>
-	    <font style="color: #ffffff; font-family:robotoregular;">
+	    <font style="color: #ffffff; font-family:roboto; font-weight: 400;">
 	        {{ link_to('billing/cancel', 'Cancel my Subscription') }}
 	    </font>
 

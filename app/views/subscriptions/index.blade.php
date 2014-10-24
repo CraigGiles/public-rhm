@@ -44,7 +44,7 @@
 
         <div id="main-right" style="padding-top: 1px; white-space:nowrap;">
                 <h1>
-                    <font color="#fe504f" style="font-size:24px; font-family: 'robotoblack';">TOTAL:&nbsp;</font><strike><span id="subscription-total"></span></strike> <font color="#8ec83e">FREE</font>
+                    <font color="#fe504f" style="font-size:24px; font-family: 'roboto'; font-weight: 700;">TOTAL:&nbsp;</font><strike><span id="subscription-total"></span></strike> <font color="#8ec83e">FREE</font>
                 </h1>
             <div id="filterbox">
                 <p><h2>YOUR COVERAGE AREA(S)</h2><p>
