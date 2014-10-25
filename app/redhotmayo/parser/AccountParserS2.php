@@ -1,6 +1,7 @@
 <?php namespace redhotmayo\parser;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use redhotmayo\dataaccess\repository\CuisineRepository;
 use redhotmayo\dataaccess\repository\FoodServicesRepository;
 use redhotmayo\exception\Exception;
