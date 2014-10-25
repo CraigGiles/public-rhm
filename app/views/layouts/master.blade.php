@@ -2,7 +2,7 @@
 <html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <!--<<meta name="viewport" content="width=device-width, initial-scale=1"> UNCOMMENT WHEN SITE IS MADE RESPONSIVE-->
         <title>redhotMAYO</title>
 
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300,700" />
