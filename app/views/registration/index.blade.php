@@ -12,7 +12,7 @@
     
     {{ Form::open(['url' => 'registration', 'autocomplete' => 'off', 'role'=>'form', 'id'=>'new_user']) }}
 
-    <div class="col-lg-4">
+    <div class="col-sm-4">
         <img src="assets/dropdown-login.jpg" style="position:absolute; margin-left: -5%">
         {{ Form::input("username", "username", null, ["class" => "form-control", "style" => "position:relative;", "placeholder" => "Username *"]) }}
         {{ Form::input("username", "email", null, ["class" => "form-control", "style" => "position:relative;", "placeholder" => "Email *"]) }}
@@ -27,6 +27,7 @@
             * Important! Remember your password as you will need it to log into your redhotMAYO app.
         </font>    
     </div>
+
 
     <div class="col-md-4 pull-right app-image">
         <img src="assets/tablets.png"/>
