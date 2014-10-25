@@ -15,3 +15,7 @@ local/
 local/*
 *.ipr
 *.iws
+*.un~
+*.*~
+_ide_helper.php
+services.php

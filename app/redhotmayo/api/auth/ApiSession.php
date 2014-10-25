@@ -6,17 +6,27 @@ use redhotmayo\api\auth\exceptions\InvalidSessionException;
 use redhotmayo\model\User;
 
 class ApiSession {
+    const TABLE_NAME = 'api_sessions';
+
     const C_TOKEN = 'token';
     const C_USER = 'userId';
     const C_CREATED_AT = 'created_at';
     const C_UPDATED_AT = 'updated_at';
+
+    public function getSessionInformationForUser(User $user) {
+        $id = (array)DB::table(self::TABLE_NAME)
+                ->where(self::C_USER, '=', $user->getUserId())
+                ->first();
+
+        return isset($id) ? $id : false;
+    }
 
     public function create(User $user) {
         //generate a new API key
         $key = str_random(40);
 
         //save user session data with api key
-        $id = DB::table('api_sessions')
+        $id = DB::table(self::TABLE_NAME)
             ->insertGetId(
                 [
                     self::C_USER => $user->getUserId(),
@@ -33,7 +43,7 @@ class ApiSession {
         $id = null;
 
         if (isset($token)) {
-            $userId = (array)DB::table('api_sessions')
+            $userId = (array)DB::table(self::TABLE_NAME)
                         ->select(self::C_USER)
                         ->where(self::C_TOKEN, '=', $token)
                         ->first();

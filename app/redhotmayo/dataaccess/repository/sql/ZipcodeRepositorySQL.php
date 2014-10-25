@@ -17,6 +17,8 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     const C_COUNTY = 'county';
     const C_ZIPCODE = 'ZipCode';
     const C_POPULATION = 'population';
+    const C_STATE_FULL_NAME = 'stateFullName';
+    const C_PRIMARY_RECORD = 'PrimaryRecord';
 
     /**
      * Save the object to the database returning true if the object was saved, false otherwise.
@@ -74,11 +76,23 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
     public function getAllCities($conditions) {
         $cities = [];
 
-        if (isset($conditions['state'])) {
+        $state = Arrays::GetValue($conditions, 'state', null);
+        $county = Arrays::GetValue($conditions, 'county', null);
+
+        $where = 'state=?';
+        $conditionals = [$state];
+
+        if (isset($county)) {
+            $where .= ' AND county=?';
+            $conditionals[] = $county;
+        }
+
+        if (isset($state)) {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_CITY)
                         ->distinct()
-                        ->whereRaw('state=?', [$conditions['state']])
+                        ->whereRaw($where, $conditionals)
+                        ->orderBy(self::C_CITY)
                         ->get();
 
             foreach ($values as $value) {
@@ -104,17 +118,39 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
             $values = DB::table(self::TABLE_NAME)
                         ->select(self::C_COUNTY)
                         ->distinct()
-                        ->whereRaw('state=?', [$state])
+                        ->whereRaw('state=? OR stateFullName=?', [$state, $state])
                         ->get();
 
             foreach ($values as $value) {
-                $counties[] = $value->county;
+                $county = ucwords(strtolower($value->county));
+                $counties[$county] = $county;
             }
         }
 
         return $counties;
     }
 
+    /**
+     * Obtain a list of all states in the form of
+     * [ 'CA' => 'California' ]
+     *
+     * @return array
+     */
+    public function getAllStates() {
+        $states = [];
+        $values = DB::table(self::TABLE_NAME)
+            ->select([self::C_STATE, self::C_STATE_FULL_NAME])
+            ->distinct()
+            ->where('region', '!=', " ")
+            ->orderBy(self::C_STATE)
+            ->get();
+
+        foreach ($values as $value) {
+            $states[$value->state] = $value->stateFullName;
+        }
+
+        return $states;
+    }
     /**
      * Obtain a list of zipcodes for the given city
      *
@@ -194,5 +230,32 @@ class ZipcodeRepositorySQL extends RepositorySQL implements ZipcodeRepository {
         }
 
         return $zipcodes;
+    }
+
+    /**
+     * @param array $zipcodes
+     * @return int
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function getPopulationForZipcodes(array $zipcodes) {
+        return (int)DB::table(self::TABLE_NAME)
+                      ->where(self::C_PRIMARY_RECORD, '=', 'P')
+                      ->whereIn(self::C_ZIPCODE, $zipcodes)
+                      ->sum(self::C_POPULATION);
+    }
+
+    /**
+     * Prepares all values returned from the database to a format which can be
+     * consumed by the application. Encrypted values will be unencrypted
+     * prior to conversion.
+     *
+     * @param $values
+     * @return mixed
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    protected function filter(array $values) {
+        return $values;
     }
 }

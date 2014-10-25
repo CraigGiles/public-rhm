@@ -7,7 +7,7 @@ use redhotmayo\exception\NullArgumentException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 class ThrottleRegistrationRepositorySQL implements ThrottleRegistrationRepository {
-    const SERVICE = 'redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL';
+    const SERVICE = '\redhotmayo\dataaccess\repository\sql\ThrottleRegistrationRepositorySQL';
 
     const TABLE_NAME = 'throttle_registration';
     const C_KEY = 'key';

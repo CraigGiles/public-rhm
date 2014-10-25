@@ -29,9 +29,14 @@ class RedHotMayoTestCase extends TestCase {
 
     private function setupTestUser() {
         if (static::TEST_USER) {
+            //generate mocked user and set them to Auth::user()
             $config = json_decode(Config::get(static::TEST_USER), true);
             $this->user = new \Illuminate\Auth\GenericUser($config);
             $this->be($this->user);
+
+            //set UserRepository to return this mocked user
+            $mockUserRepo = $this->mock('UserRepository');
+            $mockUserRepo->shouldReceive('find')->andReturn(User::FromGenericUser($this->user));
         }
     }
 

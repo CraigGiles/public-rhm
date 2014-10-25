@@ -1,20 +1,25 @@
 <?php
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use redhotmayo\billing\BillingService;
+use redhotmayo\billing\plan\BillingPlan;
 use redhotmayo\dataaccess\repository\SubscriptionRepository;
 use redhotmayo\dataaccess\repository\UserRepository;
+use redhotmayo\dataaccess\repository\ZipcodeRepository;
 use redhotmayo\distribution\exception\AccountSubscriptionException;
 use redhotmayo\distribution\AccountSubscriptionManager;
+use redhotmayo\model\Region;
 use redhotmayo\model\User;
 
 class SubscriptionController extends RedHotMayoWebController {
     const TEMP_ID = 'temp_id';
-    const DATA = 'regions';
+    const REGIONS = 'regions';
     const ONE_DAY = 1440;
 
     /** @var \redhotmayo\dataaccess\repository\SubscriptionRepository $subscriptionRepository */
@@ -26,13 +31,23 @@ class SubscriptionController extends RedHotMayoWebController {
     /** @var \redhotmayo\distribution\AccountSubscriptionManager $subscriptionManager */
     private $subscriptionManager;
 
+    /** @var \redhotmayo\dataaccess\repository\ZipcodeRepository $zipcodeRepository */
+    private $zipcodeRepository;
+
+    /** @var \redhotmayo\billing\BillingService $billingService */
+    private $billingService;
+
     public function __construct(SubscriptionRepository $subscriptionRepository,
                                 UserRepository $userRepository,
-                                AccountSubscriptionManager $subscriptionManager
+                                ZipcodeRepository $zipcodeRepository,
+                                AccountSubscriptionManager $subscriptionManager,
+                                BillingService $billingService
     ) {
         $this->subscriptionManager = $subscriptionManager;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
+        $this->zipcodeRepository = $zipcodeRepository;
+        $this->billingService = $billingService;
     }
 
     /**
@@ -46,20 +61,26 @@ class SubscriptionController extends RedHotMayoWebController {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function index() {
-        $data = [];
-
         /** @var User $user */
         $user = $this->getAuthedUser();
+        $states = $this->zipcodeRepository->getAllStates();
+        $counties = $this->zipcodeRepository->getAllCounties(['state' => array_values($states)[0]]);
+        $subscriptionLocations = [];
 
         if (isset($user)) {
-            $data = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
+            $subscriptionLocations = $this->subscriptionRepository->find(['userId' => $user->getUserId()]);
         } else if (Cookie::get(self::TEMP_ID)) {
             //the user has a temporary id which means they've picked up some subscription data.
             //pass that data back to the view
-            $data = Session::get(self::TEMP_ID);
+            $subscriptionLocations = Session::get(self::TEMP_ID);
+            $subscriptionLocations = is_array($subscriptionLocations) ? $subscriptionLocations : [];
         }
 
-        return View::make('subscriptions.index', ['subscriptions' => $data] );
+        $subscriptionLocations = $this->filterUnique($subscriptionLocations);
+
+        return View::make('subscriptions.index', [
+            'activeSubscriptions' => $subscriptionLocations, 'states' => $states, 'counties' => $counties
+        ]);
     }
 
     /**
@@ -72,7 +93,7 @@ class SubscriptionController extends RedHotMayoWebController {
      */
     public function store() {
         try {
-            $data = Input::json(self::DATA);
+            $data = Input::json(self::REGIONS);
             $user = $this->getAuthedUser();
 
             if (!isset($user)) {
@@ -80,10 +101,42 @@ class SubscriptionController extends RedHotMayoWebController {
             }
 
             $this->subscriptionManager->process($user, $data);
-            return $this->respondSuccess('login/confirmation');
+
+            if (!$user->isOnFreeTrial()) {
+                $this->billingService->subscribe($user);
+            }
+
+            return $this->respondSuccess('/dashboard');
         } catch (AccountSubscriptionException $ex) {
             Log::error("AccountSubscriptionException: {$ex->getMessage()}");
             return $this->respondAccountSubscriptionException($ex);
+        }
+    }
+
+    /**
+     * Determine the total cost of subscribing to every region in the input
+     * stream and return that value. This function is typically called
+     * via AJAX from the front end.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    public function total() {
+        try {
+            $regions = new Collection();
+            $regionsAsArray = Input::json(self::REGIONS);
+
+            foreach ($regionsAsArray as $array) {
+                $regions->push(Region::createWithData($array));
+            }
+
+            $price = $this->billingService->getProposedTotalForRegions($regions->toArray());
+
+            return $this->respondWithTotal($price);
+        } catch (Exception $ex) {
+            Log::error("AccountSubscriptionException: {$ex->getMessage()}");
+            return $this->respondWithUnknownError($ex->getMessage());
         }
     }
 
@@ -91,6 +144,13 @@ class SubscriptionController extends RedHotMayoWebController {
         $this->setStatusCode(Response::HTTP_CONFLICT);
         $this->setMessages($ex->getErrors());
         $this->setRedirect('subscription');
+
+        return $this->respond();
+    }
+
+    private function respondWithTotal($total) {
+        $this->setStatusCode(Response::HTTP_OK);
+        $this->setMessages($total);
 
         return $this->respond();
     }
@@ -123,5 +183,16 @@ class SubscriptionController extends RedHotMayoWebController {
         $response->withCookie($cookie);
 
         return $response;
+    }
+
+    private function filterUnique(array $data) {
+        $cities = [];
+
+        /** @var Region $d */
+        foreach ($data as $d) {
+            $cities[$d->getCity()] = $d;
+        }
+
+        return array_values($cities);
     }
 }

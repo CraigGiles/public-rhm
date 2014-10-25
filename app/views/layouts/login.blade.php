@@ -1,23 +1,29 @@
 {{ Form::open(array('route' => 'sessions.store', 'id' => 'signin_form')) }}
 
-<div class="form-group row">
-  <div class="col-lg-12">
-    <label for="username" class="control-label">User Name:</label>
-    <input type="text" name="username" id="username" class="form-control">
-  </div>
+<div class="main-left form-group row">
+    <img src="assets/dropdown-login.jpg" style="position:absolute;">
+
+    <div class="col-lg-12">
+        {{ Form::input("username", "username", null, ["style" => "position:relative;", "placeholder" => "Username", "class" => "form-control login-username"]) }}
+    </div>
+
+    <div class="col-lg-12">
+        {{ Form::input("password", "password", null, ["style" => "position:relative;", "class" => "form-control", "placeholder" => "Password"]) }}
+    </div>
+
+    <div class="col-lg-12" style="padding-top:15px">
+        {{ Form::button("Login", ["type" => "submit", "class" => "btn btn-primary btn-lg button2"]) }}
+    </div>
+
+    <font style="color: #ffffff; position: relative; font-family:roboto; font-weight: 400;">
+        {{ link_to_route('password_resets.create', 'Forgot your password?', null, ["style" => "color:#ffffff;", "class" => "btn"]) }}
+    </font>
+    
 </div>
 
-<div class="form-group row">
-  <div class="col-lg-12">
-    <label for="password" class="control-label">Password:</label>
-    <input type="password" name="password" id="password" class="form-control">
-  </div>
-</div>
 
-<div class="form-group row">
-  <div class="col-lg-12">
-    <button id="signin_submit" type="submit" class="btn btn-primary btn-lg pull-right">Login</button>
-  </div>
-</div>
-<!--      {{ link_to_route('password_resets.create', 'Forgot your password') }}-->
 {{ Form::close() }}
+
+<p>
+<a href="registration">{{ HTML::image('assets/setup-account.png') }}</a>
+

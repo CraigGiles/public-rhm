@@ -8,20 +8,26 @@
         <p>Passwords must be AT LEAST 6 characters in length:</p>
         {{ Form::hidden('token', $token) }}
 
-        <div>
-            {{ Form::label('email', 'Email Address:') }}
-            {{ Form::text('email', null, ['required' => true]) }}
-        </div>
+    <div class="form-group row">
+      <div class="col-lg-5">
+            {{ Form::label('email', 'Email: ') }}
+            {{ Form::input("email", "email", null, ["class" => "form-control", "required" => true]) }}
+      </div>
+    </div>
 
-        <div>
-            {{ Form::label('password', 'Password:') }}
-            {{ Form::password('password') }}
-        </div>
+    <div class="form-group row">
+      <div class="col-lg-5">
+            {{ Form::label('password', 'Password: ') }}
+            {{ Form::input("password", "password", null, ["class" => "form-control", "required" => true]) }}
+      </div>
+    </div>
 
-        <div>
-            {{ Form::label('password_confirmation', 'Password Confirmation:') }}
-            {{ Form::password('password_confirmation') }}
-        </div>
+    <div class="form-group row">
+      <div class="col-lg-5">
+            {{ Form::label('password_confirmation', 'Password Confirmation: ') }}
+            {{ Form::input("password", "password_confirmation", null, ["class" => "form-control", "required" => true]) }}
+      </div>
+    </div>
 
         <div>
             {{ Form::submit('Reset Password') }}

@@ -1,14 +1,24 @@
 <?php namespace redhotmayo\api\auth;
 
-use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use redhotmayo\dataaccess\repository\dao\DataAccessObject;
-use redhotmayo\dataaccess\repository\dao\sql\UserSQL;
-use redhotmayo\model\User;
+use redhotmayo\auth\AuthorizationService;
 
+/**
+ * TODO: This class will be moving over to the AuthorizationService.
+ *
+ * @package redhotmayo\api\auth
+ * @author Craig Giles < craig@gilesc.com >
+ * @deprecated
+ */
 class ApiAuthorizer {
     protected $message = [];
+
+    /** @var \redhotmayo\auth\AuthorizationService $auth */
+    protected $auth;
+
+    public function __construct(AuthorizationService $auth) {
+        $this->auth = $auth;
+    }
 
     public function getMessage() {
         return $this->message;
@@ -33,41 +43,9 @@ class ApiAuthorizer {
         if (!$authorized && isset($token)) {
             $this->message = ['Token has expired or is invalid. Please log in.'];
         } else {
-            $this->message = ['Token not found. Please provide a valid token'];
+            $this->message = ['Token not found. Please log in to obtain an API token.'];
         }
 
         return $authorized;
-    }
-
-    public function login($input) {
-        $attempt = Auth::attempt([
-            'username' => $input['username'],
-            'password' => $input['password']
-        ]);
-
-        if ($attempt) {
-            $dao = DataAccessObject::GetUserDAO();
-
-            $credentials = [
-                'username' => $input['username'],
-            ];
-
-            $result = $dao->getUser($credentials);
-            $user = User::FromStdClass($result);
-
-            $id = DB::table('api_sessions')
-                    ->where('userId', '=', $user->getUserId())
-                    ->get();
-
-            if (empty($id)) {
-                // TODO: Clean this up
-                $api = new ApiSession();
-                return $api->create($user);
-            } else {
-                return $id[0]->token;
-            }
-        } else {
-            throw new Exception("Invalid username or password");
-        }
     }
 }

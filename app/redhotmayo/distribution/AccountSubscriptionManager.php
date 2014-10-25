@@ -62,8 +62,6 @@ class AccountSubscriptionManager {
 
     /**
      * Process the subscription data for the authed user given.
-     * In a future version the billing process will get involved here as well.. currently the only action is to
-     * subscribe the zipcodes of the given dataset to the user and hold it into the subscriptions table.
      *
      * @param User $user
      * @param array $dataset
@@ -71,32 +69,14 @@ class AccountSubscriptionManager {
      * @author Craig Giles < craig@gilesc.com >
      */
     public function process(User $user, array $dataset) {
-        //get all zipcodes for 'type' in state 'state'
-        $zipcodes = $this->getZipcodesForRegions($dataset);
+        $zipcodes        = $this->getZipcodesForRegions($dataset);
+        $subscribedTo    = $this->subscriptionRepository->getAllZipcodesForUser($user);
+        $unsubscribeFrom = array_diff($subscribedTo, $zipcodes);
+        $newZipcodes     = array_diff($zipcodes, $subscribedTo);
 
-        /**
-         * Does this stuff need to go here?
-         */
-//        //todo: calculate subscription value here (newSub - currentSub)
-//        //$subDifference = Billing->Calculate(userId, newSubs) ?
-//
-//        //todo: if new subDifference is more expensive than old subscription (IE: positive number)
-//        //todo: save in session and redirect to billing
-//        //Session::put(self::SUBSCRIPTION . Auth::user()->id, $subs);
-//
-//        //todo otherwise, the subscription hasn't changed based on new areas. Save and send them off.
-//        $subs = [];
-//        foreach ($data as $sub) {
-//            $subLocation = SubscriptionLocation::FromArray($sub);
-//            $subs[] = SubscriptionLocation::FromArray($sub);
-//        }
-
-
-        foreach ($zipcodes as $zip) {
-            $sub = new Subscription($user, $zip);
-            $this->subscriptionRepository->save($sub);
-            $this->backdate($user, $sub);
-        }
+        $this->subscriptionRepository->unsubscribeUserFromZipcodes($user, $unsubscribeFrom);
+        $this->subscribeToZipcodes($user, $zipcodes);
+        $this->backdateZipcodes($user, $zipcodes);
     }
 
     /**
@@ -162,6 +142,19 @@ class AccountSubscriptionManager {
     }
 
     /**
+     * @param $user
+     * @param $zipcodes
+     *
+     * @author Craig Giles < craig@gilesc.com >
+     */
+    private function subscribeToZipcodes($user, $zipcodes) {
+        foreach ($zipcodes as $zip) {
+            $sub = new Subscription($user, $zip);
+            $this->subscriptionRepository->save($sub);
+        }
+    }
+
+    /**
      * @param \redhotmayo\model\User $user
      * @param $sub Subscription
      *
@@ -177,6 +170,13 @@ class AccountSubscriptionManager {
                 $acct = Account::FromArray($account);
                 $this->accountRepository->subscribeAccountToUserId($acct, $user->getUserId());
             }
+        }
+    }
+
+    private function backdateZipcodes($user, $zipcodes) {
+        foreach ($zipcodes as $zip) {
+            $sub = new Subscription($user, $zip);
+            $this->backdate($user, $sub);
         }
     }
 }

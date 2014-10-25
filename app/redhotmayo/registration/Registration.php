@@ -6,6 +6,7 @@ use redhotmayo\dataaccess\repository\UserRepository;
 use redhotmayo\mailers\UserMailer;
 use redhotmayo\model\User;
 use redhotmayo\registration\exceptions\ThrottleException;
+use redhotmayo\utility\Arrays;
 
 class Registration {
     /**
@@ -34,17 +35,9 @@ class Registration {
     public function register(array $input, RegistrationValidator $validator, ThrottleRegistrationRepository $throttle=null) {
         $registered = false;
 
-        //validate input
-        $validated = $validator->validate($input, $validator->getCreationRules());
-
-        //TODO: WS-43 REMOVE when not needed anymore
         /** @var ThrottleRegistrationRepository $throttle */
         $throttle = $this->getThrottleRepository($throttle);
-
-        if (!$throttle->canUserRegister($input)) {
-            throw new ThrottleException;
-        }
-        //TODO: END WS-43 REMOVE
+        $validated = $validator->validate($input, $validator->getCreationRules());
 
         //save user
         if ($validated) {
@@ -52,11 +45,12 @@ class Registration {
             $registered = $this->userRepository->save($user);
         }
 
-        //TODO: once we have mailgun support, add mail
-//        //send user an email
-//        if ($registered && isset($user)) {
-//            $this->mailer->welcome($user);
-//        }
+        //send user an email
+        if (App::environment() != 'local' &&
+            App::environment() != 'testing' &&
+            $registered && isset($user)) {
+            $this->mailer->welcome($user);
+        }
 
         if ($registered) {
            $throttle->decrementMax($input);

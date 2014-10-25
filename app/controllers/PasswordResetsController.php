@@ -44,7 +44,6 @@ class PasswordResetsController extends \BaseController {
     public function update($token) {
         $creds = [
             'token' => $token,
-            'username' => 'testuser',
             'email' => Input::get('email'),
             'password' => Input::get('password'),
             'password_confirmation' => Input::get('password_confirmation'),
@@ -65,7 +64,6 @@ class PasswordResetsController extends \BaseController {
             if (count($creds['password'] < 6)) { $message = 'Password must be at lesat 6 characters'; }
             return Redirect::back()->with('flash_message', $message)->withInput();
         }
-
 
         return Redirect::route('login')->with('flash_message', 'Your credentials have been updated');
     }

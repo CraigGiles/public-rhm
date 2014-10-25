@@ -11,5 +11,6 @@
  *
  *= require bootstrap.min.css
  *= require bootstrap-select.min.css
- *= require main.css
+ *= require style.css
+ *= require stylesheet.css
  */

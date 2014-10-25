@@ -32,11 +32,14 @@ Route::group(array('before' => 'api.auth'), function() {
 //--------------------------------------------------
 // Web System
 //--------------------------------------------------
+Route::resource('dashboard', 'DashboardController', ['only' => ['index']]);
 
-// Subscription
 Route::get('geography/search', 'GeographyController@search');
 Route::get('subscribe', 'SubscriptionController@index');
+Route::post('subscribe/price', 'SubscriptionController@total');
 Route::resource('subscribe', 'SubscriptionController', ['only' => ['index', 'store']]);
+
+Route::get('subscribe/update', 'SubscriptionController@update');
 
 // Registration
 Route::get('registration', 'RegistrationController@index');
@@ -47,7 +50,6 @@ Route::group(['before' => 'csrf'], function(){
 });
 
 Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@create']);
-Route::get('login/confirmation', 'SessionsController@confirmation');
 Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@destroy']);
 Route::resource('sessions', 'SessionsController', ['only' => ['store', 'create', 'destroy']]);
 
@@ -55,8 +57,14 @@ Route::get('password_resets/reset/{token}', 'PasswordResetsController@resetPassw
 Route::post('password_resets/reset/{token}', 'PasswordResetsController@update');
 Route::resource('password_resets', 'PasswordResetsController', ['only' => ['store', 'create', 'destroy']]);
 
-Route::resource('billing', 'BillingController');
+Route::group(['before' => 'auth'], function() {
+    Route::get('billing/cancel', 'BillingController@cancel');
+    Route::resource('billing', 'BillingController');
+});
 
+// Administration
+Route::get('administration', 'AdministrationController@index');
+Route::post('administration/upload', 'AdministrationController@upload');
 
 /**
  * Remove the folowing once done testing

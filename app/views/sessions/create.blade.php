@@ -1,75 +1,27 @@
 @extends('layouts.master')
 
-@section('content')
-
-<div class="page-header">
-  <h1>
-    Sign In
-  </h1>
-</div>
-
-<div class="row">
-
-  <div class="col-lg-7">
-    @include('layouts.login')
-  </div>
-
-  <div class="col-md-5">
-    <img src="http://redhotmayo.com/wp-content/uploads/2014/03/Phone-Tablet-Launch-Page-image-portrait-v2.png" width="100%"/>
-  </div>
-
-</div>
-
+@section('black-bar-text')
+Login to redhotMAYO below:
 @endsection
 
+@section('content')
+@include('partials.errors')
 
-@section('javascript')
+<div class="col-lg-4">
+    @include('layouts.login')
+</div>
 
-<script>
-  $(document).ready(function() {
-    /**
-     * Signin Form validation
-     */
-    $('#signin_form').bootstrapValidator({
-      fields: {
-        username: {
-          validators: {
-            notEmpty: {
-              message: 'This field is required and cannot be empty'
-            }
-          }
-        },
-        password: {
-          validators: {
-            notEmpty: {
-              message: 'This field is required and cannot be empty'
-            }
-          }
-        }
-      },
-      submitHandler: function(validator, form, submitButton) {
+<div class="col-md-4 main-right" style="margin-left:20px">
+    <h1>Stay Tuned!</h1>
+    <p>redhotMAYO continually improves our tools to help foodservice sales professionals succeed!<p>
+    <p>We strive to keep you informed; keep a lookout for the following new features in upcoming months:<p>
+    <img src="assets/check.jpg"> <strong>Add Your Accounts - </strong> Manually or import<p>
+    <img src="assets/check.jpg"> <strong>Proximity Search - </strong> Instantly fing accounts close to your current location<p>
+    <img src="assets/check.jpg"> <strong>Export - </strong> Select and export acounts to popular formats like xls and .pdf<p>
+</div>
 
-        $.ajax({
-          url: $('#signin_form').attr('action'),
-          type: $('#signin_form').attr('method'),
-          data: form.serialize(),
-          beforeSend: function() {
-            beforeAjax();
-          },
-          complete: function(data) {
-            $('#signin_submit').prop('disabled', false);
-            if (data.status === 200) {
-              if (data.responseJSON.redirect){
-                window.location.href = data.responseJSON.redirect;
-              }
-            } else {
-              handleResponse(data);
-            }
-          }
-        });
-      }
-    });
-  });
-</script>
+<div id="right-bar-login">
+		<img src="assets/tablets.png">
+</div>
 
 @endsection
