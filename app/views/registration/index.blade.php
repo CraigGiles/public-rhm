@@ -21,12 +21,17 @@
         {{ Form::input("password", "password_confirmation", null, ["class" => "form-control", "style" => "position:relative;", "placeholder" => "Password Confirmation"]) }}
         {{ Form::input("username", "key", null, ["class" => "form-control", "style" => "position:relative;", "placeholder" => "Promo Code"]) }}<br>
         <br>
-    {{ Form::button("Register", ["type" => "submit", "class" => "btn btn-primary btn-lg button2", "id" => "registration-submit"]) }}
+        {{ Form::button("Register", ["type" => "submit", "class" => "btn btn-primary btn-lg button2", "id" => "registration-submit"]) }}
+        <br>
+        <font style="position: relative; font-family:roboto; font-weight: 700; white-space:nowrap; padding-bottom: 20px">
+            * Important! Remember your password as you will need it to log into your redhotMAYO app.
+        </font>    
     </div>
 
     <div class="col-md-4 pull-right app-image">
-        <img src="assets/tablets.png""/>
+        <img src="assets/tablets.png"/>
     </div>
+    
 
     {{ Form::close() }}
 
