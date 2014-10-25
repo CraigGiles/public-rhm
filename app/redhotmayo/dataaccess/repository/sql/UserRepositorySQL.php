@@ -58,8 +58,8 @@ class UserRepositorySQL implements UserRepository {
             DB::commit();
         } catch (Exception $e) {
             Log::error($e);
-            throw new Exception('Unable to register user', 500, $e);
             DB::rollback();
+            throw new Exception('Unable to register user', 500, $e);
         }
 
         return (isset($id) && $id > 0);
