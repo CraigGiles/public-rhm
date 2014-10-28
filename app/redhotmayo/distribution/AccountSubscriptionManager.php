@@ -75,8 +75,8 @@ class AccountSubscriptionManager {
         $newZipcodes     = array_diff($zipcodes, $subscribedTo);
 
         $this->subscriptionRepository->unsubscribeUserFromZipcodes($user, $unsubscribeFrom);
-        $this->subscribeToZipcodes($user, $zipcodes);
-        $this->backdateZipcodes($user, $zipcodes);
+        $this->subscribeToZipcodes($user, $newZipcodes);
+        $this->backdateZipcodes($user, $newZipcodes);
     }
 
     /**

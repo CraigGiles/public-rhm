@@ -72,7 +72,7 @@ class RegistrationController extends RedHotMayoWebController {
         } catch (Exception $e) {
             Log::error("Registration Failure with Exception.");
             Log::error($e);
-            return Redirect::back()->withErrors($e->getErrors())->withInput();
+            return Redirect::back()->withErrors($e->getMessage())->withInput();
         }
     }
 
