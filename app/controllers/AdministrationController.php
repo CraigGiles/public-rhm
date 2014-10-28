@@ -67,7 +67,6 @@ class AdministrationController extends RedHotMayoWebController {
 		$uploaded = null;
 		try {
 			$uploaded = $file->move($destination, $fileName);
-			throw new Exception("Testing the exception handling");
 		} catch(Exception $exception) {
 		    $entry = vsprintf('Unable to move an uploaded lead file [originalFileName=%s, newFileName=%s, destination=%s]', $args);
 		    Log::error($entry);
