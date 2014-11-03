@@ -24,7 +24,8 @@ class AccountDistribution extends Distribution {
     public function loadFromFile($filename) {
         parent::loadFromFile($filename);
 
-        $this->leadDistribution();
+        $result = $this->leadDistribution();
+        return $result;
     }
 
     /**
@@ -48,9 +49,11 @@ class AccountDistribution extends Distribution {
             throw new Exception("Error with excel parsing. Results not set or not an array");
         }
 
-        if (count($accounts) == 0) {
+		$totalAccounts = count($accounts);
+        if ($totalAccounts == 0) {
             Log::info('No records found in XLSX file.');
-            return;
+            $result = new AccountDistributionResult($filename->getFilename(), $totalAccounts);
+            return $result;
         }
 
         //TODO: change this to an AccountDistributionService
@@ -69,7 +72,7 @@ class AccountDistribution extends Distribution {
 
         foreach ($newAccounts as $acct) {
             $uid = Arrays::GetValue($acct, 'userId', false);
-            
+
             if (is_numeric($uid)) {
                 $userIds[] = $uid;
             }
@@ -99,5 +102,9 @@ class AccountDistribution extends Distribution {
             //TODO: LOGGER: Log the accounts that were unable to save so they can be re-processed
             Log::error('Undistributed accounts to users: ' . $error->getAccountName());
         }
+
+        $result = new AccountDistributionResult($filename->getFilename(), $totalAccounts, $unsaved, $undistributed);
+        return $result;
+
     }
 }

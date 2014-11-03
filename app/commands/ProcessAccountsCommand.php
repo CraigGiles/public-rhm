@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Console\Command;
-use redhotmayo\distribution\AccountDistribution;
+use redhotmayo\distribution\AccountsProcessor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -19,7 +19,7 @@ class ProcessAccountsCommand extends Command {
      *
      * @var string
      */
-    protected $description = 'Process a set of leads from an xlsx spreadsheet.';
+    protected $description = 'Processes a set of XLSX files, each containing a set of new leads.';
 
     /**
      * Create a new command instance.
@@ -36,9 +36,13 @@ class ProcessAccountsCommand extends Command {
      * @return mixed
      */
     public function fire() {
-        $filename = $this->argument('filename');
-        $acct = new AccountDistribution();
-        $acct->loadFromFile($filename);
+
+		$inputDirectory = $this->argument('inputDirectory');
+		$outputDirectory = $this->argument('outputDirectory');
+		$emailAddresses = explode(',', $this->argument('emailAddresses'));
+
+		$processor = new AccountsProcessor($inputDirectory, $outputDirectory, $emailAddresses);
+		$processor->process();
     }
 
 
@@ -49,7 +53,9 @@ class ProcessAccountsCommand extends Command {
      */
     protected function getArguments() {
         return array(
-            array('filename', InputArgument::REQUIRED, 'XLSX file to be processed.'),
+            array('inputDirectory', InputArgument::REQUIRED, 'The input directory contains the XLSX files.'),
+            array('outputDirectory', InputArgument::REQUIRED, 'The output directory where the XLSX files are moved after processing.'),
+            array('emailAddresses', InputArgument::REQUIRED, 'The comma-separated list of email addresses to send the results.'),
         );
     }
 
@@ -59,8 +65,6 @@ class ProcessAccountsCommand extends Command {
      * @return array
      */
     protected function getOptions() {
-        return array(
-            array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
-        );
+        return [];
     }
 }
