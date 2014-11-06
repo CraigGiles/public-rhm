@@ -56,19 +56,18 @@ class AdministrationController extends RedHotMayoWebController {
 			return Redirect::to(self::ADMINISTRATION)->withErrors($validation);
 		}
 
-		$originalFileName = $file->getClientOriginalName();
-		$fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
+		$fileName = $file->getClientOriginalName();
 		$destination = storage_path() . '/uploads';
 
-		$args = array($originalFileName, $fileName, $destination);
-		$entry = vsprintf('Saving uploaded lead file [originalFileName=%s, newFileName=%s, destination=%s]', $args);
+		$args = array($fileName, $destination);
+		$entry = vsprintf('Saving uploaded lead file [fileName=%s, destination=%s]', $args);
 		Log::info($entry);
 
 		$uploaded = null;
 		try {
 			$uploaded = $file->move($destination, $fileName);
 		} catch(Exception $exception) {
-		    $entry = vsprintf('Unable to move an uploaded lead file [originalFileName=%s, newFileName=%s, destination=%s]', $args);
+		    $entry = vsprintf('Unable to move an uploaded lead file [fileName=%s, destination=%s]', $args);
 		    Log::error($entry);
 		    Log::error($exception);
 		    return Redirect::to(self::ADMINISTRATION)->with('message', self::FAILURE_MESSAGE);;;
