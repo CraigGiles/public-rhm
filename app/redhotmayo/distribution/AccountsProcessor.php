@@ -168,8 +168,8 @@ class DetailAggregator {
 			$this->leadsDetected += $detail->getLeadsDetected();
 			$this->leadsProcessed += $detail->getLeadsProcessed();
 			$this->leadsUnprocessed += $detail->getLeadsUnprocessed();
-			$this->leadsUnsaved += count($detail->getUnsavedAccounts());
-			$this->leadsUndistributed += count($detail->getUndistributedAccounts());
+			$this->leadsUnsaved += count($detail->getUnsavedLeads());
+			$this->leadsUndistributed += count($detail->getUndistributedLeads());
 		}
 
 		if ($this->leadsDetected > 0) {
