@@ -97,7 +97,8 @@ class AccountsProcessor {
 		$summary->setFilesProcessed(count($processedFiles));
 		$summary->setFilesUnprocessed(count($unprocessedFiles));
 
-		$aggregator = new DetailAggregator($details);
+		$aggregator = new DetailAggregator();
+		$aggregator->aggregate($details);
 		$summary->setLeadsDetected($aggregator->getLeadsDetected());
 		$summary->setLeadsProcessed($aggregator->getLeadsProcessed());
 		$summary->setLeadsUnprocessed($aggregator->getLeadsUnprocessed());
