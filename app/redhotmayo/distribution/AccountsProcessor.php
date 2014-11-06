@@ -173,10 +173,10 @@ class DetailAggregator {
 		}
 
 		if ($this->leadsDetected > 0) {
-			$this->leadsProcessedPercentage = $this->leadsProcessed / $this->$leadsDetected;
-			$this->leadsUnprocessedPercentage = $this->$leadsUnprocessed / $this->$leadsDetected;
-			$this->leadsUnsavedPercentage = $this->$leadsUnsaved / $this->$leadsDetected;
-			$this->leadsUndistributedPercentage = $this->$leadsUndistributed / $this->$leadsDetected;
+			$this->leadsProcessedPercentage = $this->leadsProcessed / $this->leadsDetected;
+			$this->leadsUnprocessedPercentage = $this->leadsUnprocessed / $this->leadsDetected;
+			$this->leadsUnsavedPercentage = $this->leadsUnsaved / $this->leadsDetected;
+			$this->leadsUndistributedPercentage = $this->leadsUndistributed / $this->leadsDetected;
 		}
 	}
 
