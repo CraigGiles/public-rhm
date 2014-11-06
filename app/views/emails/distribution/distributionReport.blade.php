@@ -35,12 +35,12 @@
 				<tr><td>Files Processed</td><td>{{ $summary->getFilesProcessed() }}</td><td></td></tr>
 				<tr><td>Files Unprocessed</td><td>{{ $summary->getFilesUnprocessed() }}</td><td></td></tr>
 				<tr><td>Leads Detected</td><td>{{ $summary->getLeadsDetected() }}</td><td></td></tr>
-				<tr><td>Leads Processed</td><td>{{ $summary->getLeadsProcessed() }}</td><td>{{ number_format($summary->getLeadsProcessedPercentage() * 100, 2) }}</td></tr>
-				<tr><td>Leads Unprocessed</td><td>{{ $summary->getLeadsUnprocessed() }}</td><td>{{ number_format($summary->getLeadsUnprocessedPercentage() * 100, 2) }}</td></tr>
-				<tr><td>Leads Unsaved:</td><td>{{ $summary->getLeadsUnsaved() }}</td><td>{{ number_format($summary->getLeadsUnsavedPercentage() * 100, 2) }}</td></tr>
-				<tr><td>Leads Undistributed</td><td>{{ $summary->getLeadsUndistributed() }}</td><td>{{ number_format($summary->getLeadsUndistributedPercentage() * 100, 2) }}</td></tr>
-			<table>
-		<div>
+				<tr><td>Leads Processed</td><td>{{ $summary->getLeadsProcessed() }}</td><td>{{ number_format($summary->getLeadsProcessedPercentage() * 100, 2) . '%' }}</td></tr>
+				<tr><td>Leads Unprocessed</td><td>{{ $summary->getLeadsUnprocessed() }}</td><td>{{ number_format($summary->getLeadsUnprocessedPercentage() * 100, 2) . '%' }}</td></tr>
+				<tr><td>Leads Unsaved:</td><td>{{ $summary->getLeadsUnsaved() }}</td><td>{{ number_format($summary->getLeadsUnsavedPercentage() * 100, 2) . '%' }}</td></tr>
+				<tr><td>Leads Undistributed</td><td>{{ $summary->getLeadsUndistributed() }}</td><td>{{ number_format($summary->getLeadsUndistributedPercentage() * 100, 2) . '%' }}</td></tr>
+			</table>
+		</div>
 		<p/>
 		<hr/>
 		@if (isset($details) && count($details) > 0)
@@ -54,12 +54,12 @@
 						<table border="1" cellpadding="5" cellspacing="5">
 							<tr><th>Metric</th><th>Count</th><th>Percentage</th></tr>
 							<tr><td>Leads Detected</td><td>{{ $detail->getLeadsDetected() }}</td><td></td></tr>
-							<tr><td>Leads Processed</td><td>{{ $detail->getLeadsProcessed() }}</td><td>{{ number_format($detail->getLeadsProcessedPercentage() * 100, 2) }}</td></tr>
-							<tr><td>Leads Unprocessed</td><td>{{ $detail->getLeadsUnprocessed() }}</td><td>{{ number_format($detail->getLeadsUnprocessedPercentage() * 100, 2) }}</td></tr>
-							<tr><td>Leads Unsaved:</td><td>{{ $detail->getLeadsUnsaved() }}</td><td>{{ number_format($detail->getLeadsUnsavedPercentage() * 100, 2) }}</td></tr>
-							<tr><td>Leads Undistributed</td><td>{{ $detail->getLeadsUndistributed() }}</td><td>{{ number_format($detail->getLeadsUndistributedPercentage() * 100, 2) }}</td></tr>
-						<table>
-					<div>
+							<tr><td>Leads Processed</td><td>{{ $detail->getLeadsProcessed() }}</td><td>{{ number_format($detail->getLeadsProcessedPercentage() * 100, 2) . '%' }}</td></tr>
+							<tr><td>Leads Unprocessed</td><td>{{ $detail->getLeadsUnprocessed() }}</td><td>{{ number_format($detail->getLeadsUnprocessedPercentage() * 100, 2) . '%' }}</td></tr>
+							<tr><td>Leads Unsaved:</td><td>{{ $detail->getLeadsUnsaved() }}</td><td>{{ number_format($detail->getLeadsUnsavedPercentage() * 100, 2) . '%' }}</td></tr>
+							<tr><td>Leads Undistributed</td><td>{{ $detail->getLeadsUndistributed() }}</td><td>{{ number_format($detail->getLeadsUndistributedPercentage() * 100, 2) . '%' }}</td></tr>
+						</table>
+					</div>
 					<?php $unsavedLeads = $detail->getUnsavedLeads(); ?>
 					@if (isset($unsavedLeads) && count($unsavedLeads) > 0)
 					<h4>Unsaved Leads</h4>
@@ -72,8 +72,8 @@
 								<td>{{ $unsavedLead->getAddress() }}</td>
 							</tr>
 						@endforeach
-						<table>
-					<div>
+						</table>
+					</div>
 					<p/>
 					@endif
 					<?php $undistributedLeads = $detail->getUndistributedLeads(); ?>
@@ -88,8 +88,8 @@
 								<td>{{ $undistributedLead->getAddress() }}</td>
 							</tr>
 						@endforeach
-						<table>
-					<div>
+						</table>
+					</div>
 					<p/>
 					@endif
 					<?php $count++; ?>
