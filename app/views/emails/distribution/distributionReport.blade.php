@@ -65,10 +65,11 @@
 					<h4>Unsaved Leads</h4>
 					<div id="detail-unsaved-{{ $count }}">
 						<table border="1" cellpadding="5" cellspacing="5">
-							<tr><th>Account Name</th></tr>
+							<tr><th>Account Name</th><th>Address</th></tr>
 						@foreach ($unsavedLeads as $unsavedLead)
 							<tr>
 								<td>{{ $unsavedLead->getAccountName() }}</td>
+								<td>{{ $unsavedLead->getAddress() }}</td>
 							</tr>
 						@endforeach
 						</table>
@@ -80,10 +81,11 @@
 					<h4>Undistributed Leads</h4>
 					<div id="detail-undistributed-{{ $count }}">
 						<table border="1" cellpadding="5" cellspacing="5">
-							<tr><th>Account Name</th></tr>
+							<tr><th>Account Name</th><th>Address</th></tr>
 						@foreach ($undistributedLeads as $undistributedLead)
 							<tr>
 								<td>{{ $undistributedLead->getAccountName() }}</td>
+								<td>{{ $undistributedLead->getAddress() }}</td>
 							</tr>
 						@endforeach
 						</table>
