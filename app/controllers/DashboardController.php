@@ -13,9 +13,9 @@ class DashboardController extends RedHotMayoWebController {
         $user = $this->getAuthedUser();
 
         // TODO: not the best place for this, at all... but the quick and easy fix...
-        $valid = array('amye', 'donv', 'dgiles', 'cgiles', 'jweyer');
+        $valid = array('AmyEadmin', 'DonVadmin', 'dgiles', 'cgiles', 'jweyer');
         $uploadEnabled = (in_array($user->getUsername(), $valid)) ? true : false;
 
         return View::make('dashboard.index', ['canUpload' => $uploadEnabled]);
     }
-} 
+}
